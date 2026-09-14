@@ -10,13 +10,15 @@ funzionare. `0.x.y` fino al lancio pubblico.
 L'obiettivo non e' avere qualcosa che funziona, e' sapere se lo stack regge i
 vincoli. Se la CSP non si chiude, meglio scoprirlo adesso.
 
-- [ ] Astro configurato: `output: 'static'`, `inlineStylesheets: 'never'`
-- [ ] CSP nativa attiva e **verificata su pagina vuota**, console pulita, nessun
+- [x] Astro configurato: `output: 'static'`, `inlineStylesheets: 'never'`
+- [x] CSP nativa attiva e **verificata su pagina vuota**, console pulita, nessun
       `unsafe-inline`
-- [ ] `public/crypto.js` vuoto ma importato come modulo ES, verificato
+- [x] `public/crypto.js` vuoto ma importato come modulo ES, verificato
       byte-identico nel build output
-- [ ] Deploy su Netlify da GitHub, dominio collegato
-- [ ] Repo pubblico, licenza, README minimo
+- [x] Deploy su Netlify da GitHub (dammeli.netlify.app) — dominio damme.li
+      ancora da collegare
+- [ ] Repo pubblico, licenza, README minimo — licenza e README fatti, repo
+      ancora privato
 
 **Criterio di uscita**: pagina bianca online su damme.li con CSP stretta e
 nessun errore in console.
@@ -27,16 +29,18 @@ nessun errore in console.
 
 Il pezzo che non si puo' sbagliare. Da fare prima di qualunque interfaccia.
 
-- [ ] Generazione master key con `crypto.getRandomValues`
-- [ ] Derivazione `read_key`, `write_token`, `id`
-- [ ] Cifratura e decifratura AES-GCM con nonce nuovo a ogni scrittura
-- [ ] Encoding e parsing del fragment `#<ver><tipo><chiave>`
-- [ ] Padding a 4096 byte e sua rimozione
-- [ ] **Test vector**: payload noto, chiave nota, ciphertext atteso. Serve a
+- [x] Generazione master key con `crypto.getRandomValues`
+- [x] Derivazione `read_key`, `write_token`, `id`
+- [x] Cifratura e decifratura AES-GCM con nonce nuovo a ogni scrittura
+- [x] Encoding e parsing del fragment `#<ver><tipo><chiave>`
+- [x] Padding a 4096 byte e sua rimozione
+- [x] **Test vector**: payload noto, chiave nota, ciphertext atteso. Serve a
       garantire per sempre il vincolo V1
-- [ ] Test: nonce mai ripetuto su scritture successive
+- [x] Test: nonce mai ripetuto su scritture successive
 - [ ] Audit manuale: `location.hash` letto in un solo punto, mai in fetch, log,
-      title o redirect
+      title o redirect — non applicabile ancora: nessun punto dell'app legge
+      `location.hash` finche' non esiste un editor (0.4/0.5). `crypto.js` non
+      lo tocca per costruzione, verificato da un test automatico
 
 **Criterio di uscita**: cifro un payload, ricarico la pagina, lo decifro dal
 link. Tutto in locale, nessun server.

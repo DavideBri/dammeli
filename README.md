@@ -38,7 +38,7 @@ questo repository, senza fidarsi di una build.
 Hash SHA-256 del file, aggiornato a ogni release:
 
 ```
-(da pubblicare alla prima release funzionante di crypto.js, vedi roadmap 0.2)
+e0874b944bc0a1d839d5988125a571c2815af26af7a03ac34a9b15e889721d31
 ```
 
 ## Sviluppo locale
@@ -50,6 +50,7 @@ pnpm install
 pnpm dev       # http://localhost:4321
 pnpm build     # output in dist/
 pnpm preview   # serve dist/ in locale
+pnpm test      # test vector e vincoli crittografici (crypto.js)
 ```
 
 ## Fornitori terzi e privacy

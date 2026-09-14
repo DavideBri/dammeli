@@ -41,20 +41,30 @@ Questi non si discutono senza una decisione esplicita dell'autore.
 ## 3. Crittografia
 
 ```
-master            32 byte da crypto.getRandomValues (usati 128 bit effettivi)
+master            16 byte da crypto.getRandomValues (128 bit)
                   vive solo nel fragment
 
-read_key      =   H("read"  | master)
-write_token   =   H("write" | master)
-id            =   troncamento a 64 bit di H("id" | read_key)
+read_key      =   troncamento a 16 byte di H("read"  | master)
+write_token   =   troncamento a 16 byte di H("write" | master)
+id            =   troncamento a 8 byte (64 bit) di H("id" | read_key)
 ```
 
-Cifratura: **AES-GCM**. Nonce casuale generato a ogni scrittura, salvato in
-chiaro accanto al ciphertext.
+`H` e' SHA-256. Il troncamento a 16 byte su `read_key` e `write_token` e'
+esplicito e voluto: la `master` ha 128 bit di entropia, quindi nessun
+derivato puo' contenerne di piu', anche se l'output grezzo di SHA-256 e' piu'
+lungo. Tenerli a 32 byte nel codice darebbe l'illusione di un margine di
+sicurezza che non esiste.
 
-L'id deriva dalla `read_key`, non dalla `master`. Cosi' chi riceve il link di
-sola lettura puo' calcolare l'id e scaricare il blob, ma non puo' risalire al
-`write_token`.
+Cifratura: **AES-GCM**, chiave = **`read_key`** (mai la `master` direttamente).
+Nonce casuale generato a ogni scrittura, salvato in chiaro accanto al
+ciphertext.
+
+La `read_key`, non la `master`, e' l'unico segreto necessario per leggere una
+pagina: da essa si derivano sia `id` (per localizzare il record) sia la chiave
+di cifratura (per decifrarlo). Chi ha solo il link di lettura ha solo la
+`read_key` nel fragment: puo' decifrare la pagina, ma non puo' risalire alla
+`master` ne' al `write_token`. Se l'implementazione usasse la `master` come
+chiave AES, i link di sola lettura smetterebbero di funzionare.
 
 ### Formato del link
 
