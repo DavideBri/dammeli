@@ -1,0 +1,15 @@
+[build]
+  command = "pnpm install --frozen-lockfile && pnpm build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# 'frame-ancestors' non e' rispettato dentro un <meta> CSP (vedi
+# astro.config.mjs): lo impostiamo qui come header HTTP, insieme a
+# X-Frame-Options come fallback per browser che non leggono frame-ancestors.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "frame-ancestors 'none'"
+    X-Frame-Options = "DENY"
