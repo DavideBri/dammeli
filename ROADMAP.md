@@ -49,15 +49,20 @@ link. Tutto in locale, nessun server.
 
 ## 0.3 API e persistenza
 
-- [ ] Interfaccia `store` con `Get` / `Put` / `Delete`
-- [ ] Implementazione Supabase
-- [ ] `POST`, `GET`, `PUT`, `DELETE /p`, `GET /healthz`
-- [ ] Validazione server-side del padding a 4096 byte
-- [ ] 404 uniforme, stesso corpo per tutti gli errori
-- [ ] 409 su id esistente, rifiuto su nonce ripetuto
+- [x] Interfaccia `store` con `Get` / `Put` / `Delete`
+- [x] Implementazione Supabase — scritta e integrata, non ancora testata
+      contro un progetto reale (manca ancora la connessione con credenziali
+      vere)
+- [x] `POST`, `GET`, `PUT`, `DELETE /p`, `GET /healthz`
+- [x] Validazione server-side del padding a 4096 byte
+- [x] 404 uniforme, stesso corpo per tutti gli errori
+- [x] 409 su id esistente, rifiuto su nonce ripetuto
 - [ ] **RLS verificata**: la tabella non deve essere leggibile in massa dal
-      client con la anon key
-- [ ] Body size limit sul reverse proxy
+      client con la anon key — policy scritta in `sql/schema.sql`, verifica
+      dal vivo rimandata a quando il progetto Supabase esiste
+- [x] Body size limit sul reverse proxy — Netlify non espone un limite
+      configurabile a livello di proxy/edge, applicato invece nella function
+      stessa (413 sopra 16 KB)
 
 **Criterio di uscita**: creo una pagina da curl, la rileggo, la modifico, la
 cancello. Il database contiene solo rumore.

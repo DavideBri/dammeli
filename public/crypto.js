@@ -83,6 +83,19 @@ export async function deriveId(readKey) {
 	return h.slice(0, ID_BYTES);
 }
 
+/**
+ * Hash del write_token da mandare al server (campo `wth` di POST /p, vedi
+ * CLAUDE.md sezione 6). Il server non vede mai il write_token vero finche'
+ * non serve autenticare una scrittura (campo `wt` di PUT/DELETE): fino ad
+ * allora conosce solo questo hash, esattamente come una password. Per
+ * questo non e' troncato: qui non stiamo derivando materiale crittografico
+ * con un budget di entropia da rispettare, e' solo un verificatore lato
+ * server.
+ */
+export async function deriveWriteTokenHash(writeToken) {
+	return sha256(writeToken);
+}
+
 /** Deriva {readKey, writeToken, id} dalla master. */
 export async function deriveAllFromMaster(master) {
 	const readKey = await deriveReadKey(master);

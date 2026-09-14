@@ -12,8 +12,8 @@ documentazione pubblica prima del lancio, vedi roadmap 1.5).
 
 ## Stato del progetto
 
-Primissimo stadio (`0.1`, scheletro verificato). Non ancora funzionante, non
-ancora usabile. Vedi [`ROADMAP.md`](./ROADMAP.md).
+In sviluppo (`0.3`, API e persistenza). Non ancora usabile: manca l'editor.
+Vedi [`ROADMAP.md`](./ROADMAP.md).
 
 `0.x.y` fino al lancio pubblico. Il MAJOR si alza solo quando un link creato
 con una versione precedente smetterebbe di funzionare, mai per altri motivi
@@ -52,6 +52,25 @@ pnpm build     # output in dist/
 pnpm preview   # serve dist/ in locale
 pnpm test      # test vector e vincoli crittografici (crypto.js)
 ```
+
+## API (`/p`)
+
+Implementata come [Netlify Functions](https://docs.netlify.com/functions/overview/)
+indipendenti (`netlify/functions/`), non come rotte Astro: il frontend resta
+`output: 'static'` per la CSP (vedi `CLAUDE.md` sezione 9), l'API e' un
+concetto separato per design — l'interfaccia `store` (`src/server/store/`)
+esiste apposta per essere sostituita in v2 senza toccare il resto.
+
+Per collegare Supabase in locale:
+
+```sh
+cp .env.example .env   # poi compila SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY
+```
+
+Le stesse variabili vanno impostate anche nelle Environment variables del
+sito su Netlify. Lo schema e la policy RLS sono in `sql/schema.sql`, da
+eseguire una volta nel SQL editor del progetto Supabase. Senza credenziali,
+`pnpm test` gira comunque: usa uno store in memoria al posto di Supabase.
 
 ## Fornitori terzi e privacy
 

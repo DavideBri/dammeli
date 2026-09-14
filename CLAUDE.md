@@ -173,6 +173,13 @@ DELETE /p/:id    cancella   body {wt}                     -> 204
 GET    /healthz                                           -> 200
 ```
 
+`wth` e `wt` non sono la stessa cosa: `wth` (write_token**_hash**, SHA-256 di
+`write_token`) e' cio' che il server conosce e persiste fin dalla creazione;
+`wt` (`write_token` vero) arriva solo su `PUT`/`DELETE` per autenticare la
+scrittura, e il server lo accetta solo se `SHA256(wt)` combacia con la `wth`
+salvata. Fino a quel momento il server non ha mai visto il `write_token`
+vero, solo il suo hash — esattamente come una password.
+
 Regole:
 
 - Il `write_token` va **nel body**, mai in header `Authorization` e mai in query

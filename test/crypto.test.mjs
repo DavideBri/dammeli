@@ -53,6 +53,12 @@ test('test vector v1: derivazione chiavi', async () => {
 	assert.equal(bytesToHex(readKey), '44322378db8b4f11f0b1dbdcb2e27051');
 	assert.equal(bytesToHex(writeToken), 'a02d5f09389fb3a97042d8ae97b6354a');
 	assert.equal(bytesToHex(id), '6437beaf9b555b60');
+
+	const writeTokenHash = await dammeli.deriveWriteTokenHash(writeToken);
+	assert.equal(
+		bytesToHex(writeTokenHash),
+		'b79817548ed6f238d065cbb2c72a16fdb8f82c37ba9124b39ac2fd25280196ac',
+	);
 });
 
 test('test vector v1: cifratura AES-GCM con nonce noto', async () => {
