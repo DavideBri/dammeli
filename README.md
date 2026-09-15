@@ -1,86 +1,86 @@
 # dammeli (damme.li)
 
-Pagina di pagamento cifrata end-to-end. Raccogli i tuoi metodi di pagamento in
-una pagina e condividi il link. Il server non puo' leggere nulla: riceve solo
-blob cifrati.
+End-to-end encrypted payment page. Collect your payment methods on a page
+and share its link. The server can't read anything: it only ever receives
+encrypted blobs.
 
-La chiave di cifratura vive esclusivamente nel fragment dell'URL (`#...`) e
-non lascia mai il browser: non viene mai inviata al server, non e' mai
-loggata. Il modello di sicurezza completo, con la crittografia usata e i suoi
-limiti, e' descritto in `CLAUDE.md` (verra' spostato in una pagina di
-documentazione pubblica prima del lancio, vedi roadmap 1.5).
+The encryption key lives exclusively in the URL fragment (`#...`) and never
+leaves the browser: it's never sent to the server, never logged. The full
+security model, including the cryptography used and its limits, is
+described in [`PLAN.md`](./PLAN.md) (will move to a public docs page before
+launch, see roadmap 1.5).
 
-## Stato del progetto
+## Project status
 
-In sviluppo (`0.3`, API e persistenza). Non ancora usabile: manca l'editor.
-Vedi [`ROADMAP.md`](./ROADMAP.md).
+In development (`0.3`, API and persistence). Not usable yet: the editor is
+still missing. See [`ROADMAP.md`](./ROADMAP.md).
 
-`0.x.y` fino al lancio pubblico. Il MAJOR si alza solo quando un link creato
-con una versione precedente smetterebbe di funzionare, mai per altri motivi
-(vedi `CLAUDE.md`, sezione 11).
+`0.x.y` until public launch. MAJOR only bumps when a link created with a
+previous version would stop working, never for any other reason (see
+[`PLAN.md`](./PLAN.md), section 11).
 
 ## Stack
 
-- [Astro](https://astro.build) in `output: 'static'`: nessun server-side
-  rendering, il sito compila in HTML statico.
-- Nessun framework JS lato client, nessun bundler per la crittografia.
-- Hosting: [Netlify](https://netlify.com), deploy automatico da questo repo.
-- Database (temporaneo, vedi nota migrazione in `CLAUDE.md`):
+- [Astro](https://astro.build) with `output: 'static'`: no server-side
+  rendering, the site compiles to static HTML.
+- No client-side JS framework, no bundler for the cryptography.
+- Hosting: [Netlify](https://netlify.com), automatic deploy from this repo.
+- Database (temporary, see migration note in `PLAN.md`):
   [Supabase](https://supabase.com).
 
 ## `public/crypto.js`
 
-Tutta la crittografia vive in un unico file dentro `public/`, che Astro copia
-nell'output di build **senza processarlo**: il file servito in produzione e'
-byte-identico a quello nel repo. Chiunque puo' confrontarlo riga per riga con
-questo repository, senza fidarsi di una build.
+All the cryptography lives in a single file inside `public/`, which Astro
+copies into the build output **without processing it**: the file served in
+production is byte-identical to the one in this repo. Anyone can diff it
+line by line against this repository, no need to trust a build.
 
-Hash SHA-256 del file, aggiornato a ogni release:
+SHA-256 hash of the file, updated with every release:
 
 ```
-e0874b944bc0a1d839d5988125a571c2815af26af7a03ac34a9b15e889721d31
+e8384541d98971e9acb0aa36add17a2f3e530eca354485a9289d58227aafc431
 ```
 
-## Sviluppo locale
+## Local development
 
-Richiede [pnpm](https://pnpm.io).
+Requires [pnpm](https://pnpm.io).
 
 ```sh
 pnpm install
 pnpm dev       # http://localhost:4321
 pnpm build     # output in dist/
-pnpm preview   # serve dist/ in locale
-pnpm test      # test vector e vincoli crittografici (crypto.js)
+pnpm preview   # serve dist/ locally
+pnpm test      # crypto test vector and constraints (crypto.js)
 ```
 
 ## API (`/p`)
 
-Implementata come [Netlify Functions](https://docs.netlify.com/functions/overview/)
-indipendenti (`netlify/functions/`), non come rotte Astro: il frontend resta
-`output: 'static'` per la CSP (vedi `CLAUDE.md` sezione 9), l'API e' un
-concetto separato per design — l'interfaccia `store` (`src/server/store/`)
-esiste apposta per essere sostituita in v2 senza toccare il resto.
+Implemented as independent [Netlify Functions](https://docs.netlify.com/functions/overview/)
+(`netlify/functions/`), not as Astro routes: the frontend stays
+`output: 'static'` for the CSP (see `PLAN.md` section 9), the API is a
+separate concern by design — the `store` interface (`src/server/store/`)
+exists precisely to be swapped out in v2 without touching anything else.
 
-Per collegare Supabase in locale:
+To connect Supabase locally:
 
 ```sh
-cp .env.example .env   # poi compila SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY
+cp .env.example .env   # then fill in SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY
 ```
 
-Le stesse variabili vanno impostate anche nelle Environment variables del
-sito su Netlify. Lo schema e la policy RLS sono in `sql/schema.sql`, da
-eseguire una volta nel SQL editor del progetto Supabase. Senza credenziali,
-`pnpm test` gira comunque: usa uno store in memoria al posto di Supabase.
+The same variables also need to be set in the site's Environment variables
+on Netlify. The schema and RLS policy are in `sql/schema.sql`, to be run
+once in the Supabase project's SQL editor. Without credentials, `pnpm test`
+still runs fine: it uses an in-memory store instead of Supabase.
 
-## Fornitori terzi e privacy
+## Third-party providers and privacy
 
-Netlify e Supabase sono fornitori americani: ricevono richieste HTTP e
-vedono solo blob cifrati illeggibili, mai chiavi ne' dati in chiaro. Una
-pagina privacy dedicata, con l'elenco completo dei fornitori e cosa vedono
-ciascuno, arriva con la beta privata (roadmap `0.9`).
+Netlify and Supabase are US providers: they receive HTTP requests and see
+only unreadable encrypted blobs, never keys or plaintext data. A dedicated
+privacy page, with the full list of providers and what each one sees,
+arrives with the private beta (roadmap `0.9`).
 
-## Licenza
+## License
 
-[AGPL-3.0](./LICENSE). Chi fa girare una versione modificata di questo
-codice come servizio di rete deve rendere disponibile il proprio codice
-sorgente agli utenti di quel servizio.
+[AGPL-3.0](./LICENSE). Anyone running a modified version of this code as a
+network service must make their source code available to that service's
+users.

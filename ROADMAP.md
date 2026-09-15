@@ -1,164 +1,169 @@
-# Roadmap dammeli
+# dammeli roadmap
 
-Regola di versionamento: il MAJOR si alza solo quando un link vecchio smette di
-funzionare. `0.x.y` fino al lancio pubblico.
-
----
-
-## 0.1 Scheletro verificato
-
-L'obiettivo non e' avere qualcosa che funziona, e' sapere se lo stack regge i
-vincoli. Se la CSP non si chiude, meglio scoprirlo adesso.
-
-- [x] Astro configurato: `output: 'static'`, `inlineStylesheets: 'never'`
-- [x] CSP nativa attiva e **verificata su pagina vuota**, console pulita, nessun
-      `unsafe-inline`
-- [x] `public/crypto.js` vuoto ma importato come modulo ES, verificato
-      byte-identico nel build output
-- [x] Deploy su Netlify da GitHub (dammeli.netlify.app) — dominio damme.li
-      ancora da collegare
-- [ ] Repo pubblico, licenza, README minimo — licenza e README fatti, repo
-      ancora privato
-
-**Criterio di uscita**: pagina bianca online su damme.li con CSP stretta e
-nessun errore in console.
+Versioning rule: MAJOR only bumps when an old link stops working.
+`0.x.y` until public launch.
 
 ---
 
-## 0.2 Crittografia
+## 0.1 Verified skeleton
 
-Il pezzo che non si puo' sbagliare. Da fare prima di qualunque interfaccia.
+The goal isn't to have something that works, it's to know whether the
+stack holds up under the constraints. If the CSP doesn't close cleanly,
+better to find out now.
 
-- [x] Generazione master key con `crypto.getRandomValues`
-- [x] Derivazione `read_key`, `write_token`, `id`
-- [x] Cifratura e decifratura AES-GCM con nonce nuovo a ogni scrittura
-- [x] Encoding e parsing del fragment `#<ver><tipo><chiave>`
-- [x] Padding a 4096 byte e sua rimozione
-- [x] **Test vector**: payload noto, chiave nota, ciphertext atteso. Serve a
-      garantire per sempre il vincolo V1
-- [x] Test: nonce mai ripetuto su scritture successive
-- [ ] Audit manuale: `location.hash` letto in un solo punto, mai in fetch, log,
-      title o redirect — non applicabile ancora: nessun punto dell'app legge
-      `location.hash` finche' non esiste un editor (0.4/0.5). `crypto.js` non
-      lo tocca per costruzione, verificato da un test automatico
+- [x] Astro configured: `output: 'static'`, `inlineStylesheets: 'never'`
+- [x] Native CSP active and **verified on an empty page**, clean console,
+      no `unsafe-inline`
+- [x] `public/crypto.js` empty but imported as an ES module, verified
+      byte-identical in the build output
+- [x] Deployed on Netlify from GitHub (dammeli.netlify.app) — the damme.li
+      domain still needs to be connected
+- [ ] Public repo, license, minimal README — license and README done, repo
+      still private
 
-**Criterio di uscita**: cifro un payload, ricarico la pagina, lo decifro dal
-link. Tutto in locale, nessun server.
+**Exit criterion**: a blank page online at damme.li with a strict CSP and
+no console errors.
 
 ---
 
-## 0.3 API e persistenza
+## 0.2 Cryptography
 
-- [x] Interfaccia `store` con `Get` / `Put` / `Delete`
-- [x] Implementazione Supabase — scritta e integrata, non ancora testata
-      contro un progetto reale (manca ancora la connessione con credenziali
-      vere)
+The piece that can't be gotten wrong. To be done before any interface.
+
+- [x] Master key generation with `crypto.getRandomValues`
+- [x] Derivation of `read_key`, `write_token`, `id`
+- [x] AES-GCM encryption and decryption with a fresh nonce on every write
+- [x] Encoding and parsing of the `#<ver><type><key>` fragment
+- [x] Padding to 4096 bytes and its removal
+- [x] **Test vector**: known payload, known key, expected ciphertext. Needed
+      to guarantee constraint V1 forever
+- [x] Test: nonce never repeats across successive writes
+- [ ] Manual audit: `location.hash` read in exactly one place, never in a
+      fetch, log, title, or redirect — not applicable yet: no part of the
+      app reads `location.hash` until an editor exists (0.4/0.5).
+      `crypto.js` never touches it by construction, enforced by an
+      automated test
+
+**Exit criterion**: encrypt a payload, reload the page, decrypt it from the
+link. All local, no server.
+
+---
+
+## 0.3 API and persistence
+
+- [x] `store` interface with `Get` / `Put` / `Delete`
+- [x] Supabase implementation — written and wired in, not yet tested
+      against a real project (still missing a live connection with real
+      credentials)
 - [x] `POST`, `GET`, `PUT`, `DELETE /p`, `GET /healthz`
-- [x] Validazione server-side del padding a 4096 byte
-- [x] 404 uniforme, stesso corpo per tutti gli errori
-- [x] 409 su id esistente, rifiuto su nonce ripetuto
-- [ ] **RLS verificata**: la tabella non deve essere leggibile in massa dal
-      client con la anon key — policy scritta in `sql/schema.sql`, verifica
-      dal vivo rimandata a quando il progetto Supabase esiste
-- [x] Body size limit sul reverse proxy — Netlify non espone un limite
-      configurabile a livello di proxy/edge, applicato invece nella function
-      stessa (413 sopra 16 KB)
+- [x] Server-side validation of the 4096-byte padding
+- [x] Uniform 404, same body for every error
+- [x] 409 on existing id, rejection on repeated nonce
+- [ ] **RLS verified**: the table must not be bulk-readable from the client
+      with the anon key — policy written in `sql/schema.sql`, live
+      verification deferred until the Supabase project exists
+- [x] Body size limit on the reverse proxy — Netlify doesn't expose a
+      configurable limit at the proxy/edge level, applied instead inside
+      the function itself (413 above 16 KB)
 
-**Criterio di uscita**: creo una pagina da curl, la rileggo, la modifico, la
-cancello. Il database contiene solo rumore.
+**Exit criterion**: create a page via curl, read it back, update it, delete
+it. The database contains only noise.
 
 ---
 
 ## 0.4 Editor
 
-- [ ] Card per Satispay, Revolut, PayPal, IBAN
-- [ ] Istruzioni operative per ogni metodo, con i nomi veri dei bottoni
-- [ ] Normalizzazione dell'incolla sporco (URL completi, IBAN con spazi)
-- [ ] Riga "non ce l'ho" con link, almeno su PayPal
-- [ ] Campo `holder` sull'IBAN con etichetta VoP corretta
-- [ ] Conferma visiva per metodo inserito
-- [ ] Sezione "altri metodi" con crypto
-- [ ] Riordino dei metodi (l'ordine e' informazione)
+- [ ] Cards for Satispay, Revolut, PayPal, IBAN
+- [ ] Operational instructions for each method, with the real button names
+- [ ] Normalization of messy pastes (full URLs, IBANs with spaces)
+- [ ] "I don't have one" line with a link, at least for PayPal
+- [ ] `holder` field on IBAN with the correct VoP label
+- [ ] Visual confirmation for each entered method
+- [ ] "Other methods" section with crypto
+- [ ] Reordering methods (order is information)
 
 ---
 
-## 0.5 Condivisione e ritorno
+## 0.5 Sharing and return visits
 
-- [ ] Pagina pubblica di sola lettura
-- [ ] QR generato in locale, libreria vendorizzata
-- [ ] Copia link, invio su WhatsApp
-- [ ] Avviso perdita link, sobrio e non allarmante
-- [ ] `localStorage` con i link di modifica
-- [ ] Schermata "le tue pagine" all'apertura di damme.li
-- [ ] Cancellazione pagina
+- [ ] Public read-only page
+- [ ] QR generated locally, vendored library
+- [ ] Copy link, send on WhatsApp
+- [ ] Lost-link warning, sober and non-alarming
+- [ ] `localStorage` with edit links
+- [ ] "Your pages" screen when opening damme.li
+- [ ] Page deletion
 
-**Criterio di uscita**: creo una pagina in meno di 20 secondi da telefono e un
-amico riesce a pagarmi.
-
----
-
-## 0.9 Beta privata
-
-- [ ] Pagina privacy con i fornitori dichiarati: chi sono, dove stanno, cosa
-      vedono
-- [ ] Hash SHA-256 di `crypto.js` pubblicato
-- [ ] Backup cifrato del database, su provider diverso
-- [ ] **Ripristino testato almeno una volta**
-- [ ] Alert sullo spazio disco
-- [ ] Dieci persone reali, meta' non tecniche
-- [ ] Verificare l'unica metrica che conta: quanti completano la creazione e
-      quanti ricevono davvero un pagamento
+**Exit criterion**: create a page in under 20 seconds from a phone and a
+friend can actually pay me.
 
 ---
 
-## 1.0 Lancio pubblico
+## 0.9 Private beta
 
-Il PoW e' blocker. Senza, un database riempito di spazzatura non e' ripulibile
-selettivamente, perche' non ci sono date e i blob sono illeggibili.
-
-- [ ] ALTCHA self-hosted con Argon2, difficolta' adattiva da configurazione
-- [ ] Interruttore globale: soglia di creazioni orarie che alza la difficolta'
-- [ ] Procedura di gestione abusi e contatto per segnalazioni
-- [ ] README completo con il modello di sicurezza spiegato
-- [ ] Annuncio: GDG Pisa, blog, Hacker News
-
----
-
-## 1.5 Documentazione e self-hosting
-
-- [ ] Spiegazione del modello crittografico, con il ragionamento sul perche' 128
-      bit e perche' niente link mnemonici
-- [ ] Threat model esplicito: cosa protegge e cosa no
-- [ ] Implementazione `store` per SQLite
-- [ ] Immagine Docker e `docker compose` funzionante
-- [ ] Guida al self-hosting, testata su UmbrelOS
-- [ ] Documentazione del formato del link e del payload, versione per versione
+- [ ] Privacy page with declared providers: who they are, where they're
+      based, what they see
+- [ ] SHA-256 hash of `crypto.js` published
+- [ ] Encrypted database backup, on a different provider
+- [ ] **Restore tested at least once**
+- [ ] Disk space alert
+- [ ] Ten real people, half non-technical
+- [ ] Verify the only metric that matters: how many complete page creation
+      and how many actually receive a payment
 
 ---
 
-## 2.0 Migrazione e handle pubblico
+## 1.0 Public launch
 
-Due cose separate che capitano nello stesso periodo.
+PoW is a blocker. Without it, a database filled with junk can't be cleaned
+up selectively, because there are no dates and the blobs are unreadable.
 
-**Migrazione infrastruttura**
-
-- [ ] VPS europeo, binario Go, SQLite
-- [ ] Nuova implementazione dell'interfaccia `store`, non riscrittura
-- [ ] Valutare build riproducibile e attestazione
-
-**Handle pubblico** (prodotto separato, non ibridare con la modalita' cifrata)
-
-- [ ] `damme.li/bruno`, contenuto deliberatamente non sensibile, mai IBAN
-- [ ] Lightning Address su `/.well-known/lnurlp/`
-- [ ] Record BIP-353 su `bruno.user._bitcoin-payment.damme.li`, DNSSEC attivo
-- [ ] Strategia anti-impersonificazione **decisa prima di scrivere codice**:
-      proof of control via DNS o GitHub, oppure firma DID / SD-JWT VC
+- [ ] Self-hosted ALTCHA with Argon2, adaptive difficulty from
+      configuration
+- [ ] Global switch: hourly-creation threshold that raises difficulty
+- [ ] Abuse-handling procedure and contact for reports
+- [ ] Complete README with the security model explained
+- [ ] Announcement: GDG Pisa, blog, Hacker News
 
 ---
 
-## Rimandato senza data
+## 1.5 Documentation and self-hosting
 
-- Scadenza con rinnovo alla lettura (richiede `expires_at` in chiaro)
-- Titolo della pagina, etichetta per metodo
-- Silent payments e derivazione xpub
-- Politica di retention dei backup
+- [ ] Explanation of the crypto model, with the reasoning behind 128 bit
+      and why no mnemonic links
+- [ ] Explicit threat model: what it protects and what it doesn't
+- [ ] `store` implementation for SQLite
+- [ ] Working Docker image and `docker compose`
+- [ ] Self-hosting guide, tested on UmbrelOS
+- [ ] Documentation of the link and payload format, version by version
+
+---
+
+## 2.0 Migration and public handle
+
+Two separate things that happen to land in the same period.
+
+**Infrastructure migration**
+
+- [ ] European VPS, Go binary, SQLite
+- [ ] New implementation of the `store` interface, not a rewrite
+- [ ] Evaluate reproducible builds and attestation
+
+**Public handle** (separate product, not to be hybridized with encrypted
+mode)
+
+- [ ] `damme.li/bruno`, deliberately non-sensitive content, never an IBAN
+- [ ] Lightning Address at `/.well-known/lnurlp/`
+- [ ] BIP-353 record at `bruno.user._bitcoin-payment.damme.li`, DNSSEC
+      enabled
+- [ ] Anti-impersonation strategy **decided before writing code**: proof
+      of control via DNS or GitHub, or DID / SD-JWT VC signing
+
+---
+
+## Deferred, no date
+
+- Expiry with renewal on read (requires `expires_at` in the clear)
+- Page title, per-method label
+- Silent payments and xpub derivation
+- Backup retention policy

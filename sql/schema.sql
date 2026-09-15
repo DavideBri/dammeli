@@ -1,27 +1,27 @@
--- Schema dammeli (CLAUDE.md sezione 4). Quattro colonne, niente altro: niente
--- created_at, expires_at, contatori o riferimenti all'utente.
+-- dammeli schema (PLAN.md section 4). Four columns, nothing else: no
+-- created_at, expires_at, counters, or references to the user.
 --
--- Da eseguire una volta nel SQL editor del progetto Supabase.
+-- Run once in the Supabase project's SQL editor.
 
 create table if not exists pages (
-	id                bigint primary key,       -- 64 bit con segno, derivato da read_key
+	id                bigint primary key,       -- 64 bit signed, derived from read_key
 	nonce             bytea not null,
-	ciphertext        bytea not null,            -- sempre esattamente 4096 byte, validato dal server
+	ciphertext        bytea not null,            -- always exactly 4096 bytes, validated by the server
 	write_token_hash  bytea not null
 );
 
--- RLS attiva e senza policy per anon/authenticated: la tabella non deve
--- essere leggibile in massa dal client con la anon key (checklist 0.3). Le
--- Netlify Functions in netlify/functions/ usano sempre la service role key,
--- che bypassa RLS by design — e' l'unico modo legittimo di accedere alla
--- tabella.
+-- RLS enabled with no policy for anon/authenticated: the table must not be
+-- bulk-readable from the client with the anon key (0.3 checklist). The
+-- Netlify Functions in netlify/functions/ always use the service role key,
+-- which bypasses RLS by design — it's the only legitimate way to access
+-- the table.
 alter table pages enable row level security;
 
--- Nessuna "create policy": deny-by-default per ogni ruolo che non sia il
--- service role. Verifica dopo il deploy:
+-- No "create policy": deny-by-default for every role other than the
+-- service role. Verify after deploying:
 --
 --   curl -s "$SUPABASE_URL/rest/v1/pages?select=id" \
 --     -H "apikey: $SUPABASE_ANON_KEY" \
 --     -H "authorization: Bearer $SUPABASE_ANON_KEY"
 --
--- Deve rispondere con un array vuoto `[]`, mai con righe vere.
+-- Must respond with an empty array `[]`, never with real rows.

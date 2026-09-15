@@ -22,7 +22,7 @@ function sha256Hex(bytes) {
 	return createHash('sha256').update(Buffer.from(bytes)).digest('hex');
 }
 
-/** Genera un set di campi validi e coerenti tra loro per una pagina nuova. */
+/** Generates a set of valid, mutually consistent fields for a new page. */
 function freshPage() {
 	const id = randomBytes(ID_BYTES);
 	const nonce = randomBytes(NONCE_BYTES);
@@ -37,11 +37,11 @@ function freshPage() {
 	};
 }
 
-// --- criterio di uscita 0.3: creo una pagina, la rileggo, la modifico, la
-// cancello, tutto tramite la stessa logica che le Netlify Functions
-// eseguono (l'equivalente di farlo da curl, senza dover far girare un
-// server per il test).
-test('criterio di uscita: crea, leggi, aggiorna, cancella', async () => {
+// --- 0.3 exit criterion: create a page, read it back, update it, delete
+// it, all through the same logic the Netlify Functions run (the
+// equivalent of doing it via curl, without needing a live server for the
+// test).
+test('exit criterion: create, read, update, delete', async () => {
 	const store = createMemoryStore();
 	const p = freshPage();
 
@@ -78,7 +78,7 @@ test('criterio di uscita: crea, leggi, aggiorna, cancella', async () => {
 	assert.equal(read3.status, 404);
 });
 
-test('POST su id esistente: 409, mai sovrascrive', async () => {
+test('POST on an existing id: 409, never overwrites', async () => {
 	const store = createMemoryStore();
 	const p = freshPage();
 	const create = () =>
@@ -87,19 +87,19 @@ test('POST su id esistente: 409, mai sovrascrive', async () => {
 	assert.equal((await create()).status, 201);
 	assert.equal((await create()).status, 409);
 
-	// il secondo POST non deve aver toccato nulla
+	// the second POST must not have touched anything
 	const read = await getPage(store, p.idHex);
 	assert.equal(read.body.nonce, p.nonceHex);
 });
 
-test('GET su id inesistente: 404 uniforme', async () => {
+test('GET on a nonexistent id: uniform 404', async () => {
 	const store = createMemoryStore();
 	const res = await getPage(store, hex(randomBytes(ID_BYTES)));
 	assert.equal(res.status, 404);
 	assert.deepEqual(res.body, { error: 'not_found' });
 });
 
-test('PUT/DELETE con write_token sbagliato: stesso 404 di id inesistente', async () => {
+test('PUT/DELETE with a wrong write_token: same 404 as a nonexistent id', async () => {
 	const store = createMemoryStore();
 	const p = freshPage();
 	await createPage(store, { id: p.idHex, nonce: p.nonceHex, ct: p.ctHex, wth: p.wthHex });
@@ -119,30 +119,30 @@ test('PUT/DELETE con write_token sbagliato: stesso 404 di id inesistente', async
 	assert.equal(badDelete.status, 404);
 	assert.deepEqual(badDelete.body, { error: 'not_found' });
 
-	// la pagina deve essere ancora li'
+	// the page must still be there
 	assert.equal((await getPage(store, p.idHex)).status, 200);
 });
 
-test('PUT con nonce identico al precedente: rifiutato', async () => {
+test('PUT with a nonce identical to the previous one: rejected', async () => {
 	const store = createMemoryStore();
 	const p = freshPage();
 	await createPage(store, { id: p.idHex, nonce: p.nonceHex, ct: p.ctHex, wth: p.wthHex });
 
 	const res = await updatePage(store, p.idHex, {
-		nonce: p.nonceHex, // stesso nonce della creazione
+		nonce: p.nonceHex, // same nonce as creation
 		ct: hex(randomBytes(CIPHERTEXT_BYTES)),
 		wt: p.wtHex,
 	});
 	assert.equal(res.status, 400);
 	assert.equal(res.body.error, 'nonce_reused');
 
-	// la pagina non deve essere stata toccata
+	// the page must not have been touched
 	const read = await getPage(store, p.idHex);
 	assert.equal(read.body.nonce, p.nonceHex);
 	assert.equal(read.body.ct, p.ctHex);
 });
 
-test('rifiuta ciphertext che non e\' esattamente 4096 byte', async () => {
+test('rejects a ciphertext that is not exactly 4096 bytes', async () => {
 	const store = createMemoryStore();
 	const p = freshPage();
 
@@ -165,7 +165,7 @@ test('rifiuta ciphertext che non e\' esattamente 4096 byte', async () => {
 	assert.equal((await getPage(store, p.idHex)).status, 404);
 });
 
-test('rifiuta campi non esadecimali o mancanti', async () => {
+test('rejects non-hex or missing fields', async () => {
 	const store = createMemoryStore();
 	const p = freshPage();
 
@@ -181,8 +181,8 @@ test('rifiuta campi non esadecimali o mancanti', async () => {
 	assert.equal(missing.status, 400);
 });
 
-test('id malformato nel path: 400, non 404', async () => {
+test('malformed id in the path: 400, not 404', async () => {
 	const store = createMemoryStore();
 	assert.equal((await getPage(store, 'zz')).status, 400);
-	assert.equal((await getPage(store, 'aabb')).status, 400); // lunghezza sbagliata
+	assert.equal((await getPage(store, 'aabb')).status, 400); // wrong length
 });

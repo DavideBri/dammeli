@@ -1,11 +1,11 @@
-// Encoding esadecimale usato sul filo dell'API (id, nonce, ciphertext,
-// write_token/write_token_hash). Scelto invece di base64 perche' l'id
-// compare nel path dell'URL (`GET /p/:id`): l'hex non ha caratteri che
-// richiedano percent-encoding, il base64 standard si'.
+// Hex encoding used on the API wire (id, nonce, ciphertext,
+// write_token/write_token_hash). Chosen over base64 because the id
+// appears in the URL path (`GET /p/:id`): hex has no characters that
+// need percent-encoding, standard base64 does.
 
 export function hexToBytes(hex) {
 	if (typeof hex !== 'string' || hex.length % 2 !== 0 || !/^[0-9a-f]*$/i.test(hex)) {
-		throw new Error('hex non valido');
+		throw new Error('invalid hex');
 	}
 	const bytes = new Uint8Array(hex.length / 2);
 	for (let i = 0; i < bytes.length; i++) {

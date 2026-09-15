@@ -2,9 +2,9 @@ import { createMemoryStore } from './memory-store.mjs';
 import { createSupabaseStore } from './supabase-store.mjs';
 
 /**
- * Sceglie l'implementazione dello store dalle variabili d'ambiente. In
- * assenza di credenziali Supabase usa lo store in memoria: comodo in
- * sviluppo locale, ma i dati non sopravvivono al riavvio della function.
+ * Picks the store implementation from environment variables. Without
+ * Supabase credentials it falls back to the in-memory store: convenient
+ * for local development, but data doesn't survive a function restart.
  */
 export function createStoreFromEnv(env = process.env) {
 	const url = env.SUPABASE_URL;

@@ -1,22 +1,22 @@
 import { createClient } from '@supabase/supabase-js';
 
 /**
- * Implementazione Supabase dell'interfaccia `store` (CLAUDE.md sezione 9).
- * Usa sempre la service role key: la tabella ha RLS attiva senza policy per
- * `anon`/`authenticated` (vedi sql/schema.sql), quindi solo questa chiave
- * puo' leggerla o scriverla. La anon key non deve mai arrivare qui.
+ * Supabase implementation of the `store` interface (PLAN.md section 9).
+ * Always uses the service role key: the table has RLS enabled with no
+ * policy for `anon`/`authenticated` (see sql/schema.sql), so only this
+ * key can read or write it. The anon key must never reach this file.
  *
- * `id` e' un Uint8Array(8) interpretato come intero a 64 bit con segno in
- * complemento a due (stessa convenzione di un `INTEGER PRIMARY KEY`
- * SQLite/Postgres bigint): non e' una conversione, e' semplicemente come
- * vengono letti quegli 8 byte per usarli in una colonna `bigint`.
+ * `id` is a Uint8Array(8) interpreted as a signed 64-bit two's-complement
+ * integer (the same convention as an `INTEGER PRIMARY KEY`/Postgres
+ * bigint): it's not a conversion, it's simply how those 8 bytes are read
+ * to use them in a `bigint` column.
  *
- * nonce/ciphertext/write_token_hash sono colonne `bytea`: PostgREST le
- * scambia in JSON come stringhe `\x<hex>`.
+ * nonce/ciphertext/write_token_hash are `bytea` columns: PostgREST
+ * exchanges them in JSON as `\x<hex>` strings.
  */
 export function createSupabaseStore({ url, serviceRoleKey, table = 'pages' }) {
 	if (!url || !serviceRoleKey) {
-		throw new Error('createSupabaseStore richiede url e serviceRoleKey');
+		throw new Error('createSupabaseStore requires url and serviceRoleKey');
 	}
 	const client = createClient(url, serviceRoleKey, {
 		auth: { persistSession: false },
@@ -39,11 +39,12 @@ export function createSupabaseStore({ url, serviceRoleKey, table = 'pages' }) {
 		},
 
 		async put(id, row) {
-			// Upsert: la regola dei 409-su-duplicato per POST /p vive nell'API
-			// layer (src/server/pages-api.mjs, get-then-put), non qui. La
-			// finestra di race residua e' accettata: due scritture concorrenti
-			// sullo stesso id richiederebbero la stessa master key, quindi non
-			// sono "aggressori diversi" ma lo stesso client che si duplica.
+			// Upsert: the 409-on-duplicate rule for POST /p lives in the API
+			// layer (src/server/pages-api.mjs, get-then-put), not here. The
+			// residual race window is accepted: two concurrent writes to the
+			// same id would require the same master key, so they aren't
+			// "different attackers" — they're the same client duplicating
+			// itself.
 			const { error } = await client.from(table).upsert({
 				id: idToPgBigint(id),
 				nonce: bytesToBytea(row.nonce),
@@ -71,7 +72,7 @@ function bytesToBytea(bytes) {
 
 function byteaToBytes(pgBytea) {
 	if (typeof pgBytea !== 'string' || !pgBytea.startsWith('\\x')) {
-		throw new Error(`formato bytea inatteso da Supabase: ${pgBytea}`);
+		throw new Error(`unexpected bytea format from Supabase: ${pgBytea}`);
 	}
 	return new Uint8Array(Buffer.from(pgBytea.slice(2), 'hex'));
 }

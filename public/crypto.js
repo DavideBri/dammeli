@@ -1,26 +1,26 @@
-// Crittografia di dammeli. Vedi CLAUDE.md sezione 3 per lo schema completo.
+// dammeli cryptography. See PLAN.md section 3 for the full scheme.
 //
-// Vincoli non negoziabili applicati qui (CLAUDE.md sezione 2):
-// C1 - la master vive solo nel fragment: questo file non la persiste altrove.
-// C2 - nessun accesso a `location`, `document`, `fetch` o `console` in questo
-//      file. E' verificato da un test automatico che ne scansiona il sorgente.
-// C3 - solo crypto.getRandomValues, mai Math.random.
-// C4 - ogni scrittura genera un nonce nuovo: la funzione pubblica encrypt()
-//      lo genera internamente e non accetta un nonce dall'esterno.
+// Non-negotiable constraints enforced here (PLAN.md section 2):
+// C1 - master lives only in the fragment: this file never persists it elsewhere.
+// C2 - no access to `location`, `document`, `fetch`, or `console` in this
+//      file. Enforced by an automated test that scans the source.
+// C3 - only crypto.getRandomValues, never Math.random.
+// C4 - every write generates a fresh nonce: the public encrypt() function
+//      generates it internally and doesn't accept a nonce from outside.
 
 const VERSION = '1';
 const TYPE_READ = 'r';
 const TYPE_WRITE = 'm';
 
 const MASTER_BYTES = 16; // 128 bit
-const DERIVED_KEY_BYTES = 16; // read_key e write_token: troncati a 128 bit
+const DERIVED_KEY_BYTES = 16; // read_key and write_token: truncated to 128 bit
 const ID_BYTES = 8; // 64 bit
-const GCM_NONCE_BYTES = 12; // 96 bit, dimensione raccomandata per AES-GCM
+const GCM_NONCE_BYTES = 12; // 96 bit, the recommended size for AES-GCM
 
 export const PAYLOAD_SIZE = 4096;
 const LENGTH_PREFIX_BYTES = 4;
 
-// --- util generiche ---
+// --- generic utilities ---
 
 function utf8(str) {
 	return new TextEncoder().encode(str);
@@ -52,7 +52,7 @@ export function toBase64Url(bytes) {
 
 export function fromBase64Url(str) {
 	if (!/^[A-Za-z0-9_-]*$/.test(str)) {
-		throw new Error('base64url non valido');
+		throw new Error('invalid base64url');
 	}
 	const padded = str.replace(/-/g, '+').replace(/_/g, '/');
 	const padding = padded.length % 4 === 0 ? '' : '='.repeat(4 - (padded.length % 4));
@@ -62,7 +62,7 @@ export function fromBase64Url(str) {
 	return bytes;
 }
 
-// --- generazione e derivazione chiavi ---
+// --- key generation and derivation ---
 
 export function generateMaster() {
 	return crypto.getRandomValues(new Uint8Array(MASTER_BYTES));
@@ -84,19 +84,19 @@ export async function deriveId(readKey) {
 }
 
 /**
- * Hash del write_token da mandare al server (campo `wth` di POST /p, vedi
- * CLAUDE.md sezione 6). Il server non vede mai il write_token vero finche'
- * non serve autenticare una scrittura (campo `wt` di PUT/DELETE): fino ad
- * allora conosce solo questo hash, esattamente come una password. Per
- * questo non e' troncato: qui non stiamo derivando materiale crittografico
- * con un budget di entropia da rispettare, e' solo un verificatore lato
- * server.
+ * Hash of the write_token to send to the server (the `wth` field of
+ * POST /p, see PLAN.md section 6). The server never sees the real
+ * write_token until it needs to authenticate a write (the `wt` field of
+ * PUT/DELETE): until then it only knows this hash, exactly like a
+ * password. It's therefore not truncated: this isn't deriving crypto
+ * material with an entropy budget to respect, it's just a server-side
+ * verifier.
  */
 export async function deriveWriteTokenHash(writeToken) {
 	return sha256(writeToken);
 }
 
-/** Deriva {readKey, writeToken, id} dalla master. */
+/** Derives {readKey, writeToken, id} from master. */
 export async function deriveAllFromMaster(master) {
 	const readKey = await deriveReadKey(master);
 	const writeToken = await deriveWriteToken(master);
@@ -104,7 +104,7 @@ export async function deriveAllFromMaster(master) {
 	return { readKey, writeToken, id };
 }
 
-// --- cifratura AES-GCM (chiave = read_key, mai la master) ---
+// --- AES-GCM encryption (key = read_key, never master) ---
 
 async function importAesKey(readKey) {
 	return crypto.subtle.importKey('raw', readKey, { name: 'AES-GCM' }, false, [
@@ -114,8 +114,9 @@ async function importAesKey(readKey) {
 }
 
 /**
- * Cifra `plaintext` con un nonce nuovo generato qui dentro (vincolo C4: il
- * chiamante non puo' fornire ne' riusare un nonce tramite questa funzione).
+ * Encrypts `plaintext` with a fresh nonce generated in here (constraint
+ * C4: the caller can neither supply nor reuse a nonce through this
+ * function).
  */
 export async function encrypt(readKey, plaintext) {
 	const nonce = crypto.getRandomValues(new Uint8Array(GCM_NONCE_BYTES));
@@ -124,9 +125,9 @@ export async function encrypt(readKey, plaintext) {
 }
 
 /**
- * Variante a basso livello con nonce esplicito. Esiste solo per costruire
- * test vector riproducibili (vedi test/crypto.test.mjs): non va usata per
- * scritture reali, che devono sempre passare da encrypt().
+ * Low-level variant with an explicit nonce. Exists only to build
+ * reproducible test vectors (see test/crypto.test.mjs): must not be used
+ * for real writes, which must always go through encrypt().
  */
 export async function encryptWithNonce(readKey, nonce, plaintext) {
 	const key = await importAesKey(readKey);
@@ -140,17 +141,17 @@ export async function decrypt(readKey, nonce, ciphertext) {
 	return new Uint8Array(plaintext);
 }
 
-// --- padding a lunghezza fissa (CLAUDE.md sezione 4) ---
+// --- fixed-length padding (PLAN.md section 4) ---
 
 /**
- * Padda `data` a PAYLOAD_SIZE byte fissi: 4 byte di lunghezza (big-endian) +
- * dati + zeri di riempimento. La lunghezza variabile del payload originale
- * rivelerebbe quanti metodi contiene una pagina, quindi va nascosta.
+ * Pads `data` to a fixed PAYLOAD_SIZE bytes: 4 length bytes (big-endian) +
+ * data + zero filler. The original payload's variable length would reveal
+ * how many methods a page contains, so it must be hidden.
  */
 export function pad(data) {
 	const maxLen = PAYLOAD_SIZE - LENGTH_PREFIX_BYTES;
 	if (data.length > maxLen) {
-		throw new Error(`payload troppo grande: ${data.length} byte, massimo ${maxLen}`);
+		throw new Error(`payload too large: ${data.length} bytes, max ${maxLen}`);
 	}
 	const out = new Uint8Array(PAYLOAD_SIZE);
 	new DataView(out.buffer).setUint32(0, data.length, false);
@@ -160,55 +161,55 @@ export function pad(data) {
 
 export function unpad(padded) {
 	if (padded.length !== PAYLOAD_SIZE) {
-		throw new Error(`lunghezza padded non valida: ${padded.length}, attesi ${PAYLOAD_SIZE}`);
+		throw new Error(`invalid padded length: ${padded.length}, expected ${PAYLOAD_SIZE}`);
 	}
 	const length = new DataView(padded.buffer, padded.byteOffset, padded.byteLength).getUint32(
 		0,
 		false,
 	);
 	if (length > PAYLOAD_SIZE - LENGTH_PREFIX_BYTES) {
-		throw new Error('lunghezza dichiarata nel padding non valida');
+		throw new Error('invalid length declared in padding');
 	}
 	return padded.slice(LENGTH_PREFIX_BYTES, LENGTH_PREFIX_BYTES + length);
 }
 
-// --- fragment: #<versione><tipo><chiave base64url> ---
+// --- fragment: #<version><type><base64url key> ---
 
 export function encodeFragment(type, keyBytes) {
 	if (type !== TYPE_READ && type !== TYPE_WRITE) {
-		throw new Error(`tipo fragment sconosciuto: ${type}`);
+		throw new Error(`unknown fragment type: ${type}`);
 	}
 	return `${VERSION}${type}${toBase64Url(keyBytes)}`;
 }
 
 /**
- * Non legge `location.hash`: riceve la stringa gia' estratta dal chiamante.
- * Questo e' l'unico punto del progetto che deve sapere come e' fatto un
- * fragment (vincolo C2: location.hash va letto in un solo punto altrove
- * nell'app, mai qui dentro).
+ * Does not read `location.hash`: receives the string already extracted by
+ * the caller. This is the only place in the project that needs to know
+ * how a fragment is shaped (constraint C2: location.hash must be read in
+ * exactly one place elsewhere in the app, never in here).
  */
 export function parseFragment(fragment) {
 	const raw = fragment.startsWith('#') ? fragment.slice(1) : fragment;
 	if (raw.length < 3) {
-		throw new Error('fragment troppo corto');
+		throw new Error('fragment too short');
 	}
 	const version = raw[0];
 	const type = raw[1];
 	if (version !== VERSION) {
-		throw new Error(`versione fragment non supportata: ${version}`);
+		throw new Error(`unsupported fragment version: ${version}`);
 	}
 	if (type !== TYPE_READ && type !== TYPE_WRITE) {
-		throw new Error(`tipo fragment sconosciuto: ${type}`);
+		throw new Error(`unknown fragment type: ${type}`);
 	}
 	const keyBytes = fromBase64Url(raw.slice(2));
 	const expectedBytes = type === TYPE_WRITE ? MASTER_BYTES : DERIVED_KEY_BYTES;
 	if (keyBytes.length !== expectedBytes) {
-		throw new Error('lunghezza chiave nel fragment non valida');
+		throw new Error('invalid key length in fragment');
 	}
 	return { version, type, keyBytes };
 }
 
-/** Crea una pagina nuova: master fresca e tutti i suoi derivati. */
+/** Creates a new page: a fresh master and all its derived values. */
 export async function createPage() {
 	const master = generateMaster();
 	const { readKey, writeToken, id } = await deriveAllFromMaster(master);
@@ -223,10 +224,10 @@ export async function createPage() {
 }
 
 /**
- * Ricostruisce lo stato disponibile a partire da un fragment gia' estratto.
- * Da un link di modifica si ottiene tutto; da un link di lettura solo
- * readKey e id (mai writeToken: e' l'intero punto del design, vedi
- * CLAUDE.md sezione 3).
+ * Reconstructs the available state from an already-extracted fragment. A
+ * modify link yields everything; a read link yields only readKey and id
+ * (never writeToken: that's the entire point of the design, see PLAN.md
+ * section 3).
  */
 export async function loadFromFragment(fragment) {
 	const { type, keyBytes } = parseFragment(fragment);

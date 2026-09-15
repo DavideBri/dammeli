@@ -1,15 +1,15 @@
 import { createStoreFromEnv } from '../../src/server/store/index.mjs';
 import { createPage, getPage, updatePage, deletePage } from '../../src/server/pages-api.mjs';
 
-// Un solo store per invocazione fredda: se e' Supabase, il client interno
-// gestisce gia' il pooling delle connessioni HTTP.
+// A single store per cold start: if it's Supabase, the internal client
+// already handles HTTP connection pooling.
 const store = createStoreFromEnv();
 
-// Netlify non espone un limite di dimensione del body configurabile a
-// livello di reverse proxy/edge (a differenza di nginx): lo applichiamo qui,
-// prima di leggere il body. Il payload piu' grande legittimo (POST, con
-// ciphertext a 4096 byte in hex = 8192 caratteri) sta comodamente sotto 16
-// KB; oltre e' solo spreco di banda o abuso, non traffico reale.
+// Netlify doesn't expose a body size limit configurable at the reverse
+// proxy/edge level (unlike nginx): we apply it here, before reading the
+// body. The largest legitimate payload (POST, with a 4096-byte ciphertext
+// in hex = 8192 characters) comfortably sits under 16 KB; beyond that it's
+// just wasted bandwidth or abuse, not real traffic.
 const MAX_BODY_BYTES = 16 * 1024;
 
 function bodyTooLarge(req) {
