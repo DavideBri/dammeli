@@ -52,16 +52,14 @@ link. All local, no server.
 ## 0.3 API and persistence
 
 - [x] `store` interface with `Get` / `Put` / `Delete`
-- [x] Supabase implementation — written and wired in, not yet tested
-      against a real project (still missing a live connection with real
-      credentials)
+- [x] Supabase implementation — connected to the real project, live on
+      Netlify
 - [x] `POST`, `GET`, `PUT`, `DELETE /p`, `GET /healthz`
 - [x] Server-side validation of the 4096-byte padding
 - [x] Uniform 404, same body for every error
 - [x] 409 on existing id, rejection on repeated nonce
-- [ ] **RLS verified**: the table must not be bulk-readable from the client
-      with the anon key — policy written in `sql/schema.sql`, live
-      verification deferred until the Supabase project exists
+- [x] **RLS verified**: confirmed live against the real Supabase project —
+      `GET /rest/v1/pages?select=id` with the anon key returns `[]`
 - [x] Body size limit on the reverse proxy — Netlify doesn't expose a
       configurable limit at the proxy/edge level, applied instead inside
       the function itself (413 above 16 KB)
@@ -92,18 +90,29 @@ it. The database contains only noise.
 
 ## 0.5 Sharing and return visits
 
-- [ ] Public read-only page — not built yet: the read link works and
-      round-trips end-to-end (verified: create, fetch, decrypt), but
-      there's no page rendering it for a recipient yet
-- [ ] QR generated locally, vendored library
+- [x] Public read-only page — fetches, decrypts, and renders the methods
+      for a recipient opening a read link; unstyled-but-real, same
+      minimal Tailwind pass as the editor. No deep link for
+      Satispay/Revolut (no verified URL scheme, same honesty bar as the
+      editor's placeholder instructions) — copy-to-clipboard works for
+      every method regardless
+- [x] QR generated locally, vendored library — `qrcode-generator` by
+      Kazuhiko Arase (MIT), vendored in `src/vendor/`, rendered as inline
+      SVG, no CDN
 - [x] Copy link, send on WhatsApp
 - [x] Lost-link warning, sober and non-alarming
 - [x] `localStorage` with edit links
-- [ ] "Your pages" screen when opening damme.li
-- [ ] Page deletion
+- [x] "Your pages" screen when opening damme.li — shown above the editor
+      when there's something to show, hidden entirely otherwise; the
+      editor stays immediately usable either way
+- [x] Page deletion — from the "Your pages" list, derives the write_token
+      back from the saved edit link to authenticate `DELETE /p/:id`
 
 **Exit criterion**: create a page in under 20 seconds from a phone and a
-friend can actually pay me.
+friend can actually pay me. Met for the core loop — create, share, a
+recipient can see and copy every method — modulo the two placeholder
+instruction texts (0.4) and the still-private repo / undocked domain
+(0.1).
 
 ---
 
