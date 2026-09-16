@@ -1,11 +1,13 @@
-// "Your pages" section shown on the home screen when returning visits
-// have something saved (PLAN.md section 8). Not a screen that blocks the
-// editor — it's hidden entirely when there's nothing to show, and the
-// editor stays the immediately usable default either way ("the home page
-// is already the editor").
+// "Your pages" screen: the list of pages this device has created (PLAN.md
+// section 8). Reachable from the editor's bookmark icon and from the
+// "Created" screen's ghost button — never the immediately usable default,
+// which stays the editor ("the home page is already the editor").
 
 import { createLocalPagesStore } from '../lib/local-pages.mjs';
 import * as api from '../lib/api.mjs';
+import { t } from '../lib/i18n.mjs';
+import { showScreen } from './screens.mjs';
+import * as ui from './ui.mjs';
 
 function shortId(id) {
 	return id.slice(0, 8);
@@ -21,76 +23,102 @@ async function deriveWriteAuth(editLink) {
 	return { idHex: dammeli.toHex(loaded.id), wtHex: dammeli.toHex(loaded.writeToken) };
 }
 
-function wireCopy(button, text) {
-	button.addEventListener('click', async () => {
-		await navigator.clipboard.writeText(text);
-		const original = button.textContent;
-		button.textContent = 'Copied!';
-		setTimeout(() => {
-			button.textContent = original;
-		}, 1500);
-	});
-}
-
-function renderRow(page, onDeleted) {
+function renderRow(page, lang, onDeleted) {
 	const row = document.createElement('li');
-	row.className =
-		'flex items-center justify-between gap-2 rounded-lg border border-neutral-200 bg-white p-3';
+	row.className = 'ds-page-row';
 
-	const link = document.createElement('a');
-	link.href = page.editLink;
-	link.className = 'truncate font-mono text-sm text-neutral-900 underline underline-offset-2';
-	link.textContent = `Page …${shortId(page.id)}`;
-	row.appendChild(link);
+	const main = document.createElement('a');
+	main.className = 'ds-page-row__main';
+	main.href = page.editLink;
+	const name = document.createElement('span');
+	name.className = 'ds-page-row__name';
+	name.textContent = page.title || t(lang, 'myPages.rowFallbackName', { id: shortId(page.id) });
+	const url = document.createElement('span');
+	url.className = 'ds-page-row__url';
+	url.textContent = page.editLink;
+	main.append(name, url);
+	row.appendChild(main);
 
 	const actions = document.createElement('div');
-	actions.className = 'flex shrink-0 gap-2';
+	actions.className = 'ds-page-row__actions';
 
-	const copyButton = document.createElement('button');
-	copyButton.type = 'button';
-	copyButton.className = 'rounded-md border border-neutral-300 px-2 py-1 text-sm hover:bg-neutral-100';
-	copyButton.textContent = 'Copy link';
-	wireCopy(copyButton, page.editLink);
-	actions.appendChild(copyButton);
+	const copyBtn = document.createElement('button');
+	copyBtn.type = 'button';
+	copyBtn.className = 'ds-page-row__action';
+	copyBtn.setAttribute('aria-label', t(lang, 'created.copyEditLink'));
+	copyBtn.title = t(lang, 'created.copyEditLink');
+	copyBtn.appendChild(ui.icon('copy', { size: 18, strokeWidth: 2 }));
+	copyBtn.addEventListener('click', async (event) => {
+		event.preventDefault();
+		await navigator.clipboard.writeText(page.editLink);
+		const original = copyBtn.innerHTML;
+		copyBtn.replaceChildren(ui.icon('check', { size: 18, strokeWidth: 2 }));
+		setTimeout(() => {
+			copyBtn.innerHTML = original;
+		}, 1500);
+	});
+	actions.appendChild(copyBtn);
 
-	const deleteButton = document.createElement('button');
-	deleteButton.type = 'button';
-	deleteButton.className =
-		'rounded-md border border-red-300 px-2 py-1 text-sm text-red-700 hover:bg-red-50';
-	deleteButton.textContent = 'Delete';
-	deleteButton.addEventListener('click', async () => {
-		if (!confirm('Delete this page? This cannot be undone.')) return;
-		deleteButton.disabled = true;
-		deleteButton.textContent = 'Deleting…';
+	const deleteBtn = document.createElement('button');
+	deleteBtn.type = 'button';
+	deleteBtn.className = 'ds-page-row__action';
+	deleteBtn.setAttribute('aria-label', t(lang, 'common.delete'));
+	deleteBtn.title = t(lang, 'common.delete');
+	deleteBtn.appendChild(ui.icon('trash', { size: 18, strokeWidth: 2 }));
+	deleteBtn.addEventListener('click', async (event) => {
+		event.preventDefault();
+		if (!confirm(t(lang, 'common.deleteConfirm'))) return;
+		deleteBtn.disabled = true;
 		try {
 			const { idHex, wtHex } = await deriveWriteAuth(page.editLink);
 			await api.deletePage(idHex, { wt: wtHex });
 			onDeleted(page.id);
 		} catch {
-			deleteButton.disabled = false;
-			deleteButton.textContent = 'Delete';
-			alert("Couldn't delete this page right now. Please try again.");
+			deleteBtn.disabled = false;
+			alert(t(lang, 'common.deleteError'));
 		}
 	});
-	actions.appendChild(deleteButton);
+	actions.appendChild(deleteBtn);
 
 	row.appendChild(actions);
 	return row;
 }
 
-export function initYourPages(root, { store = createLocalPagesStore() } = {}) {
+export function initYourPages(root, lang, { store = createLocalPagesStore(), onBack, onNew } = {}) {
 	const list = root.querySelector('[data-your-pages-list]');
+
+	const { header } = ui.topBar({
+		title: t(lang, 'myPages.title'),
+		onBack,
+		backLabel: t(lang, 'nav.back'),
+		right: [ui.iconButton({ iconName: 'plus', label: t(lang, 'nav.newPage'), onClick: onNew })],
+	});
+	root.querySelector('[data-topbar-your-pages]').replaceChildren(header);
+	root.querySelector('[data-your-pages-notice]').replaceChildren(
+		ui.notice({ iconName: 'info', body: t(lang, 'myPages.notice') }),
+	);
 
 	function render() {
 		const pages = store.list();
 		if (pages.length === 0) {
-			root.hidden = true;
+			const empty = document.createElement('div');
+			empty.className = 'ds-page-row-empty';
+			const iconWrap = document.createElement('span');
+			iconWrap.className = 'ds-page-row-empty__icon';
+			iconWrap.appendChild(ui.icon('bookmark', { size: 28 }));
+			empty.appendChild(iconWrap);
+			const text = document.createElement('p');
+			text.className = 'ds-page-row-empty__text';
+			text.textContent = t(lang, 'myPages.emptyText');
+			empty.appendChild(text);
+			empty.appendChild(ui.button({ variant: 'secondary', text: t(lang, 'myPages.emptyCta'), onClick: onNew }));
+			list.replaceChildren();
+			list.appendChild(empty);
 			return;
 		}
-		root.hidden = false;
 		list.replaceChildren(
 			...pages.map((page) =>
-				renderRow(page, (id) => {
+				renderRow(page, lang, (id) => {
 					store.remove(id);
 					render();
 				}),
@@ -99,4 +127,5 @@ export function initYourPages(root, { store = createLocalPagesStore() } = {}) {
 	}
 
 	render();
+	return { showAndRefresh: () => { render(); showScreen('your-pages'); } };
 }

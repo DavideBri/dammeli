@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+@import "./ds/base.css";
+@import "./ds/colors.css";
+@import "./ds/spacing.css";
+@import "./ds/shape.css";
+@import "./ds/typography.css";
+@import "./ds/components.css";

@@ -1,0 +1,11 @@
+:root{
+  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-8:32px;--s-10:40px;--s-12:48px;--s-16:64px;
+  --gutter:20px;            /* margine laterale su telefono */
+  --stack-tight:var(--s-3);
+  --stack:var(--s-4);
+  --stack-loose:var(--s-8);
+  --field-h:52px;           /* altezza input/target minima su mobile */
+  --tap-min:48px;
+  --measure:34ch /* @kind spacing */;           /* larghezza massima di lettura */
+  --page-max:480px;         /* colonna mobile-first, centrata su desktop */
+}

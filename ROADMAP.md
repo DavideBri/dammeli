@@ -73,10 +73,10 @@ it. The database contains only noise.
 
 - [x] Cards for Satispay, Revolut, PayPal, IBAN — structure only, unstyled
       (styling deferred to Tailwind, see stack notes)
-- [ ] Operational instructions for each method, with the real button names —
-      PayPal and IBAN done; Satispay and Revolut are still placeholder text
-      (`TODO(content)` in the markup), needs verifying against the live
-      apps
+- [x] Operational instructions for each method, with the real button names —
+      Satispay and Revolut's placeholder text replaced in 0.6 by the
+      design system's own copy (`src/lib/i18n.mjs`, `methods.*.hint`),
+      still worth a pass against the live apps before public launch
 - [x] Normalization of messy pastes (full URLs, IBANs with spaces) — unit
       tested in `test/normalize.test.mjs`
 - [x] "I don't have one" line with a link, at least for PayPal
@@ -85,6 +85,8 @@ it. The database contains only noise.
 - [x] "Other methods" section with crypto
 - [x] Reordering methods (order is information) — among the four main
       cards; the crypto entry isn't reorderable relative to them yet
+      (superseded in 0.6: the design system's tile-grid picker has no
+      manual reordering, see PLAN.md section 5)
 
 ---
 
@@ -110,9 +112,34 @@ it. The database contains only noise.
 
 **Exit criterion**: create a page in under 20 seconds from a phone and a
 friend can actually pay me. Met for the core loop — create, share, a
-recipient can see and copy every method — modulo the two placeholder
-instruction texts (0.4) and the still-private repo / undocked domain
-(0.1).
+recipient can see and copy every method — modulo the still-private repo /
+undocked domain (0.1).
+
+---
+
+## 0.6 Design system and localization
+
+- [x] Claude Design export adopted: tokens, component classes, hard
+      shadows, warm-paper palette, single-red-accent rule (PLAN.md
+      "Design system (0.6)")
+- [x] Editor rebuilt around the design system's tile-grid method picker
+      (tap a tile, a popover opens below it) — replaces the always-open
+      cards and their manual up/down reordering (see PLAN.md section 5
+      for the "order is information" tradeoff this made)
+- [x] Page-title field ("Per cosa?" / "What for?")
+- [x] "Created" screen (badge, QR framed with a hard shadow, keep-the-link
+      notice, ghost actions), separated from the always-visible editor
+- [x] Custom-drawn marks per payment method, no third-party logos
+      anywhere including Satispay (`src/vendor/marks.mjs`); vendored
+      Lucide icon subset (`src/vendor/icons.mjs`)
+- [x] Dark mode: `prefers-color-scheme` default, explicit per-device
+      override via a top-bar toggle (`src/lib/theme.mjs`)
+- [x] Bilingual UI, Italian and English: browser-language detection,
+      explicit per-device override via a top-bar toggle
+      (`src/lib/i18n.mjs`)
+- [x] Every inline `style=""`/`element.style.*` removed from the app in
+      the process — CSP's `style-src` has no hash mechanism for those,
+      unlike `<style>` blocks and stylesheets
 
 ---
 

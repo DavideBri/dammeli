@@ -1,6 +1,5 @@
 ---
 import '../styles/global.css';
-import { LOGOS } from '../vendor/logos.mjs';
 ---
 <html lang="it">
 	<head>
@@ -10,236 +9,94 @@ import { LOGOS } from '../vendor/logos.mjs';
 		<link rel="icon" href="data:," />
 		<script type="module" src="/crypto.js"></script>
 	</head>
-	<body class="min-h-screen bg-neutral-50 text-neutral-900">
-		<main class="mx-auto max-w-md px-4 py-8">
-			<h1 class="text-2xl font-semibold">dammeli</h1>
+	<body>
+		<div id="app">
+			<section class="ds-page" data-screen="editor" hidden>
+				<div data-topbar-editor></div>
+				<div class="ds-body">
+					<div class="editor-intro">
+						<div data-editor-kicker></div>
+						<h1 data-editor-h1></h1>
+						<p data-editor-subtitle class="editor-subtitle"></p>
+					</div>
 
-			<section class="mt-8" data-your-pages hidden>
-				<h2 class="text-lg font-semibold">Your pages</h2>
-				<ul class="mt-4 flex flex-col gap-2" data-your-pages-list></ul>
-			</section>
+					<div data-title-field></div>
 
-			<form id="editor" class="mt-8" hidden>
-				<p class="text-neutral-600">Collect your payment methods, get one link to share.</p>
-
-				<label class="mt-6 block text-sm font-medium" for="page-title">Page title (optional)</label>
-				<input
-					id="page-title"
-					type="text"
-					data-role="title"
-					autocomplete="off"
-					placeholder="e.g. Bruno's payments"
-					class="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 focus:border-neutral-500 focus:outline-none"
-				/>
-
-				<div id="methods" class="mt-8 flex flex-col gap-4">
-					<fieldset class="method-card rounded-lg border border-neutral-200 bg-white p-4" data-method="satispay">
-						<legend class="px-1 font-medium">Satispay</legend>
-						<!--
-							TODO(content): placeholder instructions. PLAN.md section 7
-							requires the real, current button names from inside the
-							Satispay app, not a guess — needs verifying against the
-							live app before this ships.
-						-->
-						<p class="text-sm text-neutral-600">Open the Satispay app and find your @handle.</p>
-						<label class="mt-3 block text-sm font-medium" for="satispay-value">Your Satispay handle</label>
-						<input
-							id="satispay-value"
-							type="text"
-							data-role="value"
-							autocomplete="off"
-							placeholder="e.g. brunoxyz"
-							class="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 focus:border-neutral-500 focus:outline-none"
-						/>
-						<p class="confirm mt-2 text-sm text-emerald-700" data-confirm hidden></p>
-						<div class="reorder mt-3 flex gap-2">
-							<button type="button" data-move="up" aria-label="Move Satispay up" class="rounded-md border border-neutral-300 px-2 py-1 text-sm hover:bg-neutral-100">&uarr;</button>
-							<button type="button" data-move="down" aria-label="Move Satispay down" class="rounded-md border border-neutral-300 px-2 py-1 text-sm hover:bg-neutral-100">&darr;</button>
+					<div class="editor-methods-section">
+						<div class="editor-methods-heading-row">
+							<h3 data-editor-methods-heading></h3>
+							<div data-filled-count></div>
 						</div>
-					</fieldset>
-
-					<fieldset class="method-card rounded-lg border border-neutral-200 bg-white p-4" data-method="revolut">
-						<legend class="flex items-center gap-2 px-1 font-medium">
-							<span class="h-4 w-4 [&>svg]:h-4 [&>svg]:w-4" aria-hidden="true" set:html={LOGOS.revolut} />
-							Revolut
-						</legend>
-						<!--
-							Source: Revolut's own help article on Revtags
-							(help.revolut.com, .../transfers/internal-transfers/username-payments/revtags/),
-							found via search — "tap your profile icon in the
-							top-left corner, your Revtag is displayed under your
-							name". Not independently fetched and re-checked
-							against the live page, egress to help.revolut.com is
-							blocked from this environment.
-						-->
-						<p class="text-sm text-neutral-600">Open Revolut, tap your profile icon in the top left: your @username (your "Revtag") is right below your name.</p>
-						<label class="mt-3 block text-sm font-medium" for="revolut-value">Your Revolut username</label>
-						<input
-							id="revolut-value"
-							type="text"
-							data-role="value"
-							autocomplete="off"
-							placeholder="e.g. brunoxyz"
-							class="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 focus:border-neutral-500 focus:outline-none"
-						/>
-						<p class="confirm mt-2 text-sm text-emerald-700" data-confirm hidden></p>
-						<div class="reorder mt-3 flex gap-2">
-							<button type="button" data-move="up" aria-label="Move Revolut up" class="rounded-md border border-neutral-300 px-2 py-1 text-sm hover:bg-neutral-100">&uarr;</button>
-							<button type="button" data-move="down" aria-label="Move Revolut down" class="rounded-md border border-neutral-300 px-2 py-1 text-sm hover:bg-neutral-100">&darr;</button>
+						<div>
+							<div class="ds-method-grid__buttons" data-method-tiles></div>
+							<div data-method-popover-wrap></div>
 						</div>
-					</fieldset>
+					</div>
 
-					<fieldset class="method-card rounded-lg border border-neutral-200 bg-white p-4" data-method="paypal">
-						<legend class="flex items-center gap-2 px-1 font-medium">
-							<span class="h-4 w-4 [&>svg]:h-4 [&>svg]:w-4" aria-hidden="true" set:html={LOGOS.paypal} />
-							PayPal
-						</legend>
-						<p class="text-sm text-neutral-600">Paste your PayPal.me link, or just your handle.</p>
-						<label class="mt-3 block text-sm font-medium" for="paypal-value">Your PayPal.me link or handle</label>
-						<input
-							id="paypal-value"
-							type="text"
-							data-role="value"
-							autocomplete="off"
-							placeholder="e.g. paypal.me/brunoxyz"
-							class="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 focus:border-neutral-500 focus:outline-none"
-						/>
-						<p class="mt-2 text-sm text-neutral-600">Don't have one yet? <a class="text-neutral-900 underline underline-offset-2" href="https://www.paypal.com/paypalme/" target="_blank" rel="noopener noreferrer">Create a PayPal.me link</a>.</p>
-						<p class="confirm mt-2 text-sm text-emerald-700" data-confirm hidden></p>
-						<div class="reorder mt-3 flex gap-2">
-							<button type="button" data-move="up" aria-label="Move PayPal up" class="rounded-md border border-neutral-300 px-2 py-1 text-sm hover:bg-neutral-100">&uarr;</button>
-							<button type="button" data-move="down" aria-label="Move PayPal down" class="rounded-md border border-neutral-300 px-2 py-1 text-sm hover:bg-neutral-100">&darr;</button>
-						</div>
-					</fieldset>
-
-					<fieldset class="method-card rounded-lg border border-neutral-200 bg-white p-4" data-method="iban">
-						<legend class="px-1 font-medium">IBAN</legend>
-						<p class="text-sm text-neutral-600">Spaces are fine, we'll clean it up.</p>
-						<label class="mt-3 block text-sm font-medium" for="iban-value">IBAN</label>
-						<input
-							id="iban-value"
-							type="text"
-							data-role="value"
-							autocomplete="off"
-							placeholder="IT60 X054 2811 1010 0000 0123 456"
-							class="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 focus:border-neutral-500 focus:outline-none"
-						/>
-						<label class="mt-3 block text-sm font-medium" for="iban-holder">Account holder, exactly as it appears at your bank</label>
-						<p class="mt-1 text-xs text-neutral-500">
-							Banks now check this name against the IBAN (Verification of Payee). A mismatch can block the transfer.
-						</p>
-						<input
-							id="iban-holder"
-							type="text"
-							data-role="holder"
-							autocomplete="off"
-							placeholder="Full name as registered"
-							class="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 focus:border-neutral-500 focus:outline-none"
-						/>
-						<p class="confirm mt-2 text-sm text-emerald-700" data-confirm hidden></p>
-						<div class="reorder mt-3 flex gap-2">
-							<button type="button" data-move="up" aria-label="Move IBAN up" class="rounded-md border border-neutral-300 px-2 py-1 text-sm hover:bg-neutral-100">&uarr;</button>
-							<button type="button" data-move="down" aria-label="Move IBAN down" class="rounded-md border border-neutral-300 px-2 py-1 text-sm hover:bg-neutral-100">&darr;</button>
-						</div>
-					</fieldset>
+					<p data-editor-footnote class="editor-footnote"></p>
+					<p data-create-error class="ds-field__error" hidden></p>
 				</div>
-
-				<details id="other-methods" class="mt-4 rounded-lg border border-neutral-200 bg-white p-4">
-					<summary class="cursor-pointer font-medium">Other methods</summary>
-					<fieldset class="method-card mt-3" data-method="crypto">
-						<legend class="flex items-center gap-2 px-1 font-medium">
-							<span class="h-4 w-4 [&>svg]:h-4 [&>svg]:w-4" aria-hidden="true" set:html={LOGOS.bitcoin} />
-							Crypto
-						</legend>
-						<label class="mt-3 block text-sm font-medium" for="crypto-type">Type</label>
-						<select
-							id="crypto-type"
-							data-role="type"
-							class="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 focus:border-neutral-500 focus:outline-none"
-						>
-							<option value="bitcoin">Bitcoin</option>
-						</select>
-						<label class="mt-3 block text-sm font-medium" for="crypto-value">Address</label>
-						<input
-							id="crypto-value"
-							type="text"
-							data-role="value"
-							autocomplete="off"
-							placeholder="bc1... or sp1..."
-							class="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 focus:border-neutral-500 focus:outline-none"
-						/>
-						<p class="confirm mt-2 text-sm text-emerald-700" data-confirm hidden></p>
-					</fieldset>
-				</details>
-
-				<p class="mt-4 text-sm text-red-700" data-create-error hidden></p>
-				<button
-					type="button"
-					data-create
-					class="mt-4 w-full rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-700"
-				>
-					Create
-				</button>
-			</form>
-
-			<section
-				class="mt-8 rounded-lg border border-neutral-200 bg-white p-4"
-				data-success
-				hidden
-			>
-				<h2 class="font-medium">Your page is live</h2>
-				<p class="mt-1 text-sm text-neutral-600">Share this link so people can pay you:</p>
-				<p class="mt-2 break-all rounded-md bg-neutral-100 p-2 font-mono text-sm" data-read-link></p>
-				<div class="mt-3 flex flex-wrap gap-2">
-					<button
-						type="button"
-						data-copy-link
-						class="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-700"
-					>
-						Copy link
-					</button>
-					<a
-						data-whatsapp-link
-						target="_blank"
-						rel="noopener noreferrer"
-						class="rounded-md border border-neutral-300 px-4 py-2 text-sm font-medium hover:bg-neutral-100"
-					>
-						Send on WhatsApp
-					</a>
-				</div>
-
-				<div class="mt-4 inline-block rounded-lg border border-neutral-200 p-2" data-qr></div>
-
-				<p class="mt-6 text-sm text-neutral-600">
-					This is the only way back in to edit this page later. We saved it on this device, but
-					it's worth keeping a copy somewhere safe too.
-				</p>
-				<p class="mt-2 break-all rounded-md bg-neutral-100 p-2 font-mono text-sm" data-edit-link></p>
-				<button
-					type="button"
-					data-copy-edit-link
-					class="mt-2 rounded-md border border-neutral-300 px-4 py-2 text-sm font-medium hover:bg-neutral-100"
-				>
-					Copy edit link
-				</button>
-			</section>
-
-			<section class="mt-1" data-viewer hidden>
-				<p class="text-sm text-neutral-600" data-viewer-state="loading" hidden>Loading&hellip;</p>
-				<p
-					class="rounded-lg border border-neutral-200 bg-white p-4 text-sm text-neutral-600"
-					data-viewer-state="error"
-					hidden
-				>
-					This page doesn't exist, or the link is incomplete. If you just received it, ask
-					whoever sent it to check they copied the whole thing.
-				</p>
-				<div data-viewer-state="loaded" hidden>
-					<h2 class="text-lg font-semibold" data-page-title>How to pay</h2>
-					<div class="mt-4 flex flex-col gap-4" data-methods></div>
+				<div class="ds-sticky">
+					<button type="button" class="ds-btn ds-btn--primary ds-btn--lg ds-btn--full" data-create disabled></button>
 				</div>
 			</section>
-		</main>
+
+			<section class="ds-page" data-screen="created" hidden>
+				<div data-topbar-created></div>
+				<div class="ds-body ds-body--lg-gap">
+					<div class="created-intro">
+						<div data-created-badge></div>
+						<h2 data-created-title></h2>
+						<p class="created-url" data-read-link></p>
+					</div>
+
+					<div class="created-actions">
+						<div data-copy-link-btn></div>
+						<div data-whatsapp-btn></div>
+					</div>
+
+					<div class="ds-card ds-card--sunken created-qr-card">
+						<div class="created-qr-frame" data-qr></div>
+						<div data-qr-hint></div>
+					</div>
+
+					<div data-keep-link-notice></div>
+
+					<div class="created-ghost-row">
+						<div data-view-public-btn></div>
+						<div data-created-your-pages-btn></div>
+					</div>
+
+					<p class="created-edit-link" data-edit-link hidden></p>
+					<div data-copy-edit-link-btn></div>
+				</div>
+			</section>
+
+			<section class="ds-page" data-screen="your-pages" hidden>
+				<div data-topbar-your-pages></div>
+				<div class="ds-body ds-body--flush">
+					<ul data-your-pages-list class="your-pages-list"></ul>
+					<div class="your-pages-notice-wrap" data-your-pages-notice></div>
+				</div>
+			</section>
+
+			<section class="ds-page" data-screen="viewer" hidden>
+				<div data-topbar-viewer></div>
+				<div class="ds-body ds-body--lg-gap">
+					<p data-viewer-state="loading" hidden></p>
+					<div data-viewer-state="error" hidden></div>
+					<div data-viewer-state="loaded" hidden class="viewer-loaded">
+						<div class="viewer-heading">
+							<div data-page-asks hidden></div>
+							<h1 class="viewer-title" data-page-title></h1>
+						</div>
+						<div data-methods class="viewer-methods"></div>
+						<div data-iban-holder-card hidden></div>
+						<p class="viewer-footer" data-viewer-footer></p>
+					</div>
+				</div>
+			</section>
+		</div>
 		<script type="module">
 			import { boot } from '../scripts/app.mjs';
 			boot();

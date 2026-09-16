@@ -2,7 +2,10 @@
 // DOM-building here, no fetch/decrypt: src/scripts/app.mjs does that and
 // hands this file the already-decrypted methods array.
 
-import { LOGOS } from '../vendor/logos.mjs';
+import { t } from '../lib/i18n.mjs';
+import * as ui from './ui.mjs';
+
+const KNOWN_TYPES = new Set(['satispay', 'revolut', 'paypal', 'iban']);
 
 const METHOD_LABELS = {
 	satispay: 'Satispay',
@@ -19,86 +22,68 @@ export function methodLabel(type) {
 /**
  * Only for methods whose link format is solid enough to trust blindly on
  * a payment page. Satispay/Revolut deep links are deliberately left out:
- * same honesty bar as the editor's instructions (see index.astro) — no
- * verified current URL scheme for those two, and a wrong link here is
- * worse than no link at all.
+ * same honesty bar as the editor's instructions — no verified current URL
+ * scheme for those two, and a wrong link here is worse than no link at all.
  */
 export function buildDirectLink(method) {
 	if (method.type === 'paypal') return `https://paypal.me/${encodeURIComponent(method.value)}`;
-	if (method.type === 'bitcoin') return `bitcoin:${method.value}`;
+	if (method.type?.toLowerCase() === 'bitcoin') return `bitcoin:${method.value}`;
 	return null;
 }
 
-function valueRow(label, value) {
-	const p = document.createElement('p');
-	p.className = 'mt-1 text-sm text-neutral-600';
-	const strong = document.createElement('span');
-	strong.className = 'font-mono text-neutral-900 break-all';
-	strong.textContent = value;
-	p.append(`${label}: `, strong);
-	return p;
+function truncate(value, length) {
+	return value.length <= length ? value : `${value.slice(0, length)}…`;
 }
 
-function copyButton(value) {
-	const button = document.createElement('button');
-	button.type = 'button';
-	button.className =
-		'rounded-md border border-neutral-300 px-3 py-1.5 text-sm hover:bg-neutral-100';
-	button.textContent = 'Copy';
-	button.addEventListener('click', async () => {
-		await navigator.clipboard.writeText(value);
-		const original = button.textContent;
-		button.textContent = 'Copied!';
+function renderMethodCard(method, lang) {
+	const isKnown = KNOWN_TYPES.has(method.type);
+	const tileType = isKnown ? method.type : 'crypto';
+	const label = isKnown ? t(lang, `methods.${method.type}.label`) : t(lang, 'methods.crypto.label');
+	const note = isKnown ? method.value : `${method.type} · ${truncate(method.value, 10)}`;
+	const directLink = buildDirectLink(method);
+	const action = directLink ? t(lang, 'common.open') : t(lang, 'common.copy');
+
+	const btn = document.createElement('button');
+	btn.type = 'button';
+	btn.className = 'ds-pay-btn';
+	btn.appendChild(ui.methodTile({ type: tileType, size: 48 }));
+
+	const info = document.createElement('span');
+	info.className = 'ds-pay-btn__info';
+	const labelSpan = document.createElement('span');
+	labelSpan.className = 'ds-pay-btn__label';
+	labelSpan.textContent = label;
+	const noteSpan = document.createElement('span');
+	noteSpan.className = 'ds-pay-btn__note';
+	noteSpan.textContent = note;
+	info.append(labelSpan, noteSpan);
+	btn.appendChild(info);
+
+	const actionSpan = document.createElement('span');
+	actionSpan.className = 'ds-pay-btn__action';
+	const actionText = document.createElement('span');
+	actionText.textContent = action;
+	actionSpan.appendChild(actionText);
+	actionSpan.appendChild(ui.icon('arrow-up-right', { size: 15, strokeWidth: 2.5 }));
+	btn.appendChild(actionSpan);
+
+	btn.addEventListener('click', async () => {
+		if (directLink) {
+			window.open(directLink, '_blank', 'noopener,noreferrer');
+			return;
+		}
+		await navigator.clipboard.writeText(method.value);
+		actionText.textContent = t(lang, 'common.copied');
 		setTimeout(() => {
-			button.textContent = original;
+			actionText.textContent = action;
 		}, 1500);
 	});
-	return button;
+
+	return btn;
 }
 
-function renderMethodCard(method) {
-	const card = document.createElement('div');
-	card.className = 'rounded-lg border border-neutral-200 bg-white p-4';
-
-	const title = document.createElement('h3');
-	title.className = 'flex items-center gap-2 font-medium';
-	if (LOGOS[method.type]) {
-		const icon = document.createElement('span');
-		icon.className = 'h-4 w-4 [&>svg]:h-4 [&>svg]:w-4';
-		icon.setAttribute('aria-hidden', 'true');
-		icon.innerHTML = LOGOS[method.type];
-		title.appendChild(icon);
-	}
-	title.append(methodLabel(method.type));
-	card.appendChild(title);
-
-	if (method.type === 'iban' && method.holder) {
-		card.appendChild(valueRow('Account holder', method.holder));
-	}
-	card.appendChild(valueRow(method.type === 'iban' ? 'IBAN' : 'Handle', method.value));
-
-	const actions = document.createElement('div');
-	actions.className = 'mt-3 flex flex-wrap gap-2';
-	actions.appendChild(copyButton(method.value));
-
-	const directLink = buildDirectLink(method);
-	if (directLink) {
-		const a = document.createElement('a');
-		a.href = directLink;
-		a.target = '_blank';
-		a.rel = 'noopener noreferrer';
-		a.className =
-			'rounded-md bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-neutral-700';
-		a.textContent = `Open in ${methodLabel(method.type)}`;
-		actions.appendChild(a);
-	}
-
-	card.appendChild(actions);
-	return card;
-}
-
-export function renderMethods(container, methods) {
-	container.replaceChildren(...methods.map(renderMethodCard));
+export function renderMethods(container, methods, lang) {
+	container.replaceChildren(...methods.map((method) => renderMethodCard(method, lang)));
 }
 
 /** Shows exactly one `[data-viewer-state="<state>"]` child, hides the rest. */

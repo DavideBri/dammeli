@@ -143,8 +143,21 @@ user.**
 }
 ```
 
-- **Array, not object**: order is information, the user puts their
-  preferred method first.
+- **Array, not object**: order is information — the viewer always renders
+  methods in array order, so a saved page from before the 0.6 redesign
+  still displays in whatever custom order its creator chose.
+  - The redesigned editor (0.6, the dammeli design system's fixed
+    tile-grid picker) always emits satispay, revolut, paypal, iban, then
+    the one free-form "other methods" slot, in that fixed order — the
+    manual up/down reordering UI is gone. Accepted consequence of
+    adopting the design system as given; nothing stops a future editor
+    from writing a different order into the same array.
+- The free-form "other methods" slot's `type` is now whatever label the
+  user typed (e.g. `"Bitcoin"`, `"Monero"`), not a value from a fixed
+  list — `methodLabel()`/the viewer fall back to displaying the type
+  string itself for anything it doesn't recognize as one of the four main
+  methods. `buildDirectLink()` still special-cases `type` matching
+  `"bitcoin"` case-insensitively for the BIP21 `bitcoin:` deep link.
 - **`value` holds only the handle, never the full URL.** If Revolut
   changes its URL format, a handle only needs a deploy; a saved URL would
   leave thousands of broken, unreadable blobs.
@@ -296,6 +309,47 @@ every release.
   The header-via-adapter route remains a future option if additional
   defense in depth is ever needed.
 - QR generated locally, vendored library in the repo, never from a CDN.
+- **No inline `style=""` attributes, and no script-set `element.style.*`,
+  anywhere.** CSP's `style-src` only gets hashes for real stylesheet
+  content (Astro's own `<style>`/CSS handling); it has no equivalent for
+  attribute-based styles, so any inline style is a silent console error
+  and a broken layout in a strict-CSP browser. Every dynamic per-instance
+  choice (a method's tint, a tile's size, a popover's arrow position) is a
+  small, fixed set of CSS classes picked at runtime, never a computed
+  style value — see `src/styles/ds/components.css`.
+
+### Design system (0.6)
+
+The visual language (warm-paper background, hard non-blurred shadows,
+mono/uppercase "receipt" labels, a single red accent element per screen,
+mandatory dark mode) comes from a Claude Design export, translated by
+hand from React + inline styles into plain CSS classes (`:hover`/`:active`
+instead of JS-tracked mouse state) plus vanilla-JS DOM builders
+(`src/scripts/ui.mjs`). Design tokens are copied verbatim into
+`src/styles/ds/*.css`.
+
+**No third-party logos anywhere**, including Satispay's: every payment
+method gets a small geometric mark drawn for this project instead of a
+real brand logo (`src/vendor/marks.mjs`), and icons are a vendored subset
+of Lucide (ISC license, `src/vendor/icons.mjs`). Satispay never gets a
+real logo either way, so there's no missing-asset gap to track.
+
+Theme: `prefers-color-scheme` picks the default; an explicit choice
+(`src/lib/theme.mjs`) overrides it via `data-theme` on `<html>`, saved
+per-device in `localStorage`. Same per-device pattern as "your pages" —
+no account, so nothing to sync it to.
+
+### Localization (0.6)
+
+The UI is bilingual, Italian and English (`src/lib/i18n.mjs`): a
+hand-written `{it, en}` dictionary with `{{placeholder}}` substitution,
+not a library — two languages and no plurals don't justify one. Detection
+is the browser's own `navigator.languages`, defaulting to Italian; an
+explicit choice from the top bar's language toggle overrides it, saved
+per-device in `localStorage`, same as the theme. Switching reloads the
+page rather than re-rendering every string in place — simpler, and the
+editor's in-progress state is local-only anyway (nothing saved server-side
+until "Create"/"Save changes" is pressed).
 
 ### Migration note
 
