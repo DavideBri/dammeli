@@ -8,5 +8,96 @@
 		<link rel="icon" href="data:," />
 		<script type="module" src="/crypto.js"></script>
 	</head>
-	<body></body>
+	<body>
+		<main>
+			<h1>dammeli</h1>
+			<p>Collect your payment methods, get one link to share.</p>
+
+			<form id="editor">
+				<div id="methods">
+					<fieldset class="method-card" data-method="satispay">
+						<legend>Satispay</legend>
+						<!--
+							TODO(content): placeholder instructions. PLAN.md section 7
+							requires the real, current button names from inside the
+							Satispay app, not a guess — needs verifying against the
+							live app before this ships.
+						-->
+						<p class="instructions">Open the Satispay app and find your @handle.</p>
+						<label for="satispay-value">Your Satispay handle</label>
+						<input id="satispay-value" type="text" data-role="value" autocomplete="off" placeholder="e.g. brunoxyz" />
+						<p class="confirm" data-confirm hidden></p>
+						<div class="reorder">
+							<button type="button" data-move="up" aria-label="Move Satispay up">&uarr;</button>
+							<button type="button" data-move="down" aria-label="Move Satispay down">&darr;</button>
+						</div>
+					</fieldset>
+
+					<fieldset class="method-card" data-method="revolut">
+						<legend>Revolut</legend>
+						<!-- TODO(content): same as above, needs the real current steps. -->
+						<p class="instructions">Open Revolut, tap your name in the top left: your @username is right below.</p>
+						<label for="revolut-value">Your Revolut username</label>
+						<input id="revolut-value" type="text" data-role="value" autocomplete="off" placeholder="e.g. brunoxyz" />
+						<p class="confirm" data-confirm hidden></p>
+						<div class="reorder">
+							<button type="button" data-move="up" aria-label="Move Revolut up">&uarr;</button>
+							<button type="button" data-move="down" aria-label="Move Revolut down">&darr;</button>
+						</div>
+					</fieldset>
+
+					<fieldset class="method-card" data-method="paypal">
+						<legend>PayPal</legend>
+						<p class="instructions">Paste your PayPal.me link, or just your handle.</p>
+						<label for="paypal-value">Your PayPal.me link or handle</label>
+						<input id="paypal-value" type="text" data-role="value" autocomplete="off" placeholder="e.g. paypal.me/brunoxyz" />
+						<p class="dont-have">
+							Don't have one yet?
+							<a href="https://www.paypal.com/paypalme/" target="_blank" rel="noopener noreferrer">Create a PayPal.me link</a>.
+						</p>
+						<p class="confirm" data-confirm hidden></p>
+						<div class="reorder">
+							<button type="button" data-move="up" aria-label="Move PayPal up">&uarr;</button>
+							<button type="button" data-move="down" aria-label="Move PayPal down">&darr;</button>
+						</div>
+					</fieldset>
+
+					<fieldset class="method-card" data-method="iban">
+						<legend>IBAN</legend>
+						<p class="instructions">Spaces are fine, we'll clean it up.</p>
+						<label for="iban-value">IBAN</label>
+						<input id="iban-value" type="text" data-role="value" autocomplete="off" placeholder="IT60 X054 2811 1010 0000 0123 456" />
+						<label for="iban-holder">Account holder, exactly as it appears at your bank</label>
+						<p class="hint">
+							Banks now check this name against the IBAN (Verification of Payee). A mismatch can block the transfer.
+						</p>
+						<input id="iban-holder" type="text" data-role="holder" autocomplete="off" placeholder="Full name as registered" />
+						<p class="confirm" data-confirm hidden></p>
+						<div class="reorder">
+							<button type="button" data-move="up" aria-label="Move IBAN up">&uarr;</button>
+							<button type="button" data-move="down" aria-label="Move IBAN down">&darr;</button>
+						</div>
+					</fieldset>
+				</div>
+
+				<details id="other-methods">
+					<summary>Other methods</summary>
+					<fieldset class="method-card" data-method="crypto">
+						<legend>Crypto</legend>
+						<label for="crypto-type">Type</label>
+						<select id="crypto-type" data-role="type">
+							<option value="bitcoin">Bitcoin</option>
+						</select>
+						<label for="crypto-value">Address</label>
+						<input id="crypto-value" type="text" data-role="value" autocomplete="off" placeholder="bc1... or sp1..." />
+						<p class="confirm" data-confirm hidden></p>
+					</fieldset>
+				</details>
+			</form>
+		</main>
+		<script type="module">
+			import { initEditor } from '../scripts/editor.mjs';
+			initEditor(document.getElementById('editor'));
+		</script>
+	</body>
 </html>

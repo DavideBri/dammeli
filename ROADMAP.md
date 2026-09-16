@@ -73,14 +73,20 @@ it. The database contains only noise.
 
 ## 0.4 Editor
 
-- [ ] Cards for Satispay, Revolut, PayPal, IBAN
-- [ ] Operational instructions for each method, with the real button names
-- [ ] Normalization of messy pastes (full URLs, IBANs with spaces)
-- [ ] "I don't have one" line with a link, at least for PayPal
-- [ ] `holder` field on IBAN with the correct VoP label
-- [ ] Visual confirmation for each entered method
-- [ ] "Other methods" section with crypto
-- [ ] Reordering methods (order is information)
+- [x] Cards for Satispay, Revolut, PayPal, IBAN — structure only, unstyled
+      (styling deferred to Tailwind, see stack notes)
+- [ ] Operational instructions for each method, with the real button names —
+      PayPal and IBAN done; Satispay and Revolut are still placeholder text
+      (`TODO(content)` in the markup), needs verifying against the live
+      apps
+- [x] Normalization of messy pastes (full URLs, IBANs with spaces) — unit
+      tested in `test/normalize.test.mjs`
+- [x] "I don't have one" line with a link, at least for PayPal
+- [x] `holder` field on IBAN with the correct VoP label
+- [x] Visual confirmation for each entered method
+- [x] "Other methods" section with crypto
+- [x] Reordering methods (order is information) — among the four main
+      cards; the crypto entry isn't reorderable relative to them yet
 
 ---
 
