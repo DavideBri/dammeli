@@ -2,6 +2,8 @@
 // DOM-building here, no fetch/decrypt: src/scripts/app.mjs does that and
 // hands this file the already-decrypted methods array.
 
+import { LOGOS } from '../vendor/logos.mjs';
+
 const METHOD_LABELS = {
 	satispay: 'Satispay',
 	revolut: 'Revolut',
@@ -59,8 +61,14 @@ function renderMethodCard(method) {
 	card.className = 'rounded-lg border border-neutral-200 bg-white p-4';
 
 	const title = document.createElement('h3');
-	title.className = 'font-medium';
-	title.textContent = methodLabel(method.type);
+	title.className = 'flex items-center gap-2 font-medium';
+	if (LOGOS[method.type]) {
+		const icon = document.createElement('span');
+		icon.className = 'h-4 w-4 [&>svg]:h-4 [&>svg]:w-4';
+		icon.innerHTML = LOGOS[method.type];
+		title.appendChild(icon);
+	}
+	title.append(methodLabel(method.type));
 	card.appendChild(title);
 
 	if (method.type === 'iban' && method.holder) {
