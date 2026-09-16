@@ -87,6 +87,12 @@ test('v1 test vector: fragment', async () => {
 	assert.equal(dammeli.encodeFragment('r', readKey), '1rRDIjeNuLTxHwsdvcsuJwUQ');
 });
 
+test('toHex/fromHex: round trip and match the wire format used by the API', () => {
+	const master = hexToBytes('000102030405060708090a0b0c0d0e0f');
+	assert.equal(dammeli.toHex(master), '000102030405060708090a0b0c0d0e0f');
+	assert.deepEqual(dammeli.fromHex(dammeli.toHex(master)), master);
+});
+
 // --- constraint C4: a fresh nonce on every write.
 test('C4: encrypt() never repeats a nonce across successive writes', async () => {
 	const master = dammeli.generateMaster();
@@ -111,7 +117,8 @@ test('C3: crypto.js does not use Math.random', () => {
 });
 
 test('padding: round trip and fixed length', () => {
-	for (const text of ['', 'a', 'x'.repeat(4092), 'hello dammeli']) {
+	const maxLen = dammeli.PAYLOAD_SIZE - 4; // 4 length-prefix bytes
+	for (const text of ['', 'a', 'x'.repeat(maxLen), 'hello dammeli']) {
 		const data = new TextEncoder().encode(text);
 		const padded = dammeli.pad(data);
 		assert.equal(padded.length, dammeli.PAYLOAD_SIZE);

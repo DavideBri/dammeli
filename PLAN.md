@@ -114,6 +114,13 @@ user.**
 - The ciphertext is **padded to a fixed 4096 bytes**. Variable length would
   reveal how many methods each page contains. Padding is validated by the
   server, the client isn't trusted.
+  - That 4096 is the size of what actually lands in this column — the
+    *stored* ciphertext, AES-GCM's 16-byte auth tag included. The client
+    pads the *plaintext* to 4080 bytes before encrypting, precisely so
+    that 4080 + 16 = 4096. Get this wrong (pad to 4096 and then encrypt)
+    and every real ciphertext comes out 16 bytes over, and the server
+    rejects it — this happened once already, see the regression test in
+    `test/integration.test.mjs`.
 - Accepted consequence: if the database gets filled with junk, it can't be
   cleaned up selectively. Mitigation: PoW is a blocker for public launch.
 

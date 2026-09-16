@@ -16,8 +16,15 @@ const MASTER_BYTES = 16; // 128 bit
 const DERIVED_KEY_BYTES = 16; // read_key and write_token: truncated to 128 bit
 const ID_BYTES = 8; // 64 bit
 const GCM_NONCE_BYTES = 12; // 96 bit, the recommended size for AES-GCM
+const GCM_TAG_BYTES = 16; // Web Crypto's AES-GCM appends a 128-bit auth tag
 
-export const PAYLOAD_SIZE = 4096;
+// The server stores and validates a ciphertext of exactly 4096 bytes
+// (PLAN.md section 4) — that number already includes the GCM tag, since
+// it's what actually ends up in the database. So the *plaintext* we pad
+// to before encrypting has to leave room for it: pad(), not encrypt(),
+// is where PAYLOAD_SIZE is spent.
+const STORED_CIPHERTEXT_SIZE = 4096;
+export const PAYLOAD_SIZE = STORED_CIPHERTEXT_SIZE - GCM_TAG_BYTES;
 const LENGTH_PREFIX_BYTES = 4;
 
 // --- generic utilities ---
@@ -59,6 +66,25 @@ export function fromBase64Url(str) {
 	const binary = atob(padded + padding);
 	const bytes = new Uint8Array(binary.length);
 	for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+	return bytes;
+}
+
+// Hex, used on the /p API wire (see PLAN.md section 6) rather than
+// base64url, which is reserved for the link fragment.
+export function toHex(bytes) {
+	return Array.from(bytes)
+		.map((b) => b.toString(16).padStart(2, '0'))
+		.join('');
+}
+
+export function fromHex(hex) {
+	if (typeof hex !== 'string' || hex.length % 2 !== 0 || !/^[0-9a-f]*$/i.test(hex)) {
+		throw new Error('invalid hex');
+	}
+	const bytes = new Uint8Array(hex.length / 2);
+	for (let i = 0; i < bytes.length; i++) {
+		bytes[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+	}
 	return bytes;
 }
 

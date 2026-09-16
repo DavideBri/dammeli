@@ -41,7 +41,7 @@ line by line against this repository, no need to trust a build.
 SHA-256 hash of the file, updated with every release:
 
 ```
-e8384541d98971e9acb0aa36add17a2f3e530eca354485a9289d58227aafc431
+b6cbe545d40f50b9ef633a6c89e88fd3fa3a49b808ea96e1fbc6cd97a68b7b96
 ```
 
 ## Local development

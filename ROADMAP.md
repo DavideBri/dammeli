@@ -92,11 +92,13 @@ it. The database contains only noise.
 
 ## 0.5 Sharing and return visits
 
-- [ ] Public read-only page
+- [ ] Public read-only page — not built yet: the read link works and
+      round-trips end-to-end (verified: create, fetch, decrypt), but
+      there's no page rendering it for a recipient yet
 - [ ] QR generated locally, vendored library
-- [ ] Copy link, send on WhatsApp
-- [ ] Lost-link warning, sober and non-alarming
-- [ ] `localStorage` with edit links
+- [x] Copy link, send on WhatsApp
+- [x] Lost-link warning, sober and non-alarming
+- [x] `localStorage` with edit links
 - [ ] "Your pages" screen when opening damme.li
 - [ ] Page deletion
 
