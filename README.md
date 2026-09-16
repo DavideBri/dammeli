@@ -23,6 +23,9 @@ previous version would stop working, never for any other reason (see
 
 - [Astro](https://astro.build) with `output: 'static'`: no server-side
   rendering, the site compiles to static HTML.
+- [Tailwind](https://tailwindcss.com) v4, compiled at build time via its
+  Vite plugin — never the CDN script (`cdn.tailwindcss.com`), which
+  generates styles at runtime and would need `unsafe-inline` on the CSP.
 - No client-side JS framework, no bundler for the cryptography.
 - Hosting: [Netlify](https://netlify.com), automatic deploy from this repo.
 - Database (temporary, see migration note in `PLAN.md`):
