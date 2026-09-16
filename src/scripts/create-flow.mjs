@@ -10,6 +10,10 @@ import * as api from '../lib/api.mjs';
 import { createLocalPagesStore } from '../lib/local-pages.mjs';
 import { renderQrCode } from '../lib/qr.mjs';
 
+function extractTitle(form) {
+	return form.querySelector('[data-role="title"]')?.value ?? '';
+}
+
 function extractCards(form) {
 	const cards = [];
 	for (const el of form.querySelectorAll('#methods .method-card, #other-methods .method-card')) {
@@ -82,7 +86,7 @@ export function initCreateFlow(form, { localPages = createLocalPagesStore(), exi
 		const errorEl = form.querySelector('[data-create-error]');
 		if (errorEl) errorEl.hidden = true;
 
-		const payload = assemblePayload(extractCards(form));
+		const payload = assemblePayload(extractCards(form), { title: extractTitle(form) });
 		if (payload.methods.length === 0) {
 			showError(form, 'Add at least one payment method first.');
 			return;

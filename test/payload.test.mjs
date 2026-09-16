@@ -59,3 +59,28 @@ test('assemblePayload: a crypto card without a type is dropped rather than shipp
 	const result = assemblePayload([{ method: 'crypto', value: 'bc1qxyz', cryptoType: '' }]);
 	assert.deepEqual(result.methods, []);
 });
+
+test('assemblePayload: an optional title is included when present', () => {
+	const result = assemblePayload([{ method: 'satispay', value: 'brunoxyz' }], {
+		title: "Bruno's payments",
+	});
+	assert.equal(result.title, "Bruno's payments");
+	assert.deepEqual(Object.keys(result), ['v', 'title', 'methods']);
+});
+
+test('assemblePayload: a blank or missing title is omitted entirely, not shipped as ""', () => {
+	const withoutOption = assemblePayload([{ method: 'satispay', value: 'brunoxyz' }]);
+	assert.ok(!('title' in withoutOption));
+
+	const blankTitle = assemblePayload([{ method: 'satispay', value: 'brunoxyz' }], {
+		title: '   ',
+	});
+	assert.ok(!('title' in blankTitle));
+});
+
+test('assemblePayload: title is trimmed', () => {
+	const result = assemblePayload([{ method: 'satispay', value: 'brunoxyz' }], {
+		title: '  Bruno   ',
+	});
+	assert.equal(result.title, 'Bruno');
+});

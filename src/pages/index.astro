@@ -21,6 +21,17 @@ import { LOGOS } from '../vendor/logos.mjs';
 
 			<form id="editor" class="mt-8" hidden>
 				<p class="text-neutral-600">Collect your payment methods, get one link to share.</p>
+
+				<label class="mt-6 block text-sm font-medium" for="page-title">Page title (optional)</label>
+				<input
+					id="page-title"
+					type="text"
+					data-role="title"
+					autocomplete="off"
+					placeholder="e.g. Bruno's payments"
+					class="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 focus:border-neutral-500 focus:outline-none"
+				/>
+
 				<div id="methods" class="mt-8 flex flex-col gap-4">
 					<fieldset class="method-card rounded-lg border border-neutral-200 bg-white p-4" data-method="satispay">
 						<legend class="px-1 font-medium">Satispay</legend>
@@ -224,7 +235,7 @@ import { LOGOS } from '../vendor/logos.mjs';
 					whoever sent it to check they copied the whole thing.
 				</p>
 				<div data-viewer-state="loaded" hidden>
-					<h2 class="text-lg font-semibold">How to pay</h2>
+					<h2 class="text-lg font-semibold" data-page-title>How to pay</h2>
 					<div class="mt-4 flex flex-col gap-4" data-methods></div>
 				</div>
 			</section>

@@ -6,6 +6,9 @@
 const MAIN_TYPES = new Set(['satispay', 'revolut', 'paypal', 'iban']);
 
 export function prefillFromPayload(form, payload) {
+	const titleInput = form.querySelector('[data-role="title"]');
+	if (titleInput && payload.title) titleInput.value = payload.title;
+
 	const methodsContainer = form.querySelector('#methods');
 	const orderedMainCards = [];
 

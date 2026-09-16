@@ -131,6 +131,7 @@ user.**
 ```json
 {
   "v": 1,
+  "title": "Bruno's payments",
   "methods": [
     { "type": "satispay", "value": "brunoxyz" },
     { "type": "revolut",  "value": "brunoxyz" },
@@ -150,6 +151,9 @@ user.**
 - **`holder` only on `iban`**, never at the page level. It's the only real
   identifier in the payload and must not end up in the blob of someone
   using only Satispay.
+- **`title` is optional and page-level**: shown as the heading on the
+  read-only page and as the browser tab title. Added after v1 shipped
+  without a version bump — exactly the case the next bullet describes.
 - Long, readable keys: the 4 KB padding makes compactness pointless.
 
 ### Payload version
@@ -253,8 +257,8 @@ change or data wipe: the saved edit link is required.
 **Two distinct links**: one read-only to share, one to edit and keep.
 With a single link, whoever receives it could change the IBAN.
 
-Dropped for v1: page title, per-method label. Both optional fields,
-addable later without a version bump.
+Page title added post-v1 (see section 5) without a version bump, exactly
+as anticipated here. Per-method label is still dropped, same reasoning.
 
 ---
 

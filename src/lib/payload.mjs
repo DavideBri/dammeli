@@ -7,8 +7,12 @@
  * @param {Array<{method: string, value: string, holder?: string, cryptoType?: string}>} cards
  *   In the order they should appear in the payload (order is information).
  *   Empty values are dropped.
+ * @param {{title?: string}} [options] `title` is optional and page-level
+ *   (PLAN.md section 5) — added post-v1 without a version bump, so it's
+ *   simply omitted from the payload when blank rather than shipped as an
+ *   empty string.
  */
-export function assemblePayload(cards) {
+export function assemblePayload(cards, { title } = {}) {
 	const methods = [];
 	for (const card of cards) {
 		const value = (card.value ?? '').trim();
@@ -25,5 +29,6 @@ export function assemblePayload(cards) {
 			methods.push({ type: card.method, value });
 		}
 	}
-	return { v: 1, methods };
+	const trimmedTitle = (title ?? '').trim();
+	return trimmedTitle ? { v: 1, title: trimmedTitle, methods } : { v: 1, methods };
 }

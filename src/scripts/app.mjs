@@ -90,6 +90,11 @@ export async function boot() {
 	try {
 		const payload = await fetchPayload(dammeli, loaded);
 		renderMethods(viewerRoot.querySelector('[data-methods]'), payload.methods);
+		if (payload.title) {
+			const titleEl = viewerRoot.querySelector('[data-page-title]');
+			if (titleEl) titleEl.textContent = payload.title;
+			document.title = `${payload.title} — dammeli`;
+		}
 		showViewerState(viewerRoot, 'loaded');
 	} catch {
 		// Covers a 404 from the API and a failed AES-GCM decrypt (tampered
