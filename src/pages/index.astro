@@ -49,7 +49,7 @@ import { LOGOS } from '../vendor/logos.mjs';
 
 					<fieldset class="method-card rounded-lg border border-neutral-200 bg-white p-4" data-method="revolut">
 						<legend class="flex items-center gap-2 px-1 font-medium">
-							<span class="h-4 w-4 [&>svg]:h-4 [&>svg]:w-4" set:html={LOGOS.revolut} />
+							<span class="h-4 w-4 [&>svg]:h-4 [&>svg]:w-4" aria-hidden="true" set:html={LOGOS.revolut} />
 							Revolut
 						</legend>
 						<!--
@@ -80,7 +80,7 @@ import { LOGOS } from '../vendor/logos.mjs';
 
 					<fieldset class="method-card rounded-lg border border-neutral-200 bg-white p-4" data-method="paypal">
 						<legend class="flex items-center gap-2 px-1 font-medium">
-							<span class="h-4 w-4 [&>svg]:h-4 [&>svg]:w-4" set:html={LOGOS.paypal} />
+							<span class="h-4 w-4 [&>svg]:h-4 [&>svg]:w-4" aria-hidden="true" set:html={LOGOS.paypal} />
 							PayPal
 						</legend>
 						<p class="text-sm text-neutral-600">Paste your PayPal.me link, or just your handle.</p>
@@ -137,7 +137,7 @@ import { LOGOS } from '../vendor/logos.mjs';
 					<summary class="cursor-pointer font-medium">Other methods</summary>
 					<fieldset class="method-card mt-3" data-method="crypto">
 						<legend class="flex items-center gap-2 px-1 font-medium">
-							<span class="h-4 w-4 [&>svg]:h-4 [&>svg]:w-4" set:html={LOGOS.bitcoin} />
+							<span class="h-4 w-4 [&>svg]:h-4 [&>svg]:w-4" aria-hidden="true" set:html={LOGOS.bitcoin} />
 							Crypto
 						</legend>
 						<label class="mt-3 block text-sm font-medium" for="crypto-type">Type</label>
@@ -222,14 +222,6 @@ import { LOGOS } from '../vendor/logos.mjs';
 				>
 					This page doesn't exist, or the link is incomplete. If you just received it, ask
 					whoever sent it to check they copied the whole thing.
-				</p>
-				<p
-					class="rounded-lg border border-neutral-200 bg-white p-4 text-sm text-neutral-600"
-					data-viewer-state="edit-unsupported"
-					hidden
-				>
-					This is an edit link. Editing an existing page from here isn't supported yet — it's
-					coming soon.
 				</p>
 				<div data-viewer-state="loaded" hidden>
 					<h2 class="text-lg font-semibold">How to pay</h2>

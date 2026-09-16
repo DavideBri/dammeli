@@ -65,6 +65,7 @@ function renderMethodCard(method) {
 	if (LOGOS[method.type]) {
 		const icon = document.createElement('span');
 		icon.className = 'h-4 w-4 [&>svg]:h-4 [&>svg]:w-4';
+		icon.setAttribute('aria-hidden', 'true');
 		icon.innerHTML = LOGOS[method.type];
 		title.appendChild(icon);
 	}
