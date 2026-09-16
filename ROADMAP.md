@@ -52,16 +52,14 @@ link. All local, no server.
 ## 0.3 API and persistence
 
 - [x] `store` interface with `Get` / `Put` / `Delete`
-- [x] Supabase implementation — written and wired in, not yet tested
-      against a real project (still missing a live connection with real
-      credentials)
+- [x] Supabase implementation — connected to the real project, live on
+      Netlify
 - [x] `POST`, `GET`, `PUT`, `DELETE /p`, `GET /healthz`
 - [x] Server-side validation of the 4096-byte padding
 - [x] Uniform 404, same body for every error
 - [x] 409 on existing id, rejection on repeated nonce
-- [ ] **RLS verified**: the table must not be bulk-readable from the client
-      with the anon key — policy written in `sql/schema.sql`, live
-      verification deferred until the Supabase project exists
+- [x] **RLS verified**: confirmed live against the real Supabase project —
+      `GET /rest/v1/pages?select=id` with the anon key returns `[]`
 - [x] Body size limit on the reverse proxy — Netlify doesn't expose a
       configurable limit at the proxy/edge level, applied instead inside
       the function itself (413 above 16 KB)
