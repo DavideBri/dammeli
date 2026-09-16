@@ -1,29 +1,40 @@
 import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
 
-// Vincoli non negoziabili (vedi CLAUDE.md):
-// - output 'static': nessun SSR, il sito e' statico.
-// - inlineStylesheets 'never': il default 'auto' inlinea i CSS piccoli e
-//   costringerebbe la CSP ad accettare 'unsafe-inline'.
-// - security.csp: CSP nativa di Astro (stabile da 6.0.0), rende <meta
-//   http-equiv="content-security-policy"> con hash per script/style, senza
-//   bisogno di adapter per l'header.
+// Non-negotiable constraints (see PLAN.md):
+// - output 'static': no SSR, the site is static.
+// - inlineStylesheets 'never': the 'auto' default inlines small CSS and
+//   would force the CSP to accept 'unsafe-inline'.
+// - security.csp: Astro's native CSP (stable since 6.0.0), renders a
+//   <meta http-equiv="content-security-policy"> with hashes for
+//   scripts/styles, no adapter needed for the header.
+//
+// Tailwind is wired in via its Vite plugin, which compiles the CSS at
+// build time into a static file. This is deliberate and the only
+// acceptable way to use Tailwind here: the CDN script (cdn.tailwindcss.com)
+// generates styles at runtime via JS, which needs 'unsafe-inline' on
+// style-src and is itself a third-party resource — both break P1 and the
+// CSP.
 export default defineConfig({
   output: 'static',
   build: {
     inlineStylesheets: 'never',
   },
+  vite: {
+    plugins: [tailwindcss()],
+  },
   security: {
     csp: {
-      // Astro non aggiunge 'self' di default a script-src: lo elenchiamo
-      // esplicitamente per permettere il caricamento di /crypto.js come
-      // modulo ES esterno (vive in public/, non viene processato/hashato).
+      // Astro doesn't add 'self' to script-src by default: we list it
+      // explicitly to allow loading /crypto.js as an external ES module
+      // (it lives in public/, unprocessed and unhashed).
       scriptDirective: {
         resources: ["'self'"],
       },
-      // 'frame-ancestors' e' deliberatamente escluso: la spec CSP lo ignora
-      // quando la policy arriva via <meta> (unico veicolo possibile con
-      // output 'static' senza adapter). Va impostato via header lato
-      // Netlify: vedi netlify.toml.
+      // 'frame-ancestors' is deliberately left out: the CSP spec ignores
+      // it when the policy arrives via <meta> (the only option with
+      // output 'static' and no adapter). It's set via an HTTP header on
+      // Netlify instead: see netlify.toml.
       directives: [
         "default-src 'self'",
         "img-src 'self'",

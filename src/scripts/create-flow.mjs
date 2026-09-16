@@ -1,0 +1,107 @@
+// Wires the "Create" button: builds the payload from the current form
+// state, encrypts it, posts it, and shows the result screen. Network and
+// DOM live here on purpose — crypto.js stays a pure library (constraint
+// C2 forbids fetch/location there), and the actual encrypt/derive calls
+// stay isolated behind a dynamic import so this file never needs its own
+// copy of the crypto logic.
+
+import { assemblePayload } from '../lib/payload.mjs';
+import * as api from '../lib/api.mjs';
+import { createLocalPagesStore } from '../lib/local-pages.mjs';
+
+function extractCards(form) {
+	const cards = [];
+	for (const el of form.querySelectorAll('#methods .method-card, #other-methods .method-card')) {
+		cards.push({
+			method: el.dataset.method,
+			value: el.querySelector('[data-role="value"]')?.value ?? '',
+			holder: el.querySelector('[data-role="holder"]')?.value,
+			cryptoType: el.querySelector('[data-role="type"]')?.value,
+		});
+	}
+	return cards;
+}
+
+function buildWhatsAppUrl(link) {
+	const text = `Here's my dammeli payment page: ${link}`;
+	return `https://wa.me/?text=${encodeURIComponent(text)}`;
+}
+
+function wireCopyButton(button, text) {
+	if (!button) return;
+	button.addEventListener('click', async () => {
+		await navigator.clipboard.writeText(text);
+		const original = button.textContent;
+		button.textContent = 'Copied!';
+		setTimeout(() => {
+			button.textContent = original;
+		}, 1500);
+	});
+}
+
+function showError(form, message) {
+	const el = form.querySelector('[data-create-error]');
+	if (!el) return;
+	el.textContent = message;
+	el.hidden = false;
+}
+
+function showSuccess(form, { readUrl, editUrl }) {
+	form.hidden = true;
+	const success = document.querySelector('[data-success]');
+	if (!success) return;
+	success.hidden = false;
+	success.querySelector('[data-read-link]').textContent = readUrl;
+	success.querySelector('[data-edit-link]').textContent = editUrl;
+	success.querySelector('[data-whatsapp-link]').href = buildWhatsAppUrl(readUrl);
+	wireCopyButton(success.querySelector('[data-copy-link]'), readUrl);
+	wireCopyButton(success.querySelector('[data-copy-edit-link]'), editUrl);
+}
+
+export function initCreateFlow(form, { localPages = createLocalPagesStore() } = {}) {
+	const button = form.querySelector('[data-create]');
+	if (!button) return;
+
+	button.addEventListener('click', async () => {
+		const errorEl = form.querySelector('[data-create-error]');
+		if (errorEl) errorEl.hidden = true;
+
+		const payload = assemblePayload(extractCards(form));
+		if (payload.methods.length === 0) {
+			showError(form, 'Add at least one payment method first.');
+			return;
+		}
+
+		button.disabled = true;
+		button.textContent = 'Creating…';
+
+		try {
+			// @vite-ignore: /crypto.js is a runtime URL to the unbundled file in
+			// public/ (PLAN.md section 9), not a module Vite should resolve or
+			// bundle at build time.
+			const dammeli = await import(/* @vite-ignore */ '/crypto.js');
+			const page = await dammeli.createPage();
+			const plaintext = new TextEncoder().encode(JSON.stringify(payload));
+			const { nonce, ciphertext } = await dammeli.encrypt(page.readKey, dammeli.pad(plaintext));
+			const wth = await dammeli.deriveWriteTokenHash(page.writeToken);
+
+			await api.createPage({
+				id: dammeli.toHex(page.id),
+				nonce: dammeli.toHex(nonce),
+				ct: dammeli.toHex(ciphertext),
+				wth: dammeli.toHex(wth),
+			});
+
+			const readUrl = `${location.origin}/${page.readFragment}`;
+			const editUrl = `${location.origin}/${page.writeFragment}`;
+
+			localPages.save({ id: dammeli.toHex(page.id), editLink: editUrl });
+
+			showSuccess(form, { readUrl, editUrl });
+		} catch {
+			showError(form, 'Something went wrong creating the page. Please try again.');
+			button.disabled = false;
+			button.textContent = 'Create';
+		}
+	});
+}
