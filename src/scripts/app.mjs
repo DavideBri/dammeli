@@ -13,6 +13,7 @@
 
 import { initEditor } from './editor.mjs';
 import { initCreateFlow } from './create-flow.mjs';
+import { initYourPages } from './your-pages.mjs';
 import { renderMethods, showViewerState } from './viewer.mjs';
 import * as api from '../lib/api.mjs';
 
@@ -26,6 +27,8 @@ export async function boot() {
 		editorForm.hidden = false;
 		initEditor(editorForm);
 		initCreateFlow(editorForm);
+		const yourPagesRoot = document.querySelector('[data-your-pages]');
+		if (yourPagesRoot) initYourPages(yourPagesRoot);
 		return;
 	}
 

@@ -27,6 +27,8 @@ previous version would stop working, never for any other reason (see
   Vite plugin — never the CDN script (`cdn.tailwindcss.com`), which
   generates styles at runtime and would need `unsafe-inline` on the CSP.
 - No client-side JS framework, no bundler for the cryptography.
+- QR codes generated locally with a vendored library (`src/vendor/`, see
+  its own README there) — never a CDN or a remote QR-generation API.
 - Hosting: [Netlify](https://netlify.com), automatic deploy from this repo.
 - Database (temporary, see migration note in `PLAN.md`):
   [Supabase](https://supabase.com).

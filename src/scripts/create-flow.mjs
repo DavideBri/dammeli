@@ -8,6 +8,7 @@
 import { assemblePayload } from '../lib/payload.mjs';
 import * as api from '../lib/api.mjs';
 import { createLocalPagesStore } from '../lib/local-pages.mjs';
+import { renderQrCode } from '../lib/qr.mjs';
 
 function extractCards(form) {
 	const cards = [];
@@ -56,6 +57,11 @@ function showSuccess(form, { readUrl, editUrl }) {
 	success.querySelector('[data-whatsapp-link]').href = buildWhatsAppUrl(readUrl);
 	wireCopyButton(success.querySelector('[data-copy-link]'), readUrl);
 	wireCopyButton(success.querySelector('[data-copy-edit-link]'), editUrl);
+
+	const qrContainer = success.querySelector('[data-qr]');
+	if (qrContainer) {
+		qrContainer.replaceChildren(renderQrCode(readUrl));
+	}
 }
 
 export function initCreateFlow(form, { localPages = createLocalPagesStore() } = {}) {

@@ -98,15 +98,23 @@ it. The database contains only noise.
       Satispay/Revolut (no verified URL scheme, same honesty bar as the
       editor's placeholder instructions) — copy-to-clipboard works for
       every method regardless
-- [ ] QR generated locally, vendored library
+- [x] QR generated locally, vendored library — `qrcode-generator` by
+      Kazuhiko Arase (MIT), vendored in `src/vendor/`, rendered as inline
+      SVG, no CDN
 - [x] Copy link, send on WhatsApp
 - [x] Lost-link warning, sober and non-alarming
 - [x] `localStorage` with edit links
-- [ ] "Your pages" screen when opening damme.li
-- [ ] Page deletion
+- [x] "Your pages" screen when opening damme.li — shown above the editor
+      when there's something to show, hidden entirely otherwise; the
+      editor stays immediately usable either way
+- [x] Page deletion — from the "Your pages" list, derives the write_token
+      back from the saved edit link to authenticate `DELETE /p/:id`
 
 **Exit criterion**: create a page in under 20 seconds from a phone and a
-friend can actually pay me.
+friend can actually pay me. Met for the core loop — create, share, a
+recipient can see and copy every method — modulo the two placeholder
+instruction texts (0.4) and the still-private repo / undocked domain
+(0.1).
 
 ---
 
