@@ -149,19 +149,27 @@ user.**
   - The 0.6 redesign's fixed tile-grid picker always emitted satispay,
     revolut, paypal, iban, then the free-form "other methods" entries in
     the order they were added, with no way to change that — 0.8 brought
-    manual reordering back, as move-earlier/move-later buttons inside
-    each filled method's popover (not drag-and-drop on the grid itself,
-    which stays in its fixed layout: reordering is purely about the
-    *payload* order, not which tile sits where on screen).
+    manual reordering back, this time as actual drag-and-drop on the tile
+    grid itself: press-and-hold or move past a small threshold picks up a
+    tile, crossing into another tile's slot swaps it there live
+    (`moveIdTo()` + `reflowTileOrder()` in `editor.mjs`, relocating
+    existing DOM nodes rather than recreating them so an in-progress drag
+    isn't interrupted). CSP's `style-src` forbids the inline `transform`
+    a floating drag-ghost would need, so there is no ghost — the grid
+    itself reflows as the pointer crosses tiles. `state.order` (all tile
+    ids, main and custom) is the source of truth `getCards()` reads back
+    into payload order.
 - **`preferred: true` on at most one entry** (0.8): the method the page's
   creator wants shown first, badged, on the read-only page — set from a
-  toggle in that method's popover. `assemblePayload()` keeps only the
-  first `preferred: true` it sees among the cards it's given (defensive:
-  the editor's own single `state.preferred` value can only ever produce
-  one, but the function doesn't assume its caller is well-behaved). The
-  viewer moves that entry to the front of the rendered list regardless of
-  its position in the array — "shown first" is a property of the flag,
-  not something the creator also has to separately drag to the top.
+  plain star icon, top-right of that method's popover, no text (fills in
+  on click). `assemblePayload()` keeps only the first `preferred: true`
+  it sees among the cards it's given (defensive: the editor's own single
+  `state.preferred` value can only ever produce one, but the function
+  doesn't assume its caller is well-behaved). The viewer moves that entry
+  to the front of the rendered list regardless of its position in the
+  array; the editor mirrors this by moving the starred tile to the front
+  of the grid too (`moveIdToFront()`), so "shown first" is never a
+  separate drag the creator also has to do.
 - The free-form "other methods" entries' `type` is now whatever label the
   user typed (e.g. `"Bitcoin"`, `"Monero"`, `"Wise"`), not a value from a
   fixed list, and there can be **up to 5 of them** (0.7) — each is its own

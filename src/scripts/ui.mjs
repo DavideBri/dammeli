@@ -212,21 +212,15 @@ export function addTile(size = 56) {
 }
 
 /** A labeled checkbox-like toggle, styled as a small bordered box + text. */
-export function toggleRow({ active, label, onClick }) {
+/** A plain star toggle — no text, the fill alone says whether it's on. */
+export function starToggle({ active, label, hint, onClick }) {
 	const button = document.createElement('button');
 	button.type = 'button';
-	button.className = `ds-toggle-row${active ? ' ds-toggle-row--active' : ''}`;
+	button.className = `ds-star-toggle${active ? ' ds-star-toggle--active' : ''}`;
 	button.setAttribute('aria-pressed', String(active));
-
-	const box = document.createElement('span');
-	box.className = 'ds-toggle-row__box';
-	if (active) box.appendChild(icon('check', { size: 13, strokeWidth: 3 }));
-	button.appendChild(box);
-
-	const text = document.createElement('span');
-	text.textContent = label;
-	button.appendChild(text);
-
+	button.setAttribute('aria-label', label);
+	if (hint) button.title = hint;
+	button.innerHTML = iconSvg('star', { size: 22, strokeWidth: 1.75, filled: active });
 	button.addEventListener('click', onClick);
 	return button;
 }

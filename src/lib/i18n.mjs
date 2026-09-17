@@ -52,10 +52,7 @@ const dict = {
 		'editor.addMethodLabel': 'Aggiungi',
 		'editor.removeMethod': 'Rimuovi questo metodo',
 		'editor.preferredLabel': 'Metodo preferito',
-		'editor.preferredHint': 'Verrà mostrato per primo a chi paga.',
-		'editor.moveEarlier': 'Sposta prima',
-		'editor.moveLater': 'Sposta dopo',
-		'editor.position': '{{pos}} di {{total}}',
+		'editor.preferredHint': 'Metodo preferito — verrà mostrato per primo a chi paga.',
 
 		'methods.satispay.label': 'Satispay',
 		'methods.satispay.fieldLabel': 'Numero di telefono',
@@ -186,10 +183,7 @@ const dict = {
 		'editor.addMethodLabel': 'Add',
 		'editor.removeMethod': 'Remove this method',
 		'editor.preferredLabel': 'Preferred method',
-		'editor.preferredHint': 'Shown first to whoever pays.',
-		'editor.moveEarlier': 'Move earlier',
-		'editor.moveLater': 'Move later',
-		'editor.position': '{{pos}} of {{total}}',
+		'editor.preferredHint': 'Preferred method — shown first to whoever pays.',
 
 		'methods.satispay.label': 'Satispay',
 		'methods.satispay.fieldLabel': 'Phone number',

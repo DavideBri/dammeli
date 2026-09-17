@@ -126,10 +126,6 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 	function filledCount() {
 		return tileIds().filter(isFilled).length;
 	}
-	/** Filled ids only, in their current payload order — what the reorder controls move within. */
-	function filledIds() {
-		return state.order.filter(isFilled);
-	}
 	function updateCreateButton() {
 		createBtn.disabled = disabled || filledCount() === 0;
 	}
@@ -140,18 +136,22 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		updateCreateButton();
 	}
 
-	/** Swaps `id` with its neighbor among filled entries — unfilled ids in
-	 * `order` keep their raw position, since they're invisible in the
-	 * payload anyway (assemblePayload drops empty values). */
-	function moveFilled(id, direction) {
-		const filled = filledIds();
-		const pos = filled.indexOf(id);
-		const swapPos = pos + direction;
-		if (pos < 0 || swapPos < 0 || swapPos >= filled.length) return;
-		const otherId = filled[swapPos];
-		const a = state.order.indexOf(id);
-		const b = state.order.indexOf(otherId);
-		[state.order[a], state.order[b]] = [state.order[b], state.order[a]];
+	/** Removes `id` from wherever it sits in `order` and reinserts it at
+	 * `targetId`'s current index — a normal "drop it here" move, not a
+	 * pairwise swap. */
+	function moveIdTo(id, targetId) {
+		if (id === targetId) return;
+		const from = state.order.indexOf(id);
+		if (from < 0) return;
+		state.order.splice(from, 1);
+		const to = state.order.indexOf(targetId);
+		state.order.splice(to < 0 ? state.order.length : to, 0, id);
+	}
+	function moveIdToFront(id) {
+		const from = state.order.indexOf(id);
+		if (from <= 0) return;
+		state.order.splice(from, 1);
+		state.order.unshift(id);
 	}
 
 	function selectMethod(id) {
@@ -180,6 +180,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		const tileBtn = document.createElement('button');
 		tileBtn.type = 'button';
 		tileBtn.className = `ds-method-grid__btn${isSelected ? ' ds-method-grid__btn--selected' : ''}`;
+		tileBtn.dataset.methodId = id;
 		tileBtn.setAttribute('aria-pressed', String(isSelected));
 		tileBtn.setAttribute('aria-label', tileLabel(id));
 		tileBtn.disabled = disabled;
@@ -208,6 +209,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			const addBtn = document.createElement('button');
 			addBtn.type = 'button';
 			addBtn.className = 'ds-method-grid__btn';
+			addBtn.dataset.addTile = '';
 			addBtn.setAttribute('aria-label', t(lang, 'editor.addMethodLabel'));
 			addBtn.disabled = disabled;
 			addBtn.appendChild(ui.addTile(56));
@@ -353,53 +355,25 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		return wrap;
 	}
 
-	/** The "preferred" toggle + (when there's something to reorder against) the
-	 * move-earlier/move-later controls, shown for any filled method. */
-	function buildOrderingControls(id) {
-		const wrap = document.createDocumentFragment();
-
-		const filled = filledIds();
-		if (filled.length > 1) {
-			const pos = filled.indexOf(id);
-			const row = document.createElement('div');
-			row.className = 'ds-popover-order-row';
-			const earlierBtn = ui.iconButton({
-				iconName: 'chevron-left',
-				label: t(lang, 'editor.moveEarlier'),
-				outline: true,
-				onClick: () => {
-					moveFilled(id, -1);
-					renderPopover();
-				},
-			});
-			earlierBtn.disabled = disabled || pos <= 0;
-			const posLabel = ui.microLabel(t(lang, 'editor.position', { pos: pos + 1, total: filled.length }));
-			const laterBtn = ui.iconButton({
-				iconName: 'chevron-right',
-				label: t(lang, 'editor.moveLater'),
-				outline: true,
-				onClick: () => {
-					moveFilled(id, 1);
-					renderPopover();
-				},
-			});
-			laterBtn.disabled = disabled || pos >= filled.length - 1;
-			row.append(earlierBtn, posLabel, laterBtn);
-			wrap.appendChild(row);
-		}
-
-		const preferredToggle = ui.toggleRow({
+	/** The "preferred" star — top-right of the popover (positioned via CSS),
+	 * shown once the method has a value. Turning it on moves the method to
+	 * the front of the grid; turning it off just removes the star. */
+	function buildPreferredStar(id) {
+		return ui.starToggle({
 			active: state.preferred === id,
 			label: t(lang, 'editor.preferredLabel'),
+			hint: t(lang, 'editor.preferredHint'),
 			onClick: () => {
-				state.preferred = state.preferred === id ? null : id;
+				if (state.preferred === id) {
+					state.preferred = null;
+				} else {
+					state.preferred = id;
+					moveIdToFront(id);
+				}
 				renderTiles();
 				renderPopover();
 			},
 		});
-		wrap.appendChild(preferredToggle);
-
-		return wrap;
 	}
 
 	/** Slots inside the currently-open popover that depend on "is this
@@ -407,7 +381,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 	 * renderPopover(), which would also replace the field inputs
 	 * themselves (see buildMainField's blur handler). */
 	let headBadgeSlot = null;
-	let orderingSlot = null;
+	let preferredSlot = null;
 	function refreshFilledDependents() {
 		if (!selected) return;
 		const filled = isFilled(selected);
@@ -415,16 +389,16 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			headBadgeSlot.replaceChildren();
 			if (filled) headBadgeSlot.appendChild(ui.microLabel(t(lang, 'editor.filledBadge'), { tone: 'accent' }));
 		}
-		if (orderingSlot) {
-			orderingSlot.replaceChildren();
-			if (filled) orderingSlot.appendChild(buildOrderingControls(selected));
+		if (preferredSlot) {
+			preferredSlot.replaceChildren();
+			if (filled) preferredSlot.appendChild(buildPreferredStar(selected));
 		}
 	}
 
 	function renderPopover() {
 		popoverWrap.replaceChildren();
 		headBadgeSlot = null;
-		orderingSlot = null;
+		preferredSlot = null;
 		if (!selected) return;
 
 		const arrow = document.createElement('span');
@@ -463,8 +437,8 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			pop.appendChild(hint);
 		}
 
-		orderingSlot = document.createElement('div');
-		pop.appendChild(orderingSlot);
+		preferredSlot = document.createElement('div');
+		pop.appendChild(preferredSlot);
 		refreshFilledDependents();
 
 		const outer = document.createElement('div');
@@ -483,6 +457,89 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			tileBtn.replaceWith(fresh);
 		}
 	}
+
+	/** Moves the existing tile nodes to match `state.order` — never
+	 * recreates them, so an in-progress drag's node identity (and pointer
+	 * capture) survives every reorder step. */
+	function reflowTileOrder() {
+		const addBtn = tilesEl.querySelector('[data-add-tile]');
+		for (const id of state.order) {
+			const node = tilesEl.querySelector(`[data-method-id="${id}"]`);
+			if (node) tilesEl.appendChild(node);
+		}
+		if (addBtn) tilesEl.appendChild(addBtn);
+	}
+
+	/**
+	 * Press-and-hold (or drag past a small threshold) a tile to reorder it
+	 * — a quick tap still opens its popover as usual. Pointer Events cover
+	 * mouse and touch alike; the dragged tile itself never visually
+	 * follows the pointer (that needs an inline transform, which CSP
+	 * forbids — see PLAN.md's "no inline style=""" note). Instead, other
+	 * tiles swap out from under it live as the pointer crosses them,
+	 * exactly like a real card being pushed through a stack.
+	 */
+	function initDragReorder() {
+		const LONG_PRESS_MS = 200;
+		const MOVE_THRESHOLD_PX = 8;
+		let drag = null;
+
+		function activate(id) {
+			if (!drag || drag.id !== id || drag.active) return;
+			drag.active = true;
+			clearTimeout(drag.timer);
+			// Captured only once a drag is actually happening, not on every
+			// pointerdown: capturing on the container confuses the browser's
+			// own click synthesis for a plain, un-dragged tap.
+			tilesEl.setPointerCapture(drag.pointerId);
+			tilesEl.querySelector(`[data-method-id="${id}"]`)?.classList.add('ds-method-grid__btn--dragging');
+		}
+
+		function endDrag() {
+			if (!drag) return;
+			clearTimeout(drag.timer);
+			// No explicit "was this a drag, suppress the click" bookkeeping
+			// needed: browsers don't fire a click at all after the pointer
+			// moved this much between down and up, on mouse or touch alike
+			// — the popover only (re)opens for an actual tap.
+			if (drag.active) {
+				tilesEl.querySelector(`[data-method-id="${drag.id}"]`)?.classList.remove('ds-method-grid__btn--dragging');
+			}
+			drag = null;
+		}
+
+		tilesEl.addEventListener('pointerdown', (event) => {
+			if (disabled || drag) return;
+			const tileBtn = event.target.closest('.ds-method-grid__btn[data-method-id]');
+			if (!tileBtn) return;
+			const id = tileBtn.dataset.methodId;
+			drag = { id, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, active: false, timer: null };
+			drag.timer = setTimeout(() => activate(id), LONG_PRESS_MS);
+		});
+
+		tilesEl.addEventListener('pointermove', (event) => {
+			if (!drag || drag.pointerId !== event.pointerId) return;
+			if (!drag.active) {
+				const dx = event.clientX - drag.startX;
+				const dy = event.clientY - drag.startY;
+				if (Math.hypot(dx, dy) > MOVE_THRESHOLD_PX) activate(drag.id);
+				if (!drag.active) return;
+			}
+			const overTile = document.elementFromPoint(event.clientX, event.clientY)?.closest('.ds-method-grid__btn[data-method-id]');
+			if (overTile && overTile.dataset.methodId !== drag.id) {
+				moveIdTo(drag.id, overTile.dataset.methodId);
+				reflowTileOrder();
+			}
+		});
+
+		const onPointerEnd = (event) => {
+			if (!drag || drag.pointerId !== event.pointerId) return;
+			endDrag();
+		};
+		tilesEl.addEventListener('pointerup', onPointerEnd);
+		tilesEl.addEventListener('pointercancel', onPointerEnd);
+	}
+	initDragReorder();
 
 	renderTiles();
 	renderPopover();

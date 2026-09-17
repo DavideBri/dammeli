@@ -203,18 +203,26 @@ undocked domain (0.1).
 
 ## 0.8 Preferred method and manual reordering
 
-- [x] "Preferred method" flag: a toggle in a filled method's popover
+- [x] "Preferred method" flag: a plain star icon, top-right of a filled
+      method's popover, no text label — fills in on click
       (`preferred: true` on its payload entry, PLAN.md section 5) —
       shown first on the public page regardless of array order, with an
       accent-bordered tile and a "Preferito"/"Preferred" badge so the
-      payer can tell it's the creator's pick
-- [x] Manual reordering is back, without touching the tile grid's fixed
-      layout: move-earlier/move-later buttons inside each filled
-      method's popover shift it among the *other filled methods* only
-      (unfilled tiles don't participate — they're invisible in the
-      payload anyway), with a "N di M"/"N of M" position indicator
+      payer can tell it's the creator's pick. Setting it also moves that
+      method's tile to the front of the grid
+- [x] Manual reordering by dragging tiles directly in the grid — no
+      chevrons/arrows, no position indicator. Press-and-hold (200ms) or
+      move past an 8px threshold starts a drag; crossing into another
+      tile swaps it live via `moveIdTo()`/`reflowTileOrder()` (existing
+      DOM nodes are relocated, never recreated, so an active drag survives
+      it). A plain tap still opens the tile's popover as before — CSP's
+      `style-src` has no `unsafe-inline`/`unsafe-hashes`, so the dragged
+      tile can't visually follow the pointer via an inline transform;
+      other tiles are pushed aside instead, and the browser's own
+      click-suppression after a real pointer move keeps a completed drag
+      from also reopening a popover
 - [x] IBAN participates in both: preferred moves its card above the
-      pay-button list instead of leaving it pinned after; reordering
+      pay-button list instead of leaving it pinned after; dragging
       changes its position relative to the other methods the same way
 
 ---
