@@ -31,27 +31,44 @@ function normalizeValue(method, rawValue) {
  *   payload, for opening a write (edit) link on an existing page. Every
  *   non-main entry becomes its own custom slot (never truncated to
  *   MAX_CUSTOM here — editing must never drop existing data, even if it
- *   was written by a future version that allows more).
+ *   was written by a future version that allows more). The incoming
+ *   array's order becomes the starting point for `state.order`, and
+ *   whichever entry (if any) has `preferred: true` seeds `state.preferred`.
  */
 export function initEditor(root, lang, { prefill = null } = {}) {
 	const state = {
 		title: prefill?.title ?? '',
 		values: { satispay: '', revolut: '', paypal: '', iban: '' },
 		holder: '',
-		/** @type {Array<{label: string, value: string}>} */
+		/** @type {Array<{id: string, label: string, value: string}>} */
 		custom: [],
+		/** Every id (main + custom), in payload/display order. */
+		order: [],
+		/** The one id shown first on the public page, or null. */
+		preferred: null,
 	};
+	let nextCustomId = 1;
+	const seenMain = new Set();
 	for (const entry of prefill?.methods ?? []) {
 		if (ORDER.includes(entry.type)) {
 			state.values[entry.type] = entry.value ?? '';
 			if (entry.type === 'iban' && entry.holder) state.holder = entry.holder;
+			state.order.push(entry.type);
+			seenMain.add(entry.type);
+			if (entry.preferred) state.preferred = entry.type;
 		} else {
-			state.custom.push({ label: entry.type ?? '', value: entry.value ?? '' });
+			const id = `c${nextCustomId++}`;
+			state.custom.push({ id, label: entry.type ?? '', value: entry.value ?? '' });
+			state.order.push(id);
+			if (entry.preferred) state.preferred = id;
 		}
 	}
+	for (const method of ORDER) {
+		if (!seenMain.has(method)) state.order.push(method);
+	}
 
-	/** Selection: null, a main method name, or `custom:<index>`. Closed by
-	 * default — nothing is pre-selected, whether creating a new page or
+	/** Selection: null, a main method name, or a custom entry's id. Closed
+	 * by default — nothing is pre-selected, whether creating a new page or
 	 * editing an existing one. */
 	let selected = null;
 	let disabled = false;
@@ -85,31 +102,33 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 	});
 	titleFieldSlot.replaceChildren(titleField.wrap);
 
-	function customIndex(id) {
-		return id?.startsWith('custom:') ? Number(id.slice('custom:'.length)) : -1;
+	function findCustom(id) {
+		return state.custom.find((entry) => entry.id === id);
+	}
+	function isCustomId(id) {
+		return !ORDER.includes(id);
 	}
 	function isFilled(id) {
-		if (ORDER.includes(id)) return !!state.values[id].trim();
-		const i = customIndex(id);
-		return i >= 0 ? !!state.custom[i]?.value.trim() : false;
+		return ORDER.includes(id) ? !!state.values[id].trim() : !!findCustom(id)?.value.trim();
 	}
 	function tileLabel(id) {
 		if (ORDER.includes(id)) return t(lang, `methods.${id}.label`);
-		const i = customIndex(id);
-		if (i >= 0) return state.custom[i]?.label.trim() || t(lang, 'methods.crypto.label');
-		return t(lang, 'editor.addMethodLabel');
+		return findCustom(id)?.label.trim() || t(lang, 'methods.crypto.label');
 	}
 	/** A custom entry's tile shows its own label's initial once it has one. */
 	function tileLetter(id) {
-		const i = customIndex(id);
-		return i >= 0 ? state.custom[i]?.label.trim() || null : null;
+		return isCustomId(id) ? findCustom(id)?.label.trim() || null : null;
 	}
-	/** The tiles currently on the grid, in display order — never includes the "add" affordance. */
+	/** The tiles currently on the grid — never includes the "add" affordance. */
 	function tileIds() {
-		return [...ORDER, ...state.custom.map((_, i) => `custom:${i}`)];
+		return state.order;
 	}
 	function filledCount() {
 		return tileIds().filter(isFilled).length;
+	}
+	/** Filled ids only, in their current payload order — what the reorder controls move within. */
+	function filledIds() {
+		return state.order.filter(isFilled);
 	}
 	function updateCreateButton() {
 		createBtn.disabled = disabled || filledCount() === 0;
@@ -121,11 +140,27 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		updateCreateButton();
 	}
 
+	/** Swaps `id` with its neighbor among filled entries — unfilled ids in
+	 * `order` keep their raw position, since they're invisible in the
+	 * payload anyway (assemblePayload drops empty values). */
+	function moveFilled(id, direction) {
+		const filled = filledIds();
+		const pos = filled.indexOf(id);
+		const swapPos = pos + direction;
+		if (pos < 0 || swapPos < 0 || swapPos >= filled.length) return;
+		const otherId = filled[swapPos];
+		const a = state.order.indexOf(id);
+		const b = state.order.indexOf(otherId);
+		[state.order[a], state.order[b]] = [state.order[b], state.order[a]];
+	}
+
 	function selectMethod(id) {
 		if (id === '__add__') {
 			if (state.custom.length >= MAX_CUSTOM) return;
-			state.custom.push({ label: '', value: '' });
-			selected = `custom:${state.custom.length - 1}`;
+			const newId = `c${nextCustomId++}`;
+			state.custom.push({ id: newId, label: '', value: '' });
+			state.order.push(newId);
+			selected = newId;
 		} else {
 			selected = selected === id ? null : id;
 		}
@@ -150,11 +185,12 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		tileBtn.disabled = disabled;
 		tileBtn.appendChild(
 			ui.methodTile({
-				type: id.startsWith('custom:') ? 'crypto' : id,
+				type: isCustomId(id) ? 'crypto' : id,
 				size: 56,
 				checked: isFilled(id),
 				selected: isSelected,
 				letter: tileLetter(id),
+				preferred: state.preferred === id,
 			}),
 		);
 		const label = document.createElement('span');
@@ -211,6 +247,13 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			f.input.value = normalizeValue(method, f.input.value);
 			state.values[method] = f.input.value;
 			refreshConfirm();
+			// Not renderPopover(): this can fire mid-fill, as focus moves to a
+			// sibling field the caller is about to fill in too (Playwright's
+			// fill() does this; so does a user tabbing between fields) —
+			// rebuilding the whole popover here would replace that sibling
+			// field out from under whoever's about to type into it. Only the
+			// bits that depend on "is this filled now" get touched instead.
+			refreshFilledDependents();
 		});
 		refreshConfirm();
 		return f.wrap;
@@ -235,9 +278,9 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		return f.wrap;
 	}
 
-	function buildCustomFields(index) {
+	function buildCustomFields(id) {
 		const wrap = document.createDocumentFragment();
-		const entry = state.custom[index];
+		const entry = findCustom(id);
 
 		const labelField = ui.field({
 			id: 'field-custom-label',
@@ -254,6 +297,8 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			labelField.input.value = labelField.input.value.trim();
 			entry.label = labelField.input.value;
 			renderTilesInPlace();
+			// See buildMainField's blur handler for why this isn't renderPopover().
+			refreshFilledDependents();
 		});
 		wrap.appendChild(labelField.wrap);
 
@@ -281,6 +326,8 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			valueField.input.value = valueField.input.value.trim();
 			entry.value = valueField.input.value;
 			refreshConfirm();
+			// See buildMainField's blur handler for why this isn't renderPopover().
+			refreshFilledDependents();
 		});
 		refreshConfirm();
 		wrap.appendChild(valueField.wrap);
@@ -291,7 +338,9 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			iconName: 'trash',
 			text: t(lang, 'editor.removeMethod'),
 			onClick: () => {
-				state.custom.splice(index, 1);
+				state.custom = state.custom.filter((e) => e.id !== id);
+				state.order = state.order.filter((orderId) => orderId !== id);
+				if (state.preferred === id) state.preferred = null;
 				selected = null;
 				renderTiles();
 				renderPopover();
@@ -304,8 +353,78 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		return wrap;
 	}
 
+	/** The "preferred" toggle + (when there's something to reorder against) the
+	 * move-earlier/move-later controls, shown for any filled method. */
+	function buildOrderingControls(id) {
+		const wrap = document.createDocumentFragment();
+
+		const filled = filledIds();
+		if (filled.length > 1) {
+			const pos = filled.indexOf(id);
+			const row = document.createElement('div');
+			row.className = 'ds-popover-order-row';
+			const earlierBtn = ui.iconButton({
+				iconName: 'chevron-left',
+				label: t(lang, 'editor.moveEarlier'),
+				outline: true,
+				onClick: () => {
+					moveFilled(id, -1);
+					renderPopover();
+				},
+			});
+			earlierBtn.disabled = disabled || pos <= 0;
+			const posLabel = ui.microLabel(t(lang, 'editor.position', { pos: pos + 1, total: filled.length }));
+			const laterBtn = ui.iconButton({
+				iconName: 'chevron-right',
+				label: t(lang, 'editor.moveLater'),
+				outline: true,
+				onClick: () => {
+					moveFilled(id, 1);
+					renderPopover();
+				},
+			});
+			laterBtn.disabled = disabled || pos >= filled.length - 1;
+			row.append(earlierBtn, posLabel, laterBtn);
+			wrap.appendChild(row);
+		}
+
+		const preferredToggle = ui.toggleRow({
+			active: state.preferred === id,
+			label: t(lang, 'editor.preferredLabel'),
+			onClick: () => {
+				state.preferred = state.preferred === id ? null : id;
+				renderTiles();
+				renderPopover();
+			},
+		});
+		wrap.appendChild(preferredToggle);
+
+		return wrap;
+	}
+
+	/** Slots inside the currently-open popover that depend on "is this
+	 * filled now", refreshed in place after a field blurs — never a full
+	 * renderPopover(), which would also replace the field inputs
+	 * themselves (see buildMainField's blur handler). */
+	let headBadgeSlot = null;
+	let orderingSlot = null;
+	function refreshFilledDependents() {
+		if (!selected) return;
+		const filled = isFilled(selected);
+		if (headBadgeSlot) {
+			headBadgeSlot.replaceChildren();
+			if (filled) headBadgeSlot.appendChild(ui.microLabel(t(lang, 'editor.filledBadge'), { tone: 'accent' }));
+		}
+		if (orderingSlot) {
+			orderingSlot.replaceChildren();
+			if (filled) orderingSlot.appendChild(buildOrderingControls(selected));
+		}
+	}
+
 	function renderPopover() {
 		popoverWrap.replaceChildren();
+		headBadgeSlot = null;
+		orderingSlot = null;
 		if (!selected) return;
 
 		const arrow = document.createElement('span');
@@ -325,12 +444,12 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		titleSpan.className = 'ds-method-grid__popover-title';
 		titleSpan.textContent = tileLabel(selected);
 		head.appendChild(titleSpan);
-		if (isFilled(selected)) head.appendChild(ui.microLabel(t(lang, 'editor.filledBadge'), { tone: 'accent' }));
+		headBadgeSlot = document.createElement('span');
+		head.appendChild(headBadgeSlot);
 		pop.appendChild(head);
 
-		const customIdx = customIndex(selected);
-		if (customIdx >= 0) {
-			pop.appendChild(buildCustomFields(customIdx));
+		if (isCustomId(selected)) {
+			pop.appendChild(buildCustomFields(selected));
 			const hint = document.createElement('p');
 			hint.className = 'ds-method-grid__popover-hint';
 			hint.textContent = t(lang, 'methods.crypto.hint');
@@ -343,6 +462,10 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			hint.textContent = t(lang, `methods.${selected}.hint`);
 			pop.appendChild(hint);
 		}
+
+		orderingSlot = document.createElement('div');
+		pop.appendChild(orderingSlot);
+		refreshFilledDependents();
 
 		const outer = document.createElement('div');
 		outer.className = 'ds-method-grid__popover-wrap';
@@ -368,14 +491,19 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 	return {
 		getTitle: () => state.title.trim(),
 		getCards() {
-			return [
-				...ORDER.map((method) => ({
-					method,
-					value: state.values[method],
-					holder: method === 'iban' ? state.holder : undefined,
-				})),
-				...state.custom.map((entry) => ({ method: 'crypto', value: entry.value, cryptoType: entry.label })),
-			];
+			return state.order.map((id) => {
+				const preferred = state.preferred === id || undefined;
+				if (ORDER.includes(id)) {
+					return {
+						method: id,
+						value: state.values[id],
+						holder: id === 'iban' ? state.holder : undefined,
+						preferred,
+					};
+				}
+				const entry = findCustom(id);
+				return { method: 'crypto', value: entry?.value ?? '', cryptoType: entry?.label ?? '', preferred };
+			});
 		},
 		setDisabled(value) {
 			disabled = value;

@@ -84,3 +84,36 @@ test('assemblePayload: title is trimmed', () => {
 	});
 	assert.equal(result.title, 'Bruno');
 });
+
+test('assemblePayload: preferred:true is carried through onto the entry', () => {
+	const result = assemblePayload([
+		{ method: 'satispay', value: 'brunoxyz' },
+		{ method: 'revolut', value: 'brunoxyz', preferred: true },
+	]);
+	assert.deepEqual(result.methods, [
+		{ type: 'satispay', value: 'brunoxyz' },
+		{ type: 'revolut', value: 'brunoxyz', preferred: true },
+	]);
+});
+
+test('assemblePayload: preferred is omitted entirely when falsy, not shipped as false', () => {
+	const result = assemblePayload([{ method: 'satispay', value: 'brunoxyz', preferred: false }]);
+	assert.ok(!('preferred' in result.methods[0]));
+});
+
+test('assemblePayload: only the first preferred:true card keeps the flag', () => {
+	const result = assemblePayload([
+		{ method: 'satispay', value: 'brunoxyz', preferred: true },
+		{ method: 'revolut', value: 'brunoxyz', preferred: true },
+	]);
+	assert.equal(result.methods[0].preferred, true);
+	assert.ok(!('preferred' in result.methods[1]));
+});
+
+test('assemblePayload: a preferred card that gets dropped (empty value) does not block a later one', () => {
+	const result = assemblePayload([
+		{ method: 'satispay', value: '', preferred: true },
+		{ method: 'revolut', value: 'brunoxyz', preferred: true },
+	]);
+	assert.deepEqual(result.methods, [{ type: 'revolut', value: 'brunoxyz', preferred: true }]);
+});

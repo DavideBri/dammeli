@@ -37,6 +37,25 @@ export function buildDirectLink(method) {
 	return null;
 }
 
+/**
+ * Moves the `preferred` entry (if any) to the front, keeping everyone
+ * else in their saved order — the "shown first" promise the editor's
+ * preferred toggle makes only means something if the viewer honors it
+ * regardless of where the entry actually sits in the payload array.
+ */
+function orderWithPreferredFirst(methods) {
+	const index = methods.findIndex((m) => m.preferred);
+	if (index <= 0) return methods;
+	const copy = methods.slice();
+	const [preferred] = copy.splice(index, 1);
+	copy.unshift(preferred);
+	return copy;
+}
+
+function preferredBadge(lang) {
+	return ui.badge(t(lang, 'viewer.preferredBadge'), { tone: 'accent' });
+}
+
 function renderMethodCard(method, lang) {
 	const isKnown = KNOWN_TYPES.has(method.type);
 	// A custom "other methods" entry has no fixed label of its own — the
@@ -51,17 +70,28 @@ function renderMethodCard(method, lang) {
 	const btn = document.createElement('button');
 	btn.type = 'button';
 	btn.className = 'ds-pay-btn';
-	btn.appendChild(ui.methodTile({ type: isKnown ? method.type : 'crypto', size: 48, letter: isKnown ? null : method.type }));
+	btn.appendChild(
+		ui.methodTile({
+			type: isKnown ? method.type : 'crypto',
+			size: 48,
+			letter: isKnown ? null : method.type,
+			preferred: !!method.preferred,
+		}),
+	);
 
 	const info = document.createElement('span');
 	info.className = 'ds-pay-btn__info';
+	const labelRow = document.createElement('span');
+	labelRow.className = 'ds-pay-btn__label-row';
 	const labelSpan = document.createElement('span');
 	labelSpan.className = 'ds-pay-btn__label';
 	labelSpan.textContent = label;
+	labelRow.appendChild(labelSpan);
+	if (method.preferred) labelRow.appendChild(preferredBadge(lang));
 	const noteSpan = document.createElement('span');
 	noteSpan.className = 'ds-pay-btn__note';
 	noteSpan.textContent = note;
-	info.append(labelSpan, noteSpan);
+	info.append(labelRow, noteSpan);
 	btn.appendChild(info);
 
 	const actionSpan = document.createElement('span');
@@ -85,13 +115,6 @@ function renderMethodCard(method, lang) {
 	});
 
 	return btn;
-}
-
-/** Every method except IBAN, which gets its own bigger card (renderIbanCard). */
-export function renderMethods(container, methods, lang) {
-	container.replaceChildren(
-		...methods.filter((method) => method.type !== 'iban').map((method) => renderMethodCard(method, lang)),
-	);
 }
 
 function copyIconButton(value, label) {
@@ -134,42 +157,47 @@ function ibanFieldRow(label, value, { mono = false, copyLabel }) {
  * literal sense — separately copyable), not one handle like every other
  * method.
  */
-export function renderIbanCard(container, method, lang) {
-	if (!method) {
-		container.hidden = true;
-		container.replaceChildren();
-		return;
-	}
-	container.hidden = false;
-	container.className = 'ds-card ds-card--default ds-card--lifted iban-card';
+function buildIbanCard(method, lang) {
+	const card = document.createElement('div');
+	card.className = 'ds-card ds-card--default ds-card--lifted iban-card';
 
 	const header = document.createElement('div');
 	header.className = 'iban-card__header';
-	header.appendChild(ui.methodTile({ type: 'iban', size: 48 }));
+	header.appendChild(ui.methodTile({ type: 'iban', size: 48, preferred: !!method.preferred }));
 	const title = document.createElement('span');
 	title.className = 'ds-pay-btn__label';
 	title.textContent = t(lang, 'methods.iban.label');
 	header.appendChild(title);
+	if (method.preferred) header.appendChild(preferredBadge(lang));
+	card.appendChild(header);
 
-	const rows = [
-		// No micro-label on this row — the header above it already says "IBAN".
-		ibanFieldRow(null, method.value, {
-			mono: true,
-			copyLabel: `${t(lang, 'common.copy')} IBAN`,
-		}),
-	];
+	// No micro-label on this row — the header above it already says "IBAN".
+	card.appendChild(ibanFieldRow(null, method.value, { mono: true, copyLabel: `${t(lang, 'common.copy')} IBAN` }));
+
 	if (method.holder) {
 		const divider = document.createElement('div');
 		divider.className = 'iban-card__divider';
-		rows.push(
-			divider,
+		card.appendChild(divider);
+		card.appendChild(
 			ibanFieldRow(t(lang, 'methods.iban.holderTitle'), method.holder, {
 				copyLabel: `${t(lang, 'common.copy')} ${t(lang, 'methods.iban.holderTitle')}`,
 			}),
 		);
 	}
 
-	container.replaceChildren(header, ...rows);
+	return card;
+}
+
+/**
+ * Renders every method into one ordered list — IBAN as its own bigger
+ * card, everything else as a pay-button — with the preferred one (if
+ * any) moved to the front, badged, and tile-bordered in accent.
+ */
+export function renderMethods(container, methods, lang) {
+	const ordered = orderWithPreferredFirst(methods);
+	container.replaceChildren(
+		...ordered.map((method) => (method.type === 'iban' ? buildIbanCard(method, lang) : renderMethodCard(method, lang))),
+	);
 }
 
 /** Shows exactly one `[data-viewer-state="<state>"]` child, hides the rest. */

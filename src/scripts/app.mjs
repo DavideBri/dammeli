@@ -17,7 +17,7 @@
 import { initEditor } from './editor.mjs';
 import { initCreateFlow } from './create-flow.mjs';
 import { initYourPages } from './your-pages.mjs';
-import { renderMethods, renderIbanCard, showViewerState } from './viewer.mjs';
+import { renderMethods, showViewerState } from './viewer.mjs';
 import * as api from '../lib/api.mjs';
 import { detectLang, t } from '../lib/i18n.mjs';
 import { getSavedTheme, setSavedTheme, applyTheme, effectiveTheme } from '../lib/theme.mjs';
@@ -133,8 +133,6 @@ export async function boot() {
 	try {
 		const payload = await fetchPayload(dammeli, loaded);
 
-		const ibanMethod = payload.methods.find((m) => m.type === 'iban');
-
 		viewerRoot.querySelector('[data-page-kicker]').replaceChildren(ui.microLabel(t(lang, 'viewer.kicker'), { tone: 'strong' }));
 
 		const titleEl = viewerRoot.querySelector('[data-page-title]');
@@ -142,7 +140,6 @@ export async function boot() {
 		document.title = `${payload.title || t(lang, 'viewer.defaultTitle')} — dammeli`;
 
 		renderMethods(viewerRoot.querySelector('[data-methods]'), payload.methods, lang);
-		renderIbanCard(viewerRoot.querySelector('[data-iban-card]'), ibanMethod, lang);
 
 		const footerEl = viewerRoot.querySelector('[data-viewer-footer]');
 		footerEl.replaceChildren();

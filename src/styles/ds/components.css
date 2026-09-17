@@ -596,6 +596,12 @@
 	flex-direction: column;
 	gap: 3px;
 }
+.ds-pay-btn__label-row {
+	display: flex;
+	align-items: center;
+	gap: var(--s-2);
+	min-width: 0;
+}
 .ds-pay-btn__label {
 	font-size: 20px;
 	font-weight: var(--w-bold);
@@ -691,6 +697,53 @@
 	border-style: dashed;
 	box-shadow: none;
 	color: var(--text-faint);
+}
+.ds-method-tile__mark--preferred {
+	border-color: var(--accent);
+	box-shadow: 2px 2px 0 var(--accent);
+}
+
+/* Labeled checkbox-like toggle (the editor's "preferred method" control). */
+.ds-toggle-row {
+	display: flex;
+	align-items: center;
+	gap: var(--s-2);
+	background: none;
+	border: none;
+	padding: 2px 0;
+	cursor: pointer;
+	font-family: var(--font-core);
+	font-size: var(--size-small);
+	color: var(--text-body);
+	text-align: left;
+}
+.ds-toggle-row__box {
+	width: 20px;
+	height: 20px;
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--r-xs);
+	border: var(--bw-strong) solid var(--ink-line);
+	background: var(--surface-card);
+	color: var(--on-accent);
+	transition: background 90ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.ds-toggle-row--active {
+	font-weight: var(--w-bold);
+	color: var(--text-strong);
+}
+.ds-toggle-row--active .ds-toggle-row__box {
+	background: var(--accent);
+}
+
+/* Reorder controls inside a method's popover. */
+.ds-popover-order-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--s-2);
 }
 
 /* Editor screen (src/pages/index.astro + src/scripts/editor.mjs). */

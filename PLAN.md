@@ -133,7 +133,7 @@ user.**
   "v": 1,
   "title": "Bruno's payments",
   "methods": [
-    { "type": "satispay", "value": "brunoxyz" },
+    { "type": "satispay", "value": "brunoxyz", "preferred": true },
     { "type": "revolut",  "value": "brunoxyz" },
     { "type": "paypal",   "value": "brunoxyz" },
     { "type": "iban",     "value": "IT60X0542811101000000123456",
@@ -146,13 +146,22 @@ user.**
 - **Array, not object**: order is information — the viewer always renders
   methods in array order, so a saved page from before the 0.6 redesign
   still displays in whatever custom order its creator chose.
-  - The redesigned editor (0.6, the dammeli design system's fixed
-    tile-grid picker) always emits satispay, revolut, paypal, iban, then
-    the free-form "other methods" entries in the order they were added
-    (0.7: up to 5 of them, not just one) — the manual up/down reordering
-    UI is gone. Accepted consequence of adopting the design system as
-    given; nothing stops a future editor from writing a different order
-    into the same array.
+  - The 0.6 redesign's fixed tile-grid picker always emitted satispay,
+    revolut, paypal, iban, then the free-form "other methods" entries in
+    the order they were added, with no way to change that — 0.8 brought
+    manual reordering back, as move-earlier/move-later buttons inside
+    each filled method's popover (not drag-and-drop on the grid itself,
+    which stays in its fixed layout: reordering is purely about the
+    *payload* order, not which tile sits where on screen).
+- **`preferred: true` on at most one entry** (0.8): the method the page's
+  creator wants shown first, badged, on the read-only page — set from a
+  toggle in that method's popover. `assemblePayload()` keeps only the
+  first `preferred: true` it sees among the cards it's given (defensive:
+  the editor's own single `state.preferred` value can only ever produce
+  one, but the function doesn't assume its caller is well-behaved). The
+  viewer moves that entry to the front of the rendered list regardless of
+  its position in the array — "shown first" is a property of the flag,
+  not something the creator also has to separately drag to the top.
 - The free-form "other methods" entries' `type` is now whatever label the
   user typed (e.g. `"Bitcoin"`, `"Monero"`, `"Wise"`), not a value from a
   fixed list, and there can be **up to 5 of them** (0.7) — each is its own

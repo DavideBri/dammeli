@@ -10,6 +10,7 @@ export const ICON_PATHS = {
 	bookmark: `<path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"></path>`,
 	check: `<path d="M20 6 9 17l-5-5"></path>`,
 	'chevron-down': `<path d="m6 9 6 6 6-6"></path>`,
+	'chevron-left': `<path d="m15 18-6-6 6-6"></path>`,
 	'chevron-right': `<path d="m9 18 6-6-6-6"></path>`,
 	'circle-alert': `<circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line>`,
 	'clipboard-check': `<rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path>`,

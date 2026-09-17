@@ -201,6 +201,24 @@ undocked domain (0.1).
 
 ---
 
+## 0.8 Preferred method and manual reordering
+
+- [x] "Preferred method" flag: a toggle in a filled method's popover
+      (`preferred: true` on its payload entry, PLAN.md section 5) —
+      shown first on the public page regardless of array order, with an
+      accent-bordered tile and a "Preferito"/"Preferred" badge so the
+      payer can tell it's the creator's pick
+- [x] Manual reordering is back, without touching the tile grid's fixed
+      layout: move-earlier/move-later buttons inside each filled
+      method's popover shift it among the *other filled methods* only
+      (unfilled tiles don't participate — they're invisible in the
+      payload anyway), with a "N di M"/"N of M" position indicator
+- [x] IBAN participates in both: preferred moves its card above the
+      pay-button list instead of leaving it pinned after; reordering
+      changes its position relative to the other methods the same way
+
+---
+
 ## 0.9 Private beta
 
 - [ ] Privacy page with declared providers: who they are, where they're

@@ -172,14 +172,14 @@ export function notice({ tone = 'neutral', iconName = 'info', title, body }) {
  * its own drawn mark, so its own label's initial is the closest thing to
  * a recognizable icon.
  */
-export function methodTile({ type, size = 56, checked = false, selected = false, letter = null }) {
+export function methodTile({ type, size = 56, checked = false, selected = false, letter = null, preferred = false }) {
 	const wrap = document.createElement('span');
 	wrap.className = 'ds-method-tile';
 	wrap.setAttribute('aria-hidden', 'true');
 
 	const tintType = type in METHOD_TINTS ? type : 'crypto';
 	const mark = document.createElement('span');
-	mark.className = `ds-method-tile__mark ds-method-tile__mark--${size} ds-method-tile__mark--${tintType}${selected ? ' ds-method-tile--selected' : ''}`;
+	mark.className = `ds-method-tile__mark ds-method-tile__mark--${size} ds-method-tile__mark--${tintType}${selected ? ' ds-method-tile--selected' : ''}${preferred ? ' ds-method-tile__mark--preferred' : ''}`;
 	if (letter) {
 		const letterSpan = document.createElement('span');
 		letterSpan.className = 'ds-method-tile__letter';
@@ -209,6 +209,26 @@ export function addTile(size = 56) {
 	mark.appendChild(icon('plus', { size: Math.round(size * 0.45), strokeWidth: 2.2 }));
 	wrap.appendChild(mark);
 	return wrap;
+}
+
+/** A labeled checkbox-like toggle, styled as a small bordered box + text. */
+export function toggleRow({ active, label, onClick }) {
+	const button = document.createElement('button');
+	button.type = 'button';
+	button.className = `ds-toggle-row${active ? ' ds-toggle-row--active' : ''}`;
+	button.setAttribute('aria-pressed', String(active));
+
+	const box = document.createElement('span');
+	box.className = 'ds-toggle-row__box';
+	if (active) box.appendChild(icon('check', { size: 13, strokeWidth: 3 }));
+	button.appendChild(box);
+
+	const text = document.createElement('span');
+	text.textContent = label;
+	button.appendChild(text);
+
+	button.addEventListener('click', onClick);
+	return button;
 }
 
 export function topBar({ title, onBack, backLabel, right = [], wordmarkFallback = true } = {}) {
