@@ -433,6 +433,11 @@
 	gap: 8px;
 	color: var(--text-strong);
 }
+.ds-wordmark-link {
+	display: inline-flex;
+	text-decoration: none;
+	-webkit-tap-highlight-color: transparent;
+}
 .ds-wordmark__text {
 	font-family: var(--font-core);
 	font-weight: var(--w-bold);

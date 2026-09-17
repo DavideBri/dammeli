@@ -318,7 +318,7 @@ export function topBar({ title, onBack, backLabel, right = [], wordmarkFallback 
 		span.textContent = title;
 		titleWrap.appendChild(span);
 	} else if (wordmarkFallback) {
-		titleWrap.appendChild(wordmark(20));
+		titleWrap.appendChild(wordmarkLink(20));
 	}
 	header.appendChild(titleWrap);
 
@@ -341,6 +341,20 @@ export function wordmark(size = 20) {
 	text.append('dammeli', dot);
 	span.appendChild(text);
 	return span;
+}
+
+/** The wordmark, wrapped as a plain link home. A different pathname (every
+ * page but the editor's own "/") navigates natively; a caller whose own URL
+ * can share "/" with a different hash (the public viewer, at "/#1r…") still
+ * needs to wire up its own hard-navigate click handler on top of this, the
+ * same way its other same-path links already do — this link only sets
+ * `href`, it doesn't know about that reload requirement itself. */
+export function wordmarkLink(size = 20) {
+	const link = document.createElement('a');
+	link.href = '/';
+	link.className = 'ds-wordmark-link';
+	link.appendChild(wordmark(size));
+	return link;
 }
 
 export function copyFeedbackButton({ variant, size, full, iconName, text, copiedText, getValue, onClick }) {

@@ -17,7 +17,9 @@ export function initHowItWorks() {
 	document.title = `${t(lang, 'howItWorks.title')} — dammeli`;
 
 	const { header } = ui.topBar({
-		title: t(lang, 'howItWorks.title'),
+		// No `title` here: the page's own <h1> below already says
+		// "Come funziona"/"How it works" — showing it twice (topbar + h1)
+		// was redundant, so the topbar falls back to the wordmark instead.
 		onBack: () => {
 			location.href = '/';
 		},

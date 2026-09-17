@@ -260,6 +260,21 @@ undocked domain (0.1).
       filled-methods counter is gone — it never told the payer or the
       creator anything actionable. The read-only page's loading state is a
       spinner (`ui.spinner()`), not the word "Caricamento…"
+- [x] Satispay/Revolut/PayPal marks replaced with each brand's own real
+      logo (recolored to `currentColor`, see `src/vendor/README.md`),
+      reversing the project's earlier "no third-party logos" stance for
+      instant recognition — IBAN and "other methods" stay hand-drawn.
+      Wherever the wordmark appears with no page title of its own (the
+      editor, the public viewer, "How it works", Privacy), it's now a
+      link back home. "How it works" and Privacy no longer show their own
+      title twice (topbar *and* `<h1>`) — dropped from the topbar, kept in
+      the visible heading
+- [x] Open Graph / Twitter card tags (`src/components/SocialMeta.astro`)
+      on all three pages, with one static share image
+      (`public/og-image.png`, source mockup in `tools/og-image.html`) —
+      a per-page dynamic image isn't possible without breaking the
+      privacy model, since a shared page's title lives only in the URL
+      fragment, which never reaches the server (PLAN.md section 3)
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**

@@ -57,7 +57,16 @@ function buildEditorTopBar(editorRoot, lang, { onPages }) {
 }
 
 function buildViewerTopBar(viewerRoot) {
-	const { header } = ui.topBar({ wordmarkFallback: false, right: [ui.wordmark(17)] });
+	const homeLink = ui.wordmarkLink(17);
+	homeLink.addEventListener('click', (event) => {
+		// Same reasoning as the footer's "Fanne una tua" link: this page and
+		// "/" share a path, only the fragment differs, so a plain click would
+		// never reload and boot() would never switch back to the editor.
+		if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+		event.preventDefault();
+		navigateHard('/');
+	});
+	const { header } = ui.topBar({ wordmarkFallback: false, right: [homeLink] });
 	viewerRoot.querySelector('[data-topbar-viewer]').replaceChildren(header);
 }
 

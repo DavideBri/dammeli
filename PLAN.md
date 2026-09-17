@@ -350,11 +350,15 @@ instead of JS-tracked mouse state) plus vanilla-JS DOM builders
 (`src/scripts/ui.mjs`). Design tokens are copied verbatim into
 `src/styles/ds/*.css`.
 
-**No third-party logos anywhere**, including Satispay's: every payment
-method gets a small geometric mark drawn for this project instead of a
-real brand logo (`src/vendor/marks.mjs`), and icons are a vendored subset
-of Lucide (ISC license, `src/vendor/icons.mjs`). Satispay never gets a
-real logo either way, so there's no missing-asset gap to track.
+Icons are a vendored subset of Lucide (ISC license, `src/vendor/icons.mjs`).
+Payment method marks (`src/vendor/marks.mjs`) were originally geometric
+shapes drawn for this project rather than real brand logos; 0.9 replaced
+Satispay/Revolut/PayPal's with each brand's own real mark (recolored to
+`currentColor`, see `src/vendor/README.md` for provenance) for instant
+recognition, trading away the earlier "no third-party logos" stance. IBAN
+and the generic "other methods" mark stay hand-drawn, since neither has a
+brand logo to use. The product's own mark (`logoMarkSvg`) stays original
+artwork either way.
 
 Theme: `prefers-color-scheme` picks the default; an explicit choice
 (`src/lib/theme.mjs`) overrides it via `data-theme` on `<html>`, saved

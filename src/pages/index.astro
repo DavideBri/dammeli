@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import SocialMeta from '../components/SocialMeta.astro';
 ---
 <html lang="it">
 	<head>
@@ -7,6 +8,11 @@ import '../styles/global.css';
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>damme.li</title>
 		<link rel="icon" href="data:," />
+		<SocialMeta
+			title="dammeli — pagamenti in un link cifrato"
+			description="Metti i tuoi metodi di pagamento in un link cifrato: nessun account, nessuna email, e nemmeno noi possiamo leggerlo."
+			path="/"
+		/>
 		<script type="module" src="/crypto.js"></script>
 	</head>
 	<body>

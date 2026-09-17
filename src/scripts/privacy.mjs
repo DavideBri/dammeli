@@ -14,7 +14,9 @@ export function initPrivacy() {
 	document.title = `${t(lang, 'privacy.title')} — dammeli`;
 
 	const { header } = ui.topBar({
-		title: t(lang, 'privacy.title'),
+		// No `title` here: the page's own <h1> below already says "Privacy" —
+		// showing it twice (topbar + h1) was redundant, so the topbar falls
+		// back to the wordmark instead.
 		onBack: () => {
 			location.href = '/';
 		},
