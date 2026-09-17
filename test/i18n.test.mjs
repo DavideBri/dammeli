@@ -4,13 +4,13 @@ import assert from 'node:assert/strict';
 import { detectLang, t } from '../src/lib/i18n.mjs';
 
 test('t: looks up a known key for each language', () => {
-	assert.equal(t('it', 'editor.h1'), 'Dammi i soldi.');
-	assert.equal(t('en', 'editor.h1'), 'Gimme the money.');
+	assert.equal(t('it', 'editor.h1'), 'I tuoi metodi di pagamento, mai in chiaro.');
+	assert.equal(t('en', 'editor.h1'), 'Your payment methods, never exposed.');
 });
 
 test('t: substitutes {{placeholder}} vars', () => {
-	assert.equal(t('it', 'editor.filledCount', { count: 2, total: 5 }), '2 su 5');
-	assert.equal(t('en', 'editor.filledCount', { count: 2, total: 5 }), '2 of 5');
+	assert.equal(t('it', 'myPages.rowFallbackName', { id: 'ab12' }), 'Pagina …ab12');
+	assert.equal(t('en', 'myPages.rowFallbackName', { id: 'ab12' }), 'Page …ab12');
 });
 
 test('t: an unknown key falls back to the key itself rather than crashing', () => {

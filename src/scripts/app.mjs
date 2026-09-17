@@ -129,7 +129,7 @@ export async function boot() {
 	buildViewerTopBar(viewerRoot);
 	showScreen('viewer');
 	showViewerState(viewerRoot, 'loading');
-	viewerRoot.querySelector('[data-viewer-state="loading"]').textContent = t(lang, 'viewer.loading');
+	viewerRoot.querySelector('[data-viewer-state="loading"]').replaceChildren(ui.spinner(t(lang, 'viewer.loading')));
 	try {
 		const payload = await fetchPayload(dammeli, loaded);
 

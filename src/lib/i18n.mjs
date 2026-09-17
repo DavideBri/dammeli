@@ -28,17 +28,15 @@ const dict = {
 		'nav.edit': 'Modifica',
 		'nav.done': 'Fatto.',
 
-		'editor.kicker': 'senza account · senza email',
-		'editor.h1': 'Dammi i soldi.',
+		'editor.h1': 'I tuoi metodi di pagamento, mai in chiaro.',
 		'editor.subtitle':
-			"Metti i tuoi metodi di pagamento, ottieni un link. Chi te lo deve dare paga con l'app che ha già.",
+			'Finiscono in un link cifrato — nemmeno noi possiamo leggerlo, solo chi ce l\'ha.',
 		'editor.titleFieldLabel': 'Titolo della pagina',
 		'editor.titleFieldHint':
 			'Utile per distinguere le tue pagine — personale, lavoro, un evento. Lo vede anche chi paga.',
+		'editor.hintToggle': 'Mostra il suggerimento',
 		'editor.titleFieldPlaceholder': 'Paga Bruno',
 		'editor.methodsHeading': 'Come vuoi essere pagato',
-		'editor.filledCount': '{{count}} su {{total}}',
-		'editor.footnote': 'Nessun account, nessuna email. Quello che scrivi resta nel link.',
 		'editor.createButton': 'Crea la pagina',
 		'editor.saveButton': 'Salva le modifiche',
 		'editor.creating': 'Creazione…',
@@ -121,8 +119,6 @@ const dict = {
 		'viewer.footerCta': 'Fanne una tua',
 		'viewer.howItWorks': 'Come funziona',
 
-		'editor.howItWorks': 'Come funziona questa cosa?',
-
 		'howItWorks.title': 'Come funziona',
 		'howItWorks.intro':
 			'In breve: crei una pagina con i tuoi metodi di pagamento, ottieni un link, lo condividi. Nessun account, nessuna email, e non possiamo leggere quello che ci scrivi — nemmeno se lo volessimo. Ecco come, senza tecnicismi.',
@@ -181,17 +177,15 @@ const dict = {
 		'nav.edit': 'Edit',
 		'nav.done': 'Done.',
 
-		'editor.kicker': 'no account · no email',
-		'editor.h1': 'Gimme the money.',
+		'editor.h1': 'Your payment methods, never exposed.',
 		'editor.subtitle':
-			'Add your payment methods, get one link. Whoever owes you pays with the app they already have.',
+			"They go into one encrypted link — not even we can read it, only whoever holds it can.",
 		'editor.titleFieldLabel': 'Page title',
 		'editor.titleFieldHint':
 			'Useful to tell your pages apart — personal, work, an event. The payer sees it too.',
+		'editor.hintToggle': 'Show the hint',
 		'editor.titleFieldPlaceholder': 'Pay Bruno',
 		'editor.methodsHeading': 'How you want to get paid',
-		'editor.filledCount': '{{count}} of {{total}}',
-		'editor.footnote': 'No account, no email. What you write stays in the link.',
 		'editor.createButton': 'Create page',
 		'editor.saveButton': 'Save changes',
 		'editor.creating': 'Creating…',
@@ -270,8 +264,6 @@ const dict = {
 		'viewer.footerPost': '. No account, no email.',
 		'viewer.footerCta': 'Make your own',
 		'viewer.howItWorks': 'How it works',
-
-		'editor.howItWorks': 'How does this work?',
 
 		'howItWorks.title': 'How it works',
 		'howItWorks.intro':

@@ -13,6 +13,21 @@ export function icon(name, opts) {
 	return span;
 }
 
+/** A spinning ring, for a loading state that isn't just sad static text.
+ * `label` is exposed to assistive tech (role="status") — nothing is drawn
+ * on screen for it, the animation speaks for itself visually. */
+export function spinner(label) {
+	const wrap = document.createElement('div');
+	wrap.className = 'ds-spinner-wrap';
+	wrap.setAttribute('role', 'status');
+	wrap.setAttribute('aria-label', label ?? '');
+	const ring = document.createElement('span');
+	ring.className = 'ds-spinner';
+	ring.setAttribute('aria-hidden', 'true');
+	wrap.appendChild(ring);
+	return wrap;
+}
+
 export function iconButton({ iconName, label, onClick, outline = false }) {
 	const button = document.createElement('button');
 	button.type = 'button';
@@ -56,12 +71,14 @@ export function button({
 	return el;
 }
 
-/** Field: label + optional hint + input (with an optional clear-to-empty
- * "x", once it has content) + confirm/error slot below it. */
+/** Field: label (with an optional "?" that reveals a hint on click or
+ * hover, kept out of the way otherwise) + input (with an optional
+ * clear-to-empty "x", once it has content) + confirm/error slot below it. */
 export function field({
 	id,
 	label,
 	hint,
+	hintToggleLabel,
 	value = '',
 	placeholder,
 	mono = false,
@@ -72,18 +89,43 @@ export function field({
 	const wrap = document.createElement('div');
 	wrap.className = 'ds-field';
 
+	let labelRow = null;
 	if (label) {
+		labelRow = document.createElement('div');
+		labelRow.className = 'ds-field__label-row';
 		const labelEl = document.createElement('label');
 		labelEl.className = 'ds-field__label';
 		labelEl.htmlFor = id;
 		labelEl.textContent = label;
-		wrap.appendChild(labelEl);
+		labelRow.appendChild(labelEl);
+		wrap.appendChild(labelRow);
 	}
 	if (hint) {
 		const hintEl = document.createElement('span');
 		hintEl.className = 'ds-field__hint';
 		hintEl.textContent = hint;
-		wrap.appendChild(hintEl);
+		if (labelRow) {
+			// Hidden (via the CSS class, not the `hidden` attribute — Tailwind's
+			// preflight sets `[hidden] { display: none !important }`, which no
+			// plain override can beat) until the "?" is clicked or hovered.
+			// Kept in the same flex row as the label so :hover/:focus-visible on
+			// the toggle can reveal it purely in CSS, while it still wraps onto
+			// its own line (ds-field__hint has flex-basis: 100%).
+			const hintToggle = document.createElement('button');
+			hintToggle.type = 'button';
+			hintToggle.className = 'ds-field__hint-toggle';
+			hintToggle.setAttribute('aria-label', hintToggleLabel || hint);
+			hintToggle.setAttribute('aria-expanded', 'false');
+			hintToggle.innerHTML = iconSvg('circle-help', { size: 15, strokeWidth: 1.75 });
+			hintToggle.addEventListener('click', () => {
+				const open = hintEl.classList.toggle('ds-field__hint--open');
+				hintToggle.setAttribute('aria-expanded', String(open));
+			});
+			labelRow.appendChild(hintToggle);
+			labelRow.appendChild(hintEl);
+		} else {
+			wrap.appendChild(hintEl);
+		}
 	}
 
 	const row = document.createElement('div');

@@ -76,28 +76,28 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 	const titleFieldSlot = root.querySelector('[data-title-field]');
 	const tilesEl = root.querySelector('[data-method-tiles]');
 	const popoverWrap = root.querySelector('[data-method-popover-wrap]');
-	const filledCountEl = root.querySelector('[data-filled-count]');
 	const createBtn = root.querySelector('[data-create]');
 
-	root.querySelector('[data-editor-kicker]').replaceChildren(ui.microLabel(t(lang, 'editor.kicker'), { tone: 'accent' }));
 	root.querySelector('[data-editor-h1]').textContent = t(lang, 'editor.h1');
-	root.querySelector('[data-editor-subtitle]').textContent = t(lang, 'editor.subtitle');
+	const subtitleEl = root.querySelector('[data-editor-subtitle]');
+	const introHowItWorksLink = document.createElement('a');
+	introHowItWorksLink.href = '/how-it-works';
+	introHowItWorksLink.className = 'ds-text-accent';
+	introHowItWorksLink.textContent = t(lang, 'viewer.howItWorks');
+	subtitleEl.replaceChildren(`${t(lang, 'editor.subtitle')} `, introHowItWorksLink);
 	root.querySelector('[data-editor-methods-heading]').textContent = t(lang, 'editor.methodsHeading');
 	const footnoteEl = root.querySelector('[data-editor-footnote]');
-	const howItWorksLink = document.createElement('a');
-	howItWorksLink.href = '/how-it-works';
-	howItWorksLink.className = 'ds-text-accent';
-	howItWorksLink.textContent = t(lang, 'editor.howItWorks');
 	const privacyLink = document.createElement('a');
 	privacyLink.href = '/privacy';
 	privacyLink.className = 'ds-text-accent';
 	privacyLink.textContent = t(lang, 'privacy.title');
-	footnoteEl.replaceChildren(`${t(lang, 'editor.footnote')} `, howItWorksLink, ' · ', privacyLink);
+	footnoteEl.replaceChildren(privacyLink);
 
 	const titleField = ui.field({
 		id: 'page-title',
 		label: t(lang, 'editor.titleFieldLabel'),
 		hint: t(lang, 'editor.titleFieldHint'),
+		hintToggleLabel: t(lang, 'editor.hintToggle'),
 		placeholder: t(lang, 'editor.titleFieldPlaceholder'),
 		value: state.title,
 		clearLabel: t(lang, 'editor.clearField'),
@@ -134,12 +134,6 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 	function updateCreateButton() {
 		createBtn.disabled = disabled || filledCount() === 0;
 	}
-	function renderFilledCount() {
-		filledCountEl.replaceChildren(
-			ui.microLabel(t(lang, 'editor.filledCount', { count: filledCount(), total: tileIds().length })),
-		);
-		updateCreateButton();
-	}
 
 	/** Removes `id` from wherever it sits in `order` and reinserts it at
 	 * `targetId`'s current index — a normal "drop it here" move, not a
@@ -171,7 +165,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		}
 		renderTiles();
 		renderPopover();
-		renderFilledCount();
+		updateCreateButton();
 		if (selected) {
 			// The popover appears below the grid, often below the fold on a
 			// phone — bring it into view instead of leaving the user to
@@ -248,7 +242,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		f.input.addEventListener('input', () => {
 			state.values[method] = f.input.value;
 			refreshConfirm();
-			renderFilledCount();
+			updateCreateButton();
 			renderTilesInPlace();
 		});
 		f.input.addEventListener('blur', () => {
@@ -272,6 +266,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			id: 'field-iban-holder',
 			label: t(lang, 'methods.iban.holderLabel'),
 			hint: t(lang, 'methods.iban.holderHint'),
+			hintToggleLabel: t(lang, 'editor.hintToggle'),
 			placeholder: t(lang, 'methods.iban.holderPlaceholder'),
 			value: state.holder,
 			clearLabel: t(lang, 'editor.clearField'),
@@ -330,7 +325,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		valueField.input.addEventListener('input', () => {
 			entry.value = valueField.input.value;
 			refreshConfirm();
-			renderFilledCount();
+			updateCreateButton();
 			renderTilesInPlace();
 		});
 		valueField.input.addEventListener('blur', () => {
@@ -355,7 +350,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 				selected = null;
 				renderTiles();
 				renderPopover();
-				renderFilledCount();
+				updateCreateButton();
 			},
 		});
 		removeBtn.disabled = disabled;
@@ -552,7 +547,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 
 	renderTiles();
 	renderPopover();
-	renderFilledCount();
+	updateCreateButton();
 
 	return {
 		getTitle: () => state.title.trim(),

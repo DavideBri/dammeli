@@ -179,10 +179,45 @@
 	color: var(--text-strong);
 	letter-spacing: -0.01em;
 }
+.ds-field__label-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--s-2);
+}
+.ds-field__hint-toggle {
+	width: 20px;
+	height: 20px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	border: none;
+	background: transparent;
+	padding: 0;
+	color: var(--text-faint);
+	cursor: pointer;
+	transition: color 90ms cubic-bezier(0.22, 0.61, 0.36, 1);
+	-webkit-tap-highlight-color: transparent;
+}
+.ds-field__hint-toggle:hover,
+.ds-field__hint-toggle:focus-visible {
+	color: var(--text-accent);
+}
 .ds-field__hint {
+	display: none;
+	flex-basis: 100%;
 	font-size: var(--size-micro);
 	color: var(--text-muted);
 	line-height: 1.35;
+}
+/* Hovering or focusing the "?" peeks the hint without pinning it open —
+   clicking (see ui.mjs's field()) toggles --open itself for a persistent
+   open/closed state, on touch devices especially. */
+.ds-field__hint-toggle:hover ~ .ds-field__hint,
+.ds-field__hint-toggle:focus-visible ~ .ds-field__hint,
+.ds-field__hint--open {
+	display: block;
 }
 .ds-field__input {
 	min-height: var(--field-h);
@@ -790,11 +825,6 @@
 	gap: var(--s-3);
 	margin-top: var(--s-2);
 }
-.editor-methods-heading-row {
-	display: flex;
-	align-items: baseline;
-	justify-content: space-between;
-}
 .editor-footnote {
 	font-size: var(--size-micro);
 	color: var(--text-faint);
@@ -882,6 +912,27 @@
 }
 
 /* Public viewer screen. */
+.viewer-loading {
+	display: flex;
+	justify-content: center;
+	padding: var(--s-8) 0;
+}
+.ds-spinner-wrap {
+	display: inline-flex;
+}
+.ds-spinner {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	border: var(--bw-strong) solid var(--border-hairline);
+	border-top-color: var(--accent);
+	animation: ds-spin 700ms linear infinite;
+}
+@keyframes ds-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
 .viewer-loaded {
 	display: flex;
 	flex-direction: column;

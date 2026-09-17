@@ -250,6 +250,16 @@ undocked domain (0.1).
       and the public page's footer. Includes an honest private-beta note
       (backups exist, restore not yet tested) rather than waiting for
       that to actually be true first
+- [x] Editor copy pass for beta clarity: the old wordmark + kicker + tagline
+      + subtitle stack said little in a lot of space — replaced with one
+      short headline plus a one-sentence trust pitch ending in an inline
+      "How it works" link, which also makes the footer's old repeat of the
+      same link redundant (now just the Privacy link). The title field's
+      hint moved from always-visible text to a "?" toggle beside the label
+      (click or hover), same for the IBAN holder field. The "3 of 4"
+      filled-methods counter is gone — it never told the payer or the
+      creator anything actionable. The read-only page's loading state is a
+      spinner (`ui.spinner()`), not the word "Caricamento…"
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
