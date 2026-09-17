@@ -17,7 +17,7 @@
 import { initEditor } from './editor.mjs';
 import { initCreateFlow } from './create-flow.mjs';
 import { initYourPages } from './your-pages.mjs';
-import { renderMethods, showViewerState } from './viewer.mjs';
+import { renderMethods, renderIbanCard, showViewerState } from './viewer.mjs';
 import * as api from '../lib/api.mjs';
 import { detectLang, t } from '../lib/i18n.mjs';
 import { getSavedTheme, setSavedTheme, applyTheme, effectiveTheme } from '../lib/theme.mjs';
@@ -133,7 +133,8 @@ export async function boot() {
 	try {
 		const payload = await fetchPayload(dammeli, loaded);
 
-		const holder = payload.methods.find((m) => m.type === 'iban' && m.holder)?.holder;
+		const ibanMethod = payload.methods.find((m) => m.type === 'iban');
+		const holder = ibanMethod?.holder;
 		const asksEl = viewerRoot.querySelector('[data-page-asks]');
 		if (holder) {
 			asksEl.hidden = false;
@@ -145,18 +146,7 @@ export async function boot() {
 		document.title = `${payload.title || t(lang, 'viewer.defaultTitle')} — dammeli`;
 
 		renderMethods(viewerRoot.querySelector('[data-methods]'), payload.methods, lang);
-
-		const holderCard = viewerRoot.querySelector('[data-iban-holder-card]');
-		if (holder) {
-			holderCard.hidden = false;
-			holderCard.className = 'ds-card ds-card--sunken ds-iban-holder-card';
-			const label = document.createElement('span');
-			label.appendChild(ui.microLabel(t(lang, 'methods.iban.holderTitle')));
-			const name = document.createElement('span');
-			name.className = 'ds-iban-holder-name';
-			name.textContent = holder;
-			holderCard.replaceChildren(label, name);
-		}
+		renderIbanCard(viewerRoot.querySelector('[data-iban-card]'), ibanMethod, lang);
 
 		const footerEl = viewerRoot.querySelector('[data-viewer-footer]');
 		footerEl.replaceChildren();

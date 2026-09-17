@@ -157,10 +157,12 @@ user.**
   user typed (e.g. `"Bitcoin"`, `"Monero"`, `"Wise"`), not a value from a
   fixed list, and there can be **up to 5 of them** (0.7) — each is its own
   array entry with `type` set to that entry's own label, not a shared
-  `"crypto"` type. `methodLabel()`/the viewer fall back to displaying the
-  type string itself for anything it doesn't recognize as one of the four
-  main methods. `buildDirectLink()` still special-cases `type` matching
-  `"bitcoin"` case-insensitively for the BIP21 `bitcoin:` deep link.
+  `"crypto"` type. The viewer displays that `type` string directly as the
+  entry's title (0.7 — previously a generic "Altri metodi"/"Other
+  methods" label, with the real label buried in the note line), and its
+  tile shows the label's first letter instead of a drawn mark.
+  `buildDirectLink()` still special-cases `type` matching `"bitcoin"`
+  case-insensitively for the BIP21 `bitcoin:` deep link.
 - **`value` holds only the handle, never the full URL.** If Revolut
   changes its URL format, a handle only needs a deploy; a saved URL would
   leave thousands of broken, unreadable blobs.

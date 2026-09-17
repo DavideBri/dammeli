@@ -37,22 +37,21 @@ export function buildDirectLink(method) {
 	return null;
 }
 
-function truncate(value, length) {
-	return value.length <= length ? value : `${value.slice(0, length)}…`;
-}
-
 function renderMethodCard(method, lang) {
 	const isKnown = KNOWN_TYPES.has(method.type);
-	const tileType = isKnown ? method.type : 'crypto';
-	const label = isKnown ? t(lang, `methods.${method.type}.label`) : t(lang, 'methods.crypto.label');
-	const note = isKnown ? method.value : `${method.type} · ${truncate(method.value, 10)}`;
+	// A custom "other methods" entry has no fixed label of its own — the
+	// label the creator typed for it (method.type, see PLAN.md section 5)
+	// *is* its title here, same as its tile shows that label's initial
+	// instead of a drawn mark.
+	const label = isKnown ? t(lang, `methods.${method.type}.label`) : method.type;
+	const note = method.value;
 	const directLink = buildDirectLink(method);
 	const action = directLink ? t(lang, 'common.open') : t(lang, 'common.copy');
 
 	const btn = document.createElement('button');
 	btn.type = 'button';
 	btn.className = 'ds-pay-btn';
-	btn.appendChild(ui.methodTile({ type: tileType, size: 48 }));
+	btn.appendChild(ui.methodTile({ type: isKnown ? method.type : 'crypto', size: 48, letter: isKnown ? null : method.type }));
 
 	const info = document.createElement('span');
 	info.className = 'ds-pay-btn__info';
@@ -88,8 +87,89 @@ function renderMethodCard(method, lang) {
 	return btn;
 }
 
+/** Every method except IBAN, which gets its own bigger card (renderIbanCard). */
 export function renderMethods(container, methods, lang) {
-	container.replaceChildren(...methods.map((method) => renderMethodCard(method, lang)));
+	container.replaceChildren(
+		...methods.filter((method) => method.type !== 'iban').map((method) => renderMethodCard(method, lang)),
+	);
+}
+
+function copyIconButton(value, label) {
+	const btn = document.createElement('button');
+	btn.type = 'button';
+	btn.className = 'ds-icon-btn ds-icon-btn--outline';
+	btn.setAttribute('aria-label', label);
+	btn.title = label;
+	btn.appendChild(ui.icon('copy', { size: 18, strokeWidth: 2 }));
+	btn.addEventListener('click', async () => {
+		await navigator.clipboard.writeText(value);
+		btn.replaceChildren(ui.icon('check', { size: 18, strokeWidth: 2 }));
+		setTimeout(() => {
+			btn.replaceChildren(ui.icon('copy', { size: 18, strokeWidth: 2 }));
+		}, 1500);
+	});
+	return btn;
+}
+
+function ibanFieldRow(label, value, { mono = false, copyLabel }) {
+	const row = document.createElement('div');
+	row.className = 'iban-card__row';
+
+	const field = document.createElement('div');
+	field.className = 'iban-card__field';
+	if (label) field.appendChild(ui.microLabel(label));
+	const valueSpan = document.createElement('span');
+	valueSpan.className = mono ? 'iban-card__value iban-card__value--mono' : 'iban-card__value';
+	valueSpan.textContent = value;
+	field.appendChild(valueSpan);
+	row.appendChild(field);
+
+	row.appendChild(copyIconButton(value, copyLabel));
+	return row;
+}
+
+/**
+ * IBAN gets a bigger, dedicated card instead of a plain pay-button row:
+ * the number and the account holder are "two different blocks" (in the
+ * literal sense — separately copyable), not one handle like every other
+ * method.
+ */
+export function renderIbanCard(container, method, lang) {
+	if (!method) {
+		container.hidden = true;
+		container.replaceChildren();
+		return;
+	}
+	container.hidden = false;
+	container.className = 'ds-card ds-card--default ds-card--lifted iban-card';
+
+	const header = document.createElement('div');
+	header.className = 'iban-card__header';
+	header.appendChild(ui.methodTile({ type: 'iban', size: 48 }));
+	const title = document.createElement('span');
+	title.className = 'ds-pay-btn__label';
+	title.textContent = t(lang, 'methods.iban.label');
+	header.appendChild(title);
+
+	const rows = [
+		// No micro-label on this row — the header above it already says "IBAN".
+		ibanFieldRow(null, method.value, {
+			mono: true,
+			copyLabel: `${t(lang, 'common.copy')} IBAN`,
+		}),
+	];
+	if (method.holder) {
+		const divider = document.createElement('div');
+		divider.className = 'iban-card__divider';
+		rows.push(
+			divider,
+			ibanFieldRow(t(lang, 'methods.iban.holderTitle'), method.holder, {
+				copyLabel: `${t(lang, 'common.copy')} ${t(lang, 'methods.iban.holderTitle')}`,
+			}),
+		);
+	}
+
+	container.replaceChildren(header, ...rows);
 }
 
 /** Shows exactly one `[data-viewer-state="<state>"]` child, hides the rest. */

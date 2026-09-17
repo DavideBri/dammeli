@@ -445,9 +445,21 @@
 	border-radius: var(--r-sm);
 	border: var(--bw-strong) solid var(--ink-line);
 	box-shadow: var(--shadow-hard-sm);
+	color: var(--ink-0);
 	transition:
 		transform 0.08s,
 		box-shadow 0.08s;
+}
+.ds-method-tile__letter {
+	font-family: var(--font-core);
+	font-weight: var(--w-bold);
+	line-height: 1;
+}
+.ds-method-tile__mark--48 .ds-method-tile__letter {
+	font-size: 20px;
+}
+.ds-method-tile__mark--56 .ds-method-tile__letter {
+	font-size: 22px;
 }
 .ds-method-tile--selected .ds-method-tile__mark {
 	box-shadow: none;
@@ -814,16 +826,6 @@
 	text-align: center;
 	line-height: 1.5;
 }
-.ds-iban-holder-card {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-}
-.ds-iban-holder-name {
-	font-size: var(--size-body);
-	font-weight: var(--w-semibold);
-	color: var(--text-strong);
-}
 .ds-text-muted {
 	color: var(--text-muted);
 }
@@ -869,4 +871,42 @@
 .how-step__body p {
 	color: var(--text-muted);
 	line-height: 1.5;
+}
+
+/* Public viewer's IBAN card (src/scripts/viewer.mjs's renderIbanCard). */
+.iban-card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-4);
+}
+.iban-card__header {
+	display: flex;
+	align-items: center;
+	gap: var(--s-3);
+}
+.iban-card__row {
+	display: flex;
+	align-items: center;
+	gap: var(--s-3);
+}
+.iban-card__field {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+.iban-card__value {
+	font-size: var(--size-body);
+	font-weight: var(--w-semibold);
+	color: var(--text-strong);
+	overflow-wrap: break-word;
+}
+.iban-card__value--mono {
+	font-family: var(--font-mono);
+	font-size: var(--size-small);
+	word-break: break-all;
+}
+.iban-card__divider {
+	border-top: 1px dashed var(--border-hairline);
 }

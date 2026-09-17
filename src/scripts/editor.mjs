@@ -97,6 +97,11 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		if (i >= 0) return state.custom[i]?.label.trim() || t(lang, 'methods.crypto.label');
 		return t(lang, 'editor.addMethodLabel');
 	}
+	/** A custom entry's tile shows its own label's initial once it has one. */
+	function tileLetter(id) {
+		const i = customIndex(id);
+		return i >= 0 ? state.custom[i]?.label.trim() || null : null;
+	}
 	/** The tiles currently on the grid, in display order — never includes the "add" affordance. */
 	function tileIds() {
 		return [...ORDER, ...state.custom.map((_, i) => `custom:${i}`)];
@@ -141,7 +146,15 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		tileBtn.setAttribute('aria-pressed', String(isSelected));
 		tileBtn.setAttribute('aria-label', tileLabel(id));
 		tileBtn.disabled = disabled;
-		tileBtn.appendChild(ui.methodTile({ type: id.startsWith('custom:') ? 'crypto' : id, size: 56, checked: isFilled(id), selected: isSelected }));
+		tileBtn.appendChild(
+			ui.methodTile({
+				type: id.startsWith('custom:') ? 'crypto' : id,
+				size: 56,
+				checked: isFilled(id),
+				selected: isSelected,
+				letter: tileLetter(id),
+			}),
+		);
 		const label = document.createElement('span');
 		label.className = 'ds-method-grid__label';
 		label.textContent = tileLabel(id);

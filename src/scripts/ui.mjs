@@ -166,9 +166,13 @@ export function notice({ tone = 'neutral', iconName = 'info', title, body }) {
 /**
  * The tinted, bordered, hard-shadowed method mark (no third-party logos).
  * `size` must be one of the sizes with a matching CSS modifier (48, 56) —
- * CSP forbids setting width/height as an inline style.
+ * CSP forbids setting width/height as an inline style. `letter` (used for
+ * custom "other methods" entries once they have a label) replaces the
+ * drawn mark with that letter, uppercased — a custom entry doesn't get
+ * its own drawn mark, so its own label's initial is the closest thing to
+ * a recognizable icon.
  */
-export function methodTile({ type, size = 56, checked = false, selected = false }) {
+export function methodTile({ type, size = 56, checked = false, selected = false, letter = null }) {
 	const wrap = document.createElement('span');
 	wrap.className = 'ds-method-tile';
 	wrap.setAttribute('aria-hidden', 'true');
@@ -176,7 +180,14 @@ export function methodTile({ type, size = 56, checked = false, selected = false 
 	const tintType = type in METHOD_TINTS ? type : 'crypto';
 	const mark = document.createElement('span');
 	mark.className = `ds-method-tile__mark ds-method-tile__mark--${size} ds-method-tile__mark--${tintType}${selected ? ' ds-method-tile--selected' : ''}`;
-	mark.innerHTML = methodMarkSvg(type, Math.round(size * 0.52));
+	if (letter) {
+		const letterSpan = document.createElement('span');
+		letterSpan.className = 'ds-method-tile__letter';
+		letterSpan.textContent = letter.trim().slice(0, 1).toUpperCase();
+		mark.appendChild(letterSpan);
+	} else {
+		mark.innerHTML = methodMarkSvg(type, Math.round(size * 0.52));
+	}
 	wrap.appendChild(mark);
 
 	if (checked) {

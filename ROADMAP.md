@@ -182,6 +182,15 @@ undocked domain (0.1).
       in the browser before anything is sent, the key lives only in the
       link, who hosts the (unreadable) data. Linked from the editor
       footnote and the public page's footer
+- [x] Custom "other methods" entries get their own icon: their label's
+      initial, in both the editor's tile grid and the public page —
+      falls back to the generic drawn mark only while the label is
+      still empty
+- [x] Public page shows the custom label itself as the title (e.g.
+      "Wise"), not the generic "Altri metodi"/"Other methods"
+- [x] IBAN gets its own bigger card on the public page instead of a
+      plain pay-button row — the number and the account holder as two
+      separately-labeled, separately-copyable fields in one card
 
 ---
 
