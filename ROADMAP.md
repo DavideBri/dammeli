@@ -139,9 +139,10 @@ undocked domain (0.1).
       Lucide icon subset (`src/vendor/icons.mjs`)
 - [x] Dark mode: `prefers-color-scheme` default, explicit per-device
       override via a top-bar toggle (`src/lib/theme.mjs`)
-- [x] Bilingual UI, Italian and English: browser-language detection,
-      explicit per-device override via a top-bar toggle
-      (`src/lib/i18n.mjs`)
+- [x] Bilingual UI, Italian and English: browser-language detection
+      (`src/lib/i18n.mjs`) — shipped with a manual top-bar toggle on top
+      of detection, removed again in 0.7 (redundant with the device's
+      own language setting)
 - [x] Every inline `style=""`/`element.style.*` removed from the app in
       the process — CSP's `style-src` has no hash mechanism for those,
       unlike `<style>` blocks and stylesheets
@@ -174,6 +175,13 @@ undocked domain (0.1).
 - [x] Revolut direct link via `revolut.me/<tag>`, Revolut's own public
       profile-payment format — Satispay still has no verified deep-link
       scheme, so it stays copy-to-clipboard only
+- [x] Manual language toggle removed — detection-only, defaulting to
+      English (PLAN.md "Localization (0.6, revised 0.7)")
+- [x] "How it works" page (`/how-it-works`): short, non-technical
+      explanation of the privacy model — no account, encryption happens
+      in the browser before anything is sent, the key lives only in the
+      link, who hosts the (unreadable) data. Linked from the editor
+      footnote and the public page's footer
 
 ---
 

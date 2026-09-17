@@ -230,17 +230,6 @@ export function topBar({ title, onBack, backLabel, right = [], wordmarkFallback 
 	return { header, titleWrap };
 }
 
-/** Compact language switcher: shows the language you'd switch TO. */
-export function langButton(targetLangLabel, onClick) {
-	const button = document.createElement('button');
-	button.type = 'button';
-	button.className = 'ds-icon-btn ds-lang-btn';
-	button.textContent = targetLangLabel;
-	button.setAttribute('aria-label', targetLangLabel);
-	button.addEventListener('click', onClick);
-	return button;
-}
-
 export function wordmark(size = 20) {
 	const span = document.createElement('span');
 	span.className = 'ds-wordmark';

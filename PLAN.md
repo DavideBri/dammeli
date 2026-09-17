@@ -342,17 +342,15 @@ Theme: `prefers-color-scheme` picks the default; an explicit choice
 per-device in `localStorage`. Same per-device pattern as "your pages" —
 no account, so nothing to sync it to.
 
-### Localization (0.6)
+### Localization (0.6, revised 0.7)
 
 The UI is bilingual, Italian and English (`src/lib/i18n.mjs`): a
 hand-written `{it, en}` dictionary with `{{placeholder}}` substitution,
 not a library — two languages and no plurals don't justify one. Detection
-is the browser's own `navigator.languages`, defaulting to Italian; an
-explicit choice from the top bar's language toggle overrides it, saved
-per-device in `localStorage`, same as the theme. Switching reloads the
-page rather than re-rendering every string in place — simpler, and the
-editor's in-progress state is local-only anyway (nothing saved server-side
-until "Create"/"Save changes" is pressed).
+only, from the browser's own `navigator.languages`, defaulting to English
+if neither matches — 0.6 shipped a manual top-bar toggle on top of this,
+removed in 0.7: the device's own language setting already does that job,
+and a second, redundant place to control it wasn't worth the UI weight.
 
 ### Migration note
 

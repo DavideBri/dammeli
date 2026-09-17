@@ -19,7 +19,7 @@ import { initCreateFlow } from './create-flow.mjs';
 import { initYourPages } from './your-pages.mjs';
 import { renderMethods, showViewerState } from './viewer.mjs';
 import * as api from '../lib/api.mjs';
-import { detectLang, setSavedLang, t } from '../lib/i18n.mjs';
+import { detectLang, t } from '../lib/i18n.mjs';
 import { getSavedTheme, setSavedTheme, applyTheme, effectiveTheme } from '../lib/theme.mjs';
 import { showScreen, navigateHard } from './screens.mjs';
 import * as ui from './ui.mjs';
@@ -32,15 +32,6 @@ async function fetchPayload(dammeli, loaded) {
 		await dammeli.decrypt(loaded.readKey, dammeli.fromHex(nonce), dammeli.fromHex(ct)),
 	);
 	return JSON.parse(new TextDecoder().decode(plaintext));
-}
-
-function otherLang(lang) {
-	return lang === 'it' ? 'en' : 'it';
-}
-
-function switchLang(lang) {
-	setSavedLang(otherLang(lang));
-	location.reload();
 }
 
 function buildEditorTopBar(editorRoot, lang, { onPages }) {
@@ -59,16 +50,14 @@ function buildEditorTopBar(editorRoot, lang, { onPages }) {
 			},
 		});
 		const pagesBtn = ui.iconButton({ iconName: 'bookmark', label: t(lang, 'nav.yourPages'), onClick: onPages });
-		const langBtn = ui.langButton(t(lang, 'nav.lang'), () => switchLang(lang));
-		const { header } = ui.topBar({ right: [langBtn, pagesBtn, themeBtn] });
+		const { header } = ui.topBar({ right: [pagesBtn, themeBtn] });
 		editorRoot.querySelector('[data-topbar-editor]').replaceChildren(header);
 	}
 	render();
 }
 
-function buildViewerTopBar(viewerRoot, lang) {
-	const langBtn = ui.langButton(t(lang, 'nav.lang'), () => switchLang(lang));
-	const { header } = ui.topBar({ wordmarkFallback: false, right: [langBtn, ui.wordmark(17)] });
+function buildViewerTopBar(viewerRoot) {
+	const { header } = ui.topBar({ wordmarkFallback: false, right: [ui.wordmark(17)] });
 	viewerRoot.querySelector('[data-topbar-viewer]').replaceChildren(header);
 }
 
@@ -102,7 +91,7 @@ export async function boot() {
 	try {
 		loaded = await dammeli.loadFromFragment(hash);
 	} catch {
-		buildViewerTopBar(viewerRoot, lang);
+		buildViewerTopBar(viewerRoot);
 		showScreen('viewer');
 		showViewerState(viewerRoot, 'error');
 		viewerRoot.querySelector('[data-viewer-state="error"]').textContent = t(lang, 'viewer.error');
@@ -124,7 +113,7 @@ export async function boot() {
 			// truncated) — showing the empty form as if editing were working
 			// would risk looking like the page's data got lost, so this
 			// fails the same way the read-only viewer does instead.
-			buildViewerTopBar(viewerRoot, lang);
+			buildViewerTopBar(viewerRoot);
 			showScreen('viewer');
 			showViewerState(viewerRoot, 'error');
 			viewerRoot.querySelector('[data-viewer-state="error"]').textContent = t(lang, 'viewer.error');
@@ -137,7 +126,7 @@ export async function boot() {
 		return;
 	}
 
-	buildViewerTopBar(viewerRoot, lang);
+	buildViewerTopBar(viewerRoot);
 	showScreen('viewer');
 	showViewerState(viewerRoot, 'loading');
 	viewerRoot.querySelector('[data-viewer-state="loading"]').textContent = t(lang, 'viewer.loading');
@@ -188,6 +177,12 @@ export async function boot() {
 			navigateHard('/');
 		});
 		footerEl.appendChild(cta);
+		footerEl.append(' · ');
+		const howItWorksLink = document.createElement('a');
+		howItWorksLink.href = '/how-it-works';
+		howItWorksLink.className = 'ds-text-accent';
+		howItWorksLink.textContent = t(lang, 'viewer.howItWorks');
+		footerEl.appendChild(howItWorksLink);
 
 		showViewerState(viewerRoot, 'loaded');
 	} catch {

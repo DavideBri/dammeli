@@ -64,7 +64,12 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 	root.querySelector('[data-editor-h1]').textContent = t(lang, 'editor.h1');
 	root.querySelector('[data-editor-subtitle]').textContent = t(lang, 'editor.subtitle');
 	root.querySelector('[data-editor-methods-heading]').textContent = t(lang, 'editor.methodsHeading');
-	root.querySelector('[data-editor-footnote]').textContent = t(lang, 'editor.footnote');
+	const footnoteEl = root.querySelector('[data-editor-footnote]');
+	const howItWorksLink = document.createElement('a');
+	howItWorksLink.href = '/how-it-works';
+	howItWorksLink.className = 'ds-text-accent';
+	howItWorksLink.textContent = t(lang, 'editor.howItWorks');
+	footnoteEl.replaceChildren(`${t(lang, 'editor.footnote')} `, howItWorksLink);
 
 	const titleField = ui.field({
 		id: 'page-title',
