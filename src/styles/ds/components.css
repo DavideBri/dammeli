@@ -953,6 +953,27 @@
 	color: var(--text-muted);
 	line-height: 1.5;
 }
+.how-privacy-link {
+	display: inline-block;
+	margin-top: var(--s-3);
+	font-size: var(--size-small);
+}
+
+/* Privacy page (src/pages/privacy.astro). */
+.privacy-sections {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-5);
+}
+.privacy-section h2 {
+	font-size: var(--size-body);
+	letter-spacing: -0.015em;
+	margin-bottom: 4px;
+}
+.privacy-section p {
+	color: var(--text-muted);
+	line-height: 1.5;
+}
 
 /* Public viewer's IBAN card (src/scripts/viewer.mjs's renderIbanCard). */
 .iban-card {

@@ -58,12 +58,18 @@ export function initHowItWorks() {
 		}),
 	);
 
+	const privacyLink = document.createElement('a');
+	privacyLink.href = '/privacy';
+	privacyLink.className = 'ds-text-accent how-privacy-link';
+	privacyLink.textContent = t(lang, 'howItWorks.privacyLink');
+
 	document.querySelector('[data-hosting-notice]').replaceChildren(
 		ui.notice({
 			iconName: 'info',
 			title: t(lang, 'howItWorks.hostingTitle'),
 			body: t(lang, 'howItWorks.hostingBody'),
 		}),
+		privacyLink,
 	);
 
 	const ctaBtn = ui.button({

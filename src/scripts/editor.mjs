@@ -88,7 +88,11 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 	howItWorksLink.href = '/how-it-works';
 	howItWorksLink.className = 'ds-text-accent';
 	howItWorksLink.textContent = t(lang, 'editor.howItWorks');
-	footnoteEl.replaceChildren(`${t(lang, 'editor.footnote')} `, howItWorksLink);
+	const privacyLink = document.createElement('a');
+	privacyLink.href = '/privacy';
+	privacyLink.className = 'ds-text-accent';
+	privacyLink.textContent = t(lang, 'privacy.title');
+	footnoteEl.replaceChildren(`${t(lang, 'editor.footnote')} `, howItWorksLink, ' · ', privacyLink);
 
 	const titleField = ui.field({
 		id: 'page-title',

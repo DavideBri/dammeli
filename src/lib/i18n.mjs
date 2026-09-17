@@ -141,7 +141,28 @@ const dict = {
 		'howItWorks.hostingTitle': 'E chi ospita tutto questo?',
 		'howItWorks.hostingBody':
 			'Il sito e il database girano su fornitori esterni. Vedono solo blocchi cifrati illeggibili, mai i tuoi dati in chiaro — ma è giusto saperlo, quindi lo scriviamo qui invece che nascondertelo.',
+		'howItWorks.privacyLink': 'Leggi la pagina privacy completa',
 		'howItWorks.cta': 'Crea la tua pagina',
+
+		'privacy.title': 'Privacy',
+		'privacy.intro':
+			'In breve: non possiamo leggere le tue pagine, non ti chiediamo un account né un\'email, e non ti tracciamo. Qui sotto i dettagli, fornitore per fornitore.',
+		'privacy.seeTitle': 'Cosa vediamo noi',
+		'privacy.seeBody':
+			'Niente di quello che scrivi. Ogni pagina viene cifrata dentro il tuo browser prima ancora di partire (vedi "Come funziona"): quello che arriva ai nostri server è già un blocco illeggibile, e resta tale finché qualcuno non apre il link con la chiave giusta — chiave che i nostri sistemi non vedono mai.',
+		'privacy.dontTitle': 'Cosa non facciamo',
+		'privacy.dontBody':
+			'Nessun account, nessuna email richiesta, nessuno script di tracciamento o analytics, nessun cookie. Non sappiamo chi sei e non proviamo a scoprirlo.',
+		'privacy.providersTitle': 'Chi ospita il sito',
+		'privacy.providersBody':
+			'Il sito e le funzioni che lo fanno funzionare girano su Netlify, il database su Supabase — entrambi fornitori americani, scelti per velocità di sviluppo, non per principio. Come ogni servizio web ricevono le richieste che gli mandi, quindi cose come il tuo indirizzo IP e l\'orario — ma il contenuto delle tue pagine resta sempre un blocco cifrato, illeggibile anche per loro. L\'obiettivo è spostare tutto su un server europeo appena possibile.',
+		'privacy.deviceTitle': 'Cosa resta sul tuo telefono',
+		'privacy.deviceBody':
+			'Il link per modificare una pagina viene salvato solo nel tuo browser, su questo dispositivo — non lo mandiamo da nessuna parte e non lo vediamo mai. Se cambi telefono o cancelli i dati del browser senza aver salvato il link altrove, quella pagina è persa per sempre: nessun recupero, è il prezzo di non avere un account.',
+		'privacy.betaTitle': 'Una nota sulla beta privata',
+		'privacy.betaBody':
+			'Il progetto è giovane: facciamo backup del database ma non abbiamo ancora testato un ripristino completo. Trattala come una beta — non usarla per l\'unica copia di qualcosa che non puoi permetterti di perdere.',
+		'privacy.back': 'Torna alla home',
 	},
 	en: {
 		'common.copy': 'Copy',
@@ -270,7 +291,28 @@ const dict = {
 		'howItWorks.hostingTitle': 'Who hosts all this?',
 		'howItWorks.hostingBody':
 			'The site and database run on outside providers. They only ever see unreadable encrypted blocks, never your data in the clear — but it\'s worth knowing, so we say it here instead of hiding it.',
+		'howItWorks.privacyLink': 'Read the full privacy page',
 		'howItWorks.cta': 'Create your page',
+
+		'privacy.title': 'Privacy',
+		'privacy.intro':
+			"In short: we can't read your pages, we never ask for an account or an email, and we don't track you. Here are the details, provider by provider.",
+		'privacy.seeTitle': 'What we can see',
+		'privacy.seeBody':
+			'Nothing you write. Every page is encrypted inside your own browser before it even leaves it (see "How it works") — what reaches our servers is already an unreadable block, and stays that way until someone opens the link with the right key, a key our systems never see.',
+		'privacy.dontTitle': "What we don't do",
+		'privacy.dontBody':
+			"No account, no email required, no tracking or analytics scripts, no cookies. We don't know who you are, and we don't try to find out.",
+		'privacy.providersTitle': 'Who hosts the site',
+		'privacy.providersBody':
+			"The site and the functions that run it live on Netlify, the database on Supabase — both US providers, chosen for how fast they let us build, not out of principle. Like any web service they receive the requests you send them, so things like your IP address and the time — but the content of your pages always stays an encrypted block, unreadable to them too. The goal is to move everything to a European server as soon as it's practical.",
+		'privacy.deviceTitle': 'What stays on your phone',
+		'privacy.deviceBody':
+			"The link to edit a page is saved only in your own browser, on this device — we never send it anywhere and never see it. If you switch phones or clear your browser data without saving that link elsewhere, that page is gone for good: no recovery, that's the cost of not having an account.",
+		'privacy.betaTitle': 'A note on the private beta',
+		'privacy.betaBody':
+			"The project is young: we back up the database but haven't yet tested a full restore. Treat it as a beta — don't rely on it as the only copy of something you can't afford to lose.",
+		'privacy.back': 'Back to home',
 	},
 };
 

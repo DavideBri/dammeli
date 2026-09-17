@@ -238,8 +238,18 @@ undocked domain (0.1).
 
 ## 0.9 Private beta
 
-- [ ] Privacy page with declared providers: who they are, where they're
-      based, what they see
+- [x] Privacy page (`/privacy`) with declared providers: Netlify (site
+      and functions) and Supabase (database), both US-based, what they
+      see (ordinary request metadata like IP and timing, never plaintext
+      — everything is encrypted client-side before it's sent) and what
+      they never see (the encryption key, which never leaves the
+      browser). Also states plainly what the app never collects (no
+      account, no email, no analytics, no cookies) and what only ever
+      lives on the visitor's own device (the edit link, in
+      `localStorage`). Linked from "How it works", the editor footnote,
+      and the public page's footer. Includes an honest private-beta note
+      (backups exist, restore not yet tested) rather than waiting for
+      that to actually be true first
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**

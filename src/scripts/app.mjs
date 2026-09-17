@@ -166,6 +166,12 @@ export async function boot() {
 		howItWorksLink.className = 'ds-text-accent';
 		howItWorksLink.textContent = t(lang, 'viewer.howItWorks');
 		footerEl.appendChild(howItWorksLink);
+		footerEl.append(' · ');
+		const privacyLink = document.createElement('a');
+		privacyLink.href = '/privacy';
+		privacyLink.className = 'ds-text-accent';
+		privacyLink.textContent = t(lang, 'privacy.title');
+		footerEl.appendChild(privacyLink);
 
 		showViewerState(viewerRoot, 'loaded');
 	} catch {

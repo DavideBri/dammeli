@@ -88,9 +88,9 @@ still runs fine: it uses an in-memory store instead of Supabase.
 ## Third-party providers and privacy
 
 Netlify and Supabase are US providers: they receive HTTP requests and see
-only unreadable encrypted blobs, never keys or plaintext data. A dedicated
-privacy page, with the full list of providers and what each one sees,
-arrives with the private beta (roadmap `0.9`).
+only unreadable encrypted blobs, never keys or plaintext data. The full
+list of providers and what each one sees is on the app's own
+[`/privacy`](./src/pages/privacy.astro) page.
 
 ## License
 
