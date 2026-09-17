@@ -207,6 +207,35 @@
 .ds-field__input--error {
 	border-color: var(--rosso-500);
 }
+.ds-field__row {
+	position: relative;
+	display: flex;
+}
+.ds-field__input--clearable {
+	padding-right: 40px;
+}
+.ds-field__clear {
+	position: absolute;
+	right: var(--s-1);
+	top: 50%;
+	transform: translateY(-50%);
+	width: 32px;
+	height: 32px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--r-control);
+	border: none;
+	background: transparent;
+	color: var(--text-faint);
+	cursor: pointer;
+	transition: color 90ms cubic-bezier(0.22, 0.61, 0.36, 1), background 90ms cubic-bezier(0.22, 0.61, 0.36, 1);
+	-webkit-tap-highlight-color: transparent;
+}
+.ds-field__clear:hover {
+	color: var(--text-strong);
+	background: var(--surface-sunken);
+}
 .ds-field__confirm {
 	display: inline-flex;
 	align-items: center;
@@ -542,6 +571,12 @@
 	border-left: var(--bw-strong) solid var(--ink-line);
 	border-top: var(--bw-strong) solid var(--ink-line);
 	transform: rotate(45deg);
+	/* Must paint above the popover box, not just come before it in the
+	   DOM: `.ds-method-grid__popover` is `position: relative` (to anchor
+	   the preferred star), which makes it a positioned descendant too —
+	   without a z-index the two are stacked in tree order, and the
+	   popover's own top border would be drawn over the arrow's tip. */
+	z-index: 1;
 }
 .ds-method-grid__popover {
 	position: relative;

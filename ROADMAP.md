@@ -224,6 +224,15 @@ undocked domain (0.1).
 - [x] IBAN participates in both: preferred moves its card above the
       pay-button list instead of leaving it pinned after; dragging
       changes its position relative to the other methods the same way
+- [x] Popover arrow regression fixed: making the popover `position:
+      relative` (to anchor the star) turned it into a positioned
+      descendant sharing a stacking order with the arrow, so the
+      popover's own top border started painting over the arrow tip
+      instead of blending with it — fixed with an explicit z-index on
+      the arrow
+- [x] A small "x" at the end of every text input (title, each method
+      field, IBAN holder, custom label/value) clears it in one tap —
+      hidden while the field is empty, shown once it has content
 
 ---
 

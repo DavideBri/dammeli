@@ -96,6 +96,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		hint: t(lang, 'editor.titleFieldHint'),
 		placeholder: t(lang, 'editor.titleFieldPlaceholder'),
 		value: state.title,
+		clearLabel: t(lang, 'editor.clearField'),
 	});
 	titleField.input.addEventListener('input', () => {
 		state.title = titleField.input.value;
@@ -229,6 +230,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			placeholder: t(lang, `methods.${method}.placeholder`),
 			mono: method === 'iban',
 			inputMode: method === 'satispay' ? 'tel' : undefined,
+			clearLabel: t(lang, 'editor.clearField'),
 		};
 	}
 
@@ -268,6 +270,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			hint: t(lang, 'methods.iban.holderHint'),
 			placeholder: t(lang, 'methods.iban.holderPlaceholder'),
 			value: state.holder,
+			clearLabel: t(lang, 'editor.clearField'),
 		});
 		f.input.disabled = disabled;
 		f.input.addEventListener('input', () => {
@@ -289,6 +292,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			label: t(lang, 'methods.crypto.labelFieldLabel'),
 			placeholder: t(lang, 'methods.crypto.labelFieldPlaceholder'),
 			value: entry.label,
+			clearLabel: t(lang, 'editor.clearField'),
 		});
 		labelField.input.disabled = disabled;
 		labelField.input.addEventListener('input', () => {
@@ -310,6 +314,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			placeholder: t(lang, 'methods.crypto.valuePlaceholder'),
 			mono: true,
 			value: entry.value,
+			clearLabel: t(lang, 'editor.clearField'),
 		});
 		valueField.input.disabled = disabled;
 		const refreshConfirm = () => {

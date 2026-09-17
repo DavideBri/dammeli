@@ -56,7 +56,8 @@ export function button({
 	return el;
 }
 
-/** Field: label + optional hint + input + confirm/error slot below it. */
+/** Field: label + optional hint + input (with an optional clear-to-empty
+ * "x", once it has content) + confirm/error slot below it. */
 export function field({
 	id,
 	label,
@@ -66,6 +67,7 @@ export function field({
 	mono = false,
 	inputMode,
 	type = 'text',
+	clearLabel,
 } = {}) {
 	const wrap = document.createElement('div');
 	wrap.className = 'ds-field';
@@ -84,15 +86,46 @@ export function field({
 		wrap.appendChild(hintEl);
 	}
 
+	const row = document.createElement('div');
+	row.className = 'ds-field__row';
+
 	const input = document.createElement('input');
 	input.id = id;
 	input.type = type;
 	input.autocomplete = 'off';
-	input.className = `ds-field__input${mono ? ' ds-field__input--mono' : ''}`;
+	input.className = `ds-field__input${mono ? ' ds-field__input--mono' : ''}${clearLabel ? ' ds-field__input--clearable' : ''}`;
 	input.placeholder = placeholder ?? '';
 	input.value = value;
 	if (inputMode) input.inputMode = inputMode;
-	wrap.appendChild(input);
+	row.appendChild(input);
+
+	let clearBtn = null;
+	function updateClear() {
+		if (clearBtn) clearBtn.hidden = !input.value;
+	}
+	if (clearLabel) {
+		clearBtn = document.createElement('button');
+		clearBtn.type = 'button';
+		clearBtn.className = 'ds-field__clear';
+		clearBtn.setAttribute('aria-label', clearLabel);
+		clearBtn.innerHTML = iconSvg('x', { size: 14, strokeWidth: 2.5 });
+		clearBtn.addEventListener('click', () => {
+			input.value = '';
+			input.dispatchEvent(new Event('input', { bubbles: true }));
+			// Also runs whatever the caller normally does on blur (trimming,
+			// refreshing confirm/preferred slots) — a click on this button is
+			// a single decisive action, not a mid-typing state, so it should
+			// settle immediately rather than wait for the input to actually
+			// lose focus.
+			input.dispatchEvent(new Event('blur'));
+			updateClear();
+			input.focus();
+		});
+		input.addEventListener('input', updateClear);
+		updateClear();
+		row.appendChild(clearBtn);
+	}
+	wrap.appendChild(row);
 
 	const slot = document.createElement('div');
 	wrap.appendChild(slot);

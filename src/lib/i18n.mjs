@@ -53,6 +53,7 @@ const dict = {
 		'editor.removeMethod': 'Rimuovi questo metodo',
 		'editor.preferredLabel': 'Metodo preferito',
 		'editor.preferredHint': 'Metodo preferito — verrà mostrato per primo a chi paga.',
+		'editor.clearField': 'Svuota il campo',
 
 		'methods.satispay.label': 'Satispay',
 		'methods.satispay.fieldLabel': 'Numero di telefono',
@@ -184,6 +185,7 @@ const dict = {
 		'editor.removeMethod': 'Remove this method',
 		'editor.preferredLabel': 'Preferred method',
 		'editor.preferredHint': 'Preferred method — shown first to whoever pays.',
+		'editor.clearField': 'Clear field',
 
 		'methods.satispay.label': 'Satispay',
 		'methods.satispay.fieldLabel': 'Phone number',
