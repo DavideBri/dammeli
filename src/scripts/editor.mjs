@@ -50,8 +50,10 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		}
 	}
 
-	/** Selection: null, a main method name, or `custom:<index>`. */
-	let selected = prefill ? null : 'satispay';
+	/** Selection: null, a main method name, or `custom:<index>`. Closed by
+	 * default — nothing is pre-selected, whether creating a new page or
+	 * editing an existing one. */
+	let selected = null;
 	let disabled = false;
 
 	const titleFieldSlot = root.querySelector('[data-title-field]');

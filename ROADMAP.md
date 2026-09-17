@@ -191,6 +191,13 @@ undocked domain (0.1).
 - [x] IBAN gets its own bigger card on the public page instead of a
       plain pay-button row — the number and the account holder as two
       separately-labeled, separately-copyable fields in one card
+- [x] Public page no longer greets the payer with a name derived from
+      the IBAN holder ("Mario chiede") — confusing when the payer has no
+      idea who that name is. Replaced with a plain, always-shown
+      "Scegli come pagare"/"Choose how to pay" kicker
+- [x] The editor's method-tile popover no longer opens on Satispay by
+      default when creating a new page — closed until a tile is tapped,
+      same as it already was when editing an existing one
 
 ---
 

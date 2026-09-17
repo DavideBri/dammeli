@@ -111,7 +111,7 @@ const dict = {
 		'viewer.error':
 			"Questa pagina non esiste, o il link è incompleto. Se l'hai appena ricevuto, chiedi a chi te l'ha mandato di controllare di averlo copiato tutto.",
 		'viewer.defaultTitle': 'Dammi i soldi',
-		'viewer.asks': '{{name}} chiede',
+		'viewer.kicker': 'Scegli come pagare',
 		'viewer.footerPre': 'Pagina fatta con',
 		'viewer.footerPost': '. Niente account, niente email.',
 		'viewer.footerCta': 'Fanne una tua',
@@ -236,7 +236,7 @@ const dict = {
 		'viewer.error':
 			"This page doesn't exist, or the link is incomplete. If you just received it, ask whoever sent it to check they copied the whole thing.",
 		'viewer.defaultTitle': 'Gimme the money',
-		'viewer.asks': '{{name}} asks',
+		'viewer.kicker': 'Choose how to pay',
 		'viewer.footerPre': 'Page made with',
 		'viewer.footerPost': '. No account, no email.',
 		'viewer.footerCta': 'Make your own',

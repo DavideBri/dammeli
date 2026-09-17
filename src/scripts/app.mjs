@@ -134,12 +134,8 @@ export async function boot() {
 		const payload = await fetchPayload(dammeli, loaded);
 
 		const ibanMethod = payload.methods.find((m) => m.type === 'iban');
-		const holder = ibanMethod?.holder;
-		const asksEl = viewerRoot.querySelector('[data-page-asks]');
-		if (holder) {
-			asksEl.hidden = false;
-			asksEl.replaceChildren(ui.microLabel(t(lang, 'viewer.asks', { name: holder.split(' ')[0] }), { tone: 'strong' }));
-		}
+
+		viewerRoot.querySelector('[data-page-kicker]').replaceChildren(ui.microLabel(t(lang, 'viewer.kicker'), { tone: 'strong' }));
 
 		const titleEl = viewerRoot.querySelector('[data-page-title]');
 		titleEl.textContent = payload.title || t(lang, 'viewer.defaultTitle');
