@@ -250,6 +250,8 @@ mode)
 ## Deferred, no date
 
 - Expiry with renewal on read (requires `expires_at` in the clear)
-- Page title, per-method label
+- Per-method label — shipped for the free-form "other methods" slots in
+  0.7; the four main methods (Satispay/Revolut/PayPal/IBAN) still don't
+  have one. Page title itself shipped in 0.5/0.6, no longer deferred
 - Silent payments and xpub derivation
 - Backup retention policy
