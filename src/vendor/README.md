@@ -14,25 +14,34 @@ Only the base (Latin-1/byte-mode) build is vendored, not the SJIS/UTF-8
 variants — every value dammeli ever encodes into a QR code is a
 `damme.li/#...` URL, which is plain ASCII.
 
-## `logos.mjs`
+## `icons.mjs`
 
-- Source: [Simple Icons](https://simpleicons.org), version 16.31.0
-- License: CC0-1.0 (public domain, no attribution required) for the icon
-  artwork; the brand names/marks themselves remain the trademarks of
-  their respective owners — displaying them to indicate a supported
-  payment method is the same kind of use as any "we accept X" badge, not
-  an endorsement claim
-- Vendored, unmodified: `paypal`, `revolut`, `bitcoin`
+- Source: [Lucide](https://lucide.dev)
+- License: ISC (header credited in the file)
+- A subset of Lucide's path data, copied by hand from the dammeli design
+  system's own `Icon` component (which vendors the same icons the same
+  way, for the same reason)
 
-Kept as plain JS string exports rather than separate `.svg` files loaded
-via Vite's `?raw` import suffix, so the module works identically in the
-browser bundle and in the plain Node test runner (no Vite transform
-there, and no understanding of that import syntax).
+## `marks.mjs`
 
-**Missing: Satispay.** Not in the Simple Icons set. Wikimedia Commons has
-a `Logo di Satispay.svg` file and Satispay publishes brand guidelines at
-`developers.satispay.com/reference/logo`, but both were unreachable from
-this environment's network — someone with access needs to pull the
-official asset from one of those and check its license/usage terms
-before vendoring it the same way. Until then the Satispay card has no
-icon, text label only.
+The product's own mark (`logoMarkSvg`) is original artwork for this
+project: a drawn fist grabbing a banknote, not a stock icon.
+
+Satispay, Revolut, and PayPal's marks were originally drawn the same way
+(geometric, brand-neutral shapes), but were replaced in 0.9 with each
+brand's own real mark — copied by hand from SVG Repo
+(https://www.svgrepo.com), recolored from a fixed black to `currentColor`
+so they tint the same way as everything else in the design system, with
+stroke widths nudged for visual consistency with each other and with the
+hand-drawn IBAN/"other methods" marks (whose original files carried no
+explicit license beyond an "Uploaded to SVG Repo" attribution comment).
+This reverses the project's earlier "no third-party logos anywhere"
+stance (still true of `logoMarkSvg`): the tradeoff is instant recognition
+for the payer over drawing everything in-house. IBAN and the generic
+"other methods" mark stay original, since neither has a brand logo to
+use.
+
+Both files are kept as plain JS string exports rather than separate
+`.svg`/`.json` files loaded via Vite's `?raw` import suffix, so they work
+identically in the browser bundle and in the plain Node test runner (no
+Vite transform there, and no understanding of that import syntax).

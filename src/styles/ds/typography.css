@@ -1,0 +1,32 @@
+/* Solo font di sistema: nessuna risorsa esterna, nessun @font-face. */
+:root{
+  --font-core:ui-sans-serif,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  --size-display:clamp(34px,9vw,44px);
+  --size-title:26px;
+  --size-section:19px;
+  --size-body:17px;
+  --size-small:15px;
+  --size-micro:13px;
+
+  --lh-display:1.05; /* @kind other */
+  --lh-title:1.15; /* @kind other */
+  --lh-body:1.45; /* @kind other */
+  --lh-tight:1.25; /* @kind other */
+
+  --w-regular:400; /* @kind font */
+  --w-medium:500; /* @kind font */
+  --w-semibold:600; /* @kind font */
+  --w-bold:700; /* @kind font */
+
+  --track-display:-0.028em;--track-title:-0.018em;--track-body:-0.005em;--track-caps:0.08em;
+
+  /* semantic */
+  --text-face-display:var(--font-core);
+  --text-face-body:var(--font-core);
+  --text-face-data:var(--font-mono);
+  /* etichetta da scontrino: mono, maiuscolo, spaziato */
+  --label-size:11px;
+  --label-track:0.12em;
+}

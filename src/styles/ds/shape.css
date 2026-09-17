@@ -1,0 +1,13 @@
+:root{
+  --r-xs:6px;--r-sm:10px;--r-md:14px;--r-lg:20px;--r-pill:999px;
+  --r-card:var(--r-md);
+  --r-control:var(--r-sm);
+  --bw:1px;--bw-strong:2px;
+  /* Ombre dure, senza sfocatura: stampa, non profondità. */
+  --shadow-none:none;
+  --shadow-card:none;
+  --shadow-hard-sm:2px 2px 0 var(--ink-shadow);
+  --shadow-hard:4px 4px 0 var(--ink-shadow);
+  --shadow-raised:6px 6px 0 var(--ink-shadow);
+  --shadow-sheet:0 -6px 0 var(--ink-shadow);
+}

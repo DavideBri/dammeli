@@ -131,8 +131,9 @@ user.**
 ```json
 {
   "v": 1,
+  "title": "Bruno's payments",
   "methods": [
-    { "type": "satispay", "value": "brunoxyz" },
+    { "type": "satispay", "value": "brunoxyz", "preferred": true },
     { "type": "revolut",  "value": "brunoxyz" },
     { "type": "paypal",   "value": "brunoxyz" },
     { "type": "iban",     "value": "IT60X0542811101000000123456",
@@ -142,14 +143,52 @@ user.**
 }
 ```
 
-- **Array, not object**: order is information, the user puts their
-  preferred method first.
+- **Array, not object**: order is information — the viewer always renders
+  methods in array order, so a saved page from before the 0.6 redesign
+  still displays in whatever custom order its creator chose.
+  - The 0.6 redesign's fixed tile-grid picker always emitted satispay,
+    revolut, paypal, iban, then the free-form "other methods" entries in
+    the order they were added, with no way to change that — 0.8 brought
+    manual reordering back, this time as actual drag-and-drop on the tile
+    grid itself: press-and-hold or move past a small threshold picks up a
+    tile, crossing into another tile's slot swaps it there live
+    (`moveIdTo()` + `reflowTileOrder()` in `editor.mjs`, relocating
+    existing DOM nodes rather than recreating them so an in-progress drag
+    isn't interrupted). CSP's `style-src` forbids the inline `transform`
+    a floating drag-ghost would need, so there is no ghost — the grid
+    itself reflows as the pointer crosses tiles. `state.order` (all tile
+    ids, main and custom) is the source of truth `getCards()` reads back
+    into payload order.
+- **`preferred: true` on at most one entry** (0.8): the method the page's
+  creator wants shown first, badged, on the read-only page — set from a
+  plain star icon, top-right of that method's popover, no text (fills in
+  on click). `assemblePayload()` keeps only the first `preferred: true`
+  it sees among the cards it's given (defensive: the editor's own single
+  `state.preferred` value can only ever produce one, but the function
+  doesn't assume its caller is well-behaved). The viewer moves that entry
+  to the front of the rendered list regardless of its position in the
+  array; the editor mirrors this by moving the starred tile to the front
+  of the grid too (`moveIdToFront()`), so "shown first" is never a
+  separate drag the creator also has to do.
+- The free-form "other methods" entries' `type` is now whatever label the
+  user typed (e.g. `"Bitcoin"`, `"Monero"`, `"Wise"`), not a value from a
+  fixed list, and there can be **up to 5 of them** (0.7) — each is its own
+  array entry with `type` set to that entry's own label, not a shared
+  `"crypto"` type. The viewer displays that `type` string directly as the
+  entry's title (0.7 — previously a generic "Altri metodi"/"Other
+  methods" label, with the real label buried in the note line), and its
+  tile shows the label's first letter instead of a drawn mark.
+  `buildDirectLink()` still special-cases `type` matching `"bitcoin"`
+  case-insensitively for the BIP21 `bitcoin:` deep link.
 - **`value` holds only the handle, never the full URL.** If Revolut
   changes its URL format, a handle only needs a deploy; a saved URL would
   leave thousands of broken, unreadable blobs.
 - **`holder` only on `iban`**, never at the page level. It's the only real
   identifier in the payload and must not end up in the blob of someone
   using only Satispay.
+- **`title` is optional and page-level**: shown as the heading on the
+  read-only page and as the browser tab title. Added after v1 shipped
+  without a version bump — exactly the case the next bullet describes.
 - Long, readable keys: the 4 KB padding makes compactness pointless.
 
 ### Payload version
@@ -253,8 +292,8 @@ change or data wipe: the saved edit link is required.
 **Two distinct links**: one read-only to share, one to edit and keep.
 With a single link, whoever receives it could change the IBAN.
 
-Dropped for v1: page title, per-method label. Both optional fields,
-addable later without a version bump.
+Page title added post-v1 (see section 5) without a version bump, exactly
+as anticipated here. Per-method label is still dropped, same reasoning.
 
 ---
 
@@ -292,6 +331,49 @@ every release.
   The header-via-adapter route remains a future option if additional
   defense in depth is ever needed.
 - QR generated locally, vendored library in the repo, never from a CDN.
+- **No inline `style=""` attributes, and no script-set `element.style.*`,
+  anywhere.** CSP's `style-src` only gets hashes for real stylesheet
+  content (Astro's own `<style>`/CSS handling); it has no equivalent for
+  attribute-based styles, so any inline style is a silent console error
+  and a broken layout in a strict-CSP browser. Every dynamic per-instance
+  choice (a method's tint, a tile's size, a popover's arrow position) is a
+  small, fixed set of CSS classes picked at runtime, never a computed
+  style value — see `src/styles/ds/components.css`.
+
+### Design system (0.6)
+
+The visual language (warm-paper background, hard non-blurred shadows,
+mono/uppercase "receipt" labels, a single red accent element per screen,
+mandatory dark mode) comes from a Claude Design export, translated by
+hand from React + inline styles into plain CSS classes (`:hover`/`:active`
+instead of JS-tracked mouse state) plus vanilla-JS DOM builders
+(`src/scripts/ui.mjs`). Design tokens are copied verbatim into
+`src/styles/ds/*.css`.
+
+Icons are a vendored subset of Lucide (ISC license, `src/vendor/icons.mjs`).
+Payment method marks (`src/vendor/marks.mjs`) were originally geometric
+shapes drawn for this project rather than real brand logos; 0.9 replaced
+Satispay/Revolut/PayPal's with each brand's own real mark (recolored to
+`currentColor`, see `src/vendor/README.md` for provenance) for instant
+recognition, trading away the earlier "no third-party logos" stance. IBAN
+and the generic "other methods" mark stay hand-drawn, since neither has a
+brand logo to use. The product's own mark (`logoMarkSvg`) stays original
+artwork either way.
+
+Theme: `prefers-color-scheme` picks the default; an explicit choice
+(`src/lib/theme.mjs`) overrides it via `data-theme` on `<html>`, saved
+per-device in `localStorage`. Same per-device pattern as "your pages" —
+no account, so nothing to sync it to.
+
+### Localization (0.6, revised 0.7)
+
+The UI is bilingual, Italian and English (`src/lib/i18n.mjs`): a
+hand-written `{it, en}` dictionary with `{{placeholder}}` substitution,
+not a library — two languages and no plurals don't justify one. Detection
+only, from the browser's own `navigator.languages`, defaulting to English
+if neither matches — 0.6 shipped a manual top-bar toggle on top of this,
+removed in 0.7: the device's own language setting already does that job,
+and a second, redundant place to control it wasn't worth the UI weight.
 
 ### Migration note
 

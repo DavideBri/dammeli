@@ -73,10 +73,10 @@ it. The database contains only noise.
 
 - [x] Cards for Satispay, Revolut, PayPal, IBAN — structure only, unstyled
       (styling deferred to Tailwind, see stack notes)
-- [ ] Operational instructions for each method, with the real button names —
-      PayPal and IBAN done; Satispay and Revolut are still placeholder text
-      (`TODO(content)` in the markup), needs verifying against the live
-      apps
+- [x] Operational instructions for each method, with the real button names —
+      Satispay and Revolut's placeholder text replaced in 0.6 by the
+      design system's own copy (`src/lib/i18n.mjs`, `methods.*.hint`),
+      still worth a pass against the live apps before public launch
 - [x] Normalization of messy pastes (full URLs, IBANs with spaces) — unit
       tested in `test/normalize.test.mjs`
 - [x] "I don't have one" line with a link, at least for PayPal
@@ -85,6 +85,8 @@ it. The database contains only noise.
 - [x] "Other methods" section with crypto
 - [x] Reordering methods (order is information) — among the four main
       cards; the crypto entry isn't reorderable relative to them yet
+      (superseded in 0.6: the design system's tile-grid picker has no
+      manual reordering, see PLAN.md section 5)
 
 ---
 
@@ -93,9 +95,11 @@ it. The database contains only noise.
 - [x] Public read-only page — fetches, decrypts, and renders the methods
       for a recipient opening a read link; unstyled-but-real, same
       minimal Tailwind pass as the editor. No deep link for
-      Satispay/Revolut (no verified URL scheme, same honesty bar as the
-      editor's placeholder instructions) — copy-to-clipboard works for
-      every method regardless
+      Satispay/Revolut at first (no verified URL scheme, same honesty
+      bar as the editor's placeholder instructions) — copy-to-clipboard
+      works for every method regardless. Revolut's own `revolut.me/<tag>`
+      profile-link format added in 0.7; Satispay's still needs a verified
+      scheme
 - [x] QR generated locally, vendored library — `qrcode-generator` by
       Kazuhiko Arase (MIT), vendored in `src/vendor/`, rendered as inline
       SVG, no CDN
@@ -110,16 +114,167 @@ it. The database contains only noise.
 
 **Exit criterion**: create a page in under 20 seconds from a phone and a
 friend can actually pay me. Met for the core loop — create, share, a
-recipient can see and copy every method — modulo the two placeholder
-instruction texts (0.4) and the still-private repo / undocked domain
-(0.1).
+recipient can see and copy every method — modulo the still-private repo /
+undocked domain (0.1).
+
+---
+
+## 0.6 Design system and localization
+
+- [x] Claude Design export adopted: tokens, component classes, hard
+      shadows, warm-paper palette, single-red-accent rule (PLAN.md
+      "Design system (0.6)")
+- [x] Editor rebuilt around the design system's tile-grid method picker
+      (tap a tile, a popover opens below it) — replaces the always-open
+      cards and their manual up/down reordering (see PLAN.md section 5
+      for the "order is information" tradeoff this made)
+- [x] Page-title field ("Titolo della pagina" / "Page title" — renamed
+      from the original "Per cosa?"/"What for?" in 0.7, framed as the
+      page's own title rather than a payment-request line, e.g. to tell
+      a personal page apart from a work one)
+- [x] "Created" screen (badge, QR framed with a hard shadow, keep-the-link
+      notice, ghost actions), separated from the always-visible editor
+- [x] Custom-drawn marks per payment method, no third-party logos
+      anywhere including Satispay (`src/vendor/marks.mjs`); vendored
+      Lucide icon subset (`src/vendor/icons.mjs`)
+- [x] Dark mode: `prefers-color-scheme` default, explicit per-device
+      override via a top-bar toggle (`src/lib/theme.mjs`)
+- [x] Bilingual UI, Italian and English: browser-language detection
+      (`src/lib/i18n.mjs`) — shipped with a manual top-bar toggle on top
+      of detection, removed again in 0.7 (redundant with the device's
+      own language setting)
+- [x] Every inline `style=""`/`element.style.*` removed from the app in
+      the process — CSP's `style-src` has no hash mechanism for those,
+      unlike `<style>` blocks and stylesheets
+
+---
+
+## 0.7 Editor and sharing fixes
+
+- [x] Method-tile grid actually lays out horizontally, wrapping to more
+      rows as needed — 0.6 shipped it without `grid-template-columns`,
+      so it silently collapsed to a single vertical column
+- [x] Same-page, fragment-only navigations (a "your pages" row's edit
+      link, "come la vedono", the public page's "make your own" footer
+      link) now force a real reload (`navigateHard()` in
+      `src/scripts/screens.mjs`) — browsers never reload for those on
+      their own, so `boot()` never re-ran and the app stayed stuck on
+      whatever was already on screen
+- [x] Selecting a method scrolls its popover into view, instead of
+      leaving it below the fold for the user to find
+- [x] "Your pages" shows and copies the **read** (share) link, not the
+      edit link — derived from the stored write link when not saved
+      directly (pages saved before 0.7)
+- [x] Saving changes to an existing page shows the "Created"/share
+      screen again (read link, QR, copy) instead of just a toast on the
+      button — the only place the read link is easy to re-share from
+- [x] "Other methods" now allows up to 5 custom entries instead of one
+      fixed generic slot, each getting its own tile — deliberately
+      generic (any label, any value), not crypto-specific despite the
+      internal `type: "crypto"` card shape (PLAN.md section 5)
+- [x] Revolut direct link via `revolut.me/<tag>`, Revolut's own public
+      profile-payment format — Satispay still has no verified deep-link
+      scheme, so it stays copy-to-clipboard only
+- [x] Manual language toggle removed — detection-only, defaulting to
+      English (PLAN.md "Localization (0.6, revised 0.7)")
+- [x] "How it works" page (`/how-it-works`): short, non-technical
+      explanation of the privacy model — no account, encryption happens
+      in the browser before anything is sent, the key lives only in the
+      link, who hosts the (unreadable) data. Linked from the editor
+      footnote and the public page's footer
+- [x] Custom "other methods" entries get their own icon: their label's
+      initial, in both the editor's tile grid and the public page —
+      falls back to the generic drawn mark only while the label is
+      still empty
+- [x] Public page shows the custom label itself as the title (e.g.
+      "Wise"), not the generic "Altri metodi"/"Other methods"
+- [x] IBAN gets its own bigger card on the public page instead of a
+      plain pay-button row — the number and the account holder as two
+      separately-labeled, separately-copyable fields in one card
+- [x] Public page no longer greets the payer with a name derived from
+      the IBAN holder ("Mario chiede") — confusing when the payer has no
+      idea who that name is. Replaced with a plain, always-shown
+      "Scegli come pagare"/"Choose how to pay" kicker
+- [x] The editor's method-tile popover no longer opens on Satispay by
+      default when creating a new page — closed until a tile is tapped,
+      same as it already was when editing an existing one
+
+---
+
+## 0.8 Preferred method and manual reordering
+
+- [x] "Preferred method" flag: a plain star icon, top-right of a filled
+      method's popover, no text label — fills in on click
+      (`preferred: true` on its payload entry, PLAN.md section 5) —
+      shown first on the public page regardless of array order, with an
+      accent-bordered tile and a "Preferito"/"Preferred" badge so the
+      payer can tell it's the creator's pick. Setting it also moves that
+      method's tile to the front of the grid
+- [x] Manual reordering by dragging tiles directly in the grid — no
+      chevrons/arrows, no position indicator. Press-and-hold (200ms) or
+      move past an 8px threshold starts a drag; crossing into another
+      tile swaps it live via `moveIdTo()`/`reflowTileOrder()` (existing
+      DOM nodes are relocated, never recreated, so an active drag survives
+      it). A plain tap still opens the tile's popover as before — CSP's
+      `style-src` has no `unsafe-inline`/`unsafe-hashes`, so the dragged
+      tile can't visually follow the pointer via an inline transform;
+      other tiles are pushed aside instead, and the browser's own
+      click-suppression after a real pointer move keeps a completed drag
+      from also reopening a popover
+- [x] IBAN participates in both: preferred moves its card above the
+      pay-button list instead of leaving it pinned after; dragging
+      changes its position relative to the other methods the same way
+- [x] Popover arrow regression fixed: making the popover `position:
+      relative` (to anchor the star) turned it into a positioned
+      descendant sharing a stacking order with the arrow, so the
+      popover's own top border started painting over the arrow tip
+      instead of blending with it — fixed with an explicit z-index on
+      the arrow
+- [x] A small "x" at the end of every text input (title, each method
+      field, IBAN holder, custom label/value) clears it in one tap —
+      hidden while the field is empty, shown once it has content
 
 ---
 
 ## 0.9 Private beta
 
-- [ ] Privacy page with declared providers: who they are, where they're
-      based, what they see
+- [x] Privacy page (`/privacy`) with declared providers: Netlify (site
+      and functions) and Supabase (database), both US-based, what they
+      see (ordinary request metadata like IP and timing, never plaintext
+      — everything is encrypted client-side before it's sent) and what
+      they never see (the encryption key, which never leaves the
+      browser). Also states plainly what the app never collects (no
+      account, no email, no analytics, no cookies) and what only ever
+      lives on the visitor's own device (the edit link, in
+      `localStorage`). Linked from "How it works", the editor footnote,
+      and the public page's footer. Includes an honest private-beta note
+      (backups exist, restore not yet tested) rather than waiting for
+      that to actually be true first
+- [x] Editor copy pass for beta clarity: the old wordmark + kicker + tagline
+      + subtitle stack said little in a lot of space — replaced with one
+      short headline plus a one-sentence trust pitch ending in an inline
+      "How it works" link, which also makes the footer's old repeat of the
+      same link redundant (now just the Privacy link). The title field's
+      hint moved from always-visible text to a "?" toggle beside the label
+      (click or hover), same for the IBAN holder field. The "3 of 4"
+      filled-methods counter is gone — it never told the payer or the
+      creator anything actionable. The read-only page's loading state is a
+      spinner (`ui.spinner()`), not the word "Caricamento…"
+- [x] Satispay/Revolut/PayPal marks replaced with each brand's own real
+      logo (recolored to `currentColor`, see `src/vendor/README.md`),
+      reversing the project's earlier "no third-party logos" stance for
+      instant recognition — IBAN and "other methods" stay hand-drawn.
+      Wherever the wordmark appears with no page title of its own (the
+      editor, the public viewer, "How it works", Privacy), it's now a
+      link back home. "How it works" and Privacy no longer show their own
+      title twice (topbar *and* `<h1>`) — dropped from the topbar, kept in
+      the visible heading
+- [x] Open Graph / Twitter card tags (`src/components/SocialMeta.astro`)
+      on all three pages, with one static share image
+      (`public/og-image.png`, source mockup in `tools/og-image.html`) —
+      a per-page dynamic image isn't possible without breaking the
+      privacy model, since a shared page's title lives only in the URL
+      fragment, which never reaches the server (PLAN.md section 3)
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
@@ -181,6 +336,8 @@ mode)
 ## Deferred, no date
 
 - Expiry with renewal on read (requires `expires_at` in the clear)
-- Page title, per-method label
+- Per-method label — shipped for the free-form "other methods" slots in
+  0.7; the four main methods (Satispay/Revolut/PayPal/IBAN) still don't
+  have one. Page title itself shipped in 0.5/0.6, no longer deferred
 - Silent payments and xpub derivation
 - Backup retention policy

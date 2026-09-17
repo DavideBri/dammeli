@@ -59,3 +59,61 @@ test('assemblePayload: a crypto card without a type is dropped rather than shipp
 	const result = assemblePayload([{ method: 'crypto', value: 'bc1qxyz', cryptoType: '' }]);
 	assert.deepEqual(result.methods, []);
 });
+
+test('assemblePayload: an optional title is included when present', () => {
+	const result = assemblePayload([{ method: 'satispay', value: 'brunoxyz' }], {
+		title: "Bruno's payments",
+	});
+	assert.equal(result.title, "Bruno's payments");
+	assert.deepEqual(Object.keys(result), ['v', 'title', 'methods']);
+});
+
+test('assemblePayload: a blank or missing title is omitted entirely, not shipped as ""', () => {
+	const withoutOption = assemblePayload([{ method: 'satispay', value: 'brunoxyz' }]);
+	assert.ok(!('title' in withoutOption));
+
+	const blankTitle = assemblePayload([{ method: 'satispay', value: 'brunoxyz' }], {
+		title: '   ',
+	});
+	assert.ok(!('title' in blankTitle));
+});
+
+test('assemblePayload: title is trimmed', () => {
+	const result = assemblePayload([{ method: 'satispay', value: 'brunoxyz' }], {
+		title: '  Bruno   ',
+	});
+	assert.equal(result.title, 'Bruno');
+});
+
+test('assemblePayload: preferred:true is carried through onto the entry', () => {
+	const result = assemblePayload([
+		{ method: 'satispay', value: 'brunoxyz' },
+		{ method: 'revolut', value: 'brunoxyz', preferred: true },
+	]);
+	assert.deepEqual(result.methods, [
+		{ type: 'satispay', value: 'brunoxyz' },
+		{ type: 'revolut', value: 'brunoxyz', preferred: true },
+	]);
+});
+
+test('assemblePayload: preferred is omitted entirely when falsy, not shipped as false', () => {
+	const result = assemblePayload([{ method: 'satispay', value: 'brunoxyz', preferred: false }]);
+	assert.ok(!('preferred' in result.methods[0]));
+});
+
+test('assemblePayload: only the first preferred:true card keeps the flag', () => {
+	const result = assemblePayload([
+		{ method: 'satispay', value: 'brunoxyz', preferred: true },
+		{ method: 'revolut', value: 'brunoxyz', preferred: true },
+	]);
+	assert.equal(result.methods[0].preferred, true);
+	assert.ok(!('preferred' in result.methods[1]));
+});
+
+test('assemblePayload: a preferred card that gets dropped (empty value) does not block a later one', () => {
+	const result = assemblePayload([
+		{ method: 'satispay', value: '', preferred: true },
+		{ method: 'revolut', value: 'brunoxyz', preferred: true },
+	]);
+	assert.deepEqual(result.methods, [{ type: 'revolut', value: 'brunoxyz', preferred: true }]);
+});

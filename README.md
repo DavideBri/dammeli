@@ -12,8 +12,10 @@ launch, see roadmap 1.5).
 
 ## Project status
 
-In development (`0.3`, API and persistence). Not usable yet: the editor is
-still missing. See [`ROADMAP.md`](./ROADMAP.md).
+In development (`0.6`, design system and localization). The core loop
+works — create a page, share it, a recipient can pay — but the repo is
+still private and the domain isn't connected yet. See
+[`ROADMAP.md`](./ROADMAP.md).
 
 `0.x.y` until public launch. MAJOR only bumps when a link created with a
 previous version would stop working, never for any other reason (see
@@ -29,6 +31,12 @@ previous version would stop working, never for any other reason (see
 - No client-side JS framework, no bundler for the cryptography.
 - QR codes generated locally with a vendored library (`src/vendor/`, see
   its own README there) — never a CDN or a remote QR-generation API.
+- Design system: tokens and component classes from a Claude Design
+  export, translated by hand into plain CSS (`src/styles/ds/`) — no
+  React runtime, no third-party logos (custom-drawn payment-method marks
+  instead, see `src/vendor/README.md`).
+- UI in Italian and English (`src/lib/i18n.mjs`), detected from the
+  browser and switchable from the top bar.
 - Hosting: [Netlify](https://netlify.com), automatic deploy from this repo.
 - Database (temporary, see migration note in `PLAN.md`):
   [Supabase](https://supabase.com).
@@ -80,9 +88,9 @@ still runs fine: it uses an in-memory store instead of Supabase.
 ## Third-party providers and privacy
 
 Netlify and Supabase are US providers: they receive HTTP requests and see
-only unreadable encrypted blobs, never keys or plaintext data. A dedicated
-privacy page, with the full list of providers and what each one sees,
-arrives with the private beta (roadmap `0.9`).
+only unreadable encrypted blobs, never keys or plaintext data. The full
+list of providers and what each one sees is on the app's own
+[`/privacy`](./src/pages/privacy.astro) page.
 
 ## License
 

@@ -1,0 +1,35 @@
+---
+import '../styles/global.css';
+import SocialMeta from '../components/SocialMeta.astro';
+---
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>How it works — dammeli</title>
+		<link rel="icon" href="data:," />
+		<SocialMeta
+			title="Come funziona — dammeli"
+			description="Come dammeli cifra i tuoi metodi di pagamento prima ancora che lascino il telefono — spiegato senza tecnicismi."
+			path="/how-it-works"
+		/>
+	</head>
+	<body>
+		<div class="ds-page">
+			<div data-topbar></div>
+			<div class="ds-body ds-body--lg-gap">
+				<div>
+					<h1 data-title></h1>
+					<p class="how-intro" data-intro></p>
+				</div>
+				<div class="how-steps" data-steps></div>
+				<div data-hosting-notice></div>
+				<div data-cta></div>
+			</div>
+		</div>
+		<script type="module">
+			import { initHowItWorks } from '../scripts/how-it-works.mjs';
+			initHowItWorks();
+		</script>
+	</body>
+</html>

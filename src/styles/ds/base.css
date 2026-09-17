@@ -1,0 +1,17 @@
+*,*::before,*::after{box-sizing:border-box}
+/* Vendored icon/mark SVGs (src/vendor/icons.mjs, src/vendor/marks.mjs) carry
+   no style="" attribute — CSP forbids inline styles — so this replaces the
+   inline `display:block` they'd otherwise need. */
+svg{display:block}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--surface-page);color:var(--text-body);font-family:var(--font-core);font-size:var(--size-body);line-height:var(--lh-body);letter-spacing:var(--track-body);-webkit-font-smoothing:antialiased}
+::selection{background:var(--selection)}
+a{color:var(--text-accent);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
+a:hover{color:var(--accent-hover)}
+h1,h2,h3{margin:0;color:var(--text-strong);letter-spacing:var(--track-title);line-height:var(--lh-title);font-weight:var(--w-semibold)}
+h1{font-size:var(--size-display);line-height:var(--lh-display);letter-spacing:var(--track-display);font-weight:var(--w-bold)}
+h2{font-size:var(--size-title)}
+h3{font-size:var(--size-section)}
+p{margin:0}
+:focus-visible{outline:2px solid var(--border-focus);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:0ms!important;animation-duration:0ms!important}}

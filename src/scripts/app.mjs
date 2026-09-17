@@ -2,12 +2,14 @@
 // `location.hash` (constraint C2, PLAN.md section 2): every other file
 // that needs the fragment receives it as a plain argument from here.
 //
-// One static page serves three states, chosen entirely client-side since
-// the id never appears in the URL (PLAN.md section 3):
+// One static page serves three URL-driven states, chosen entirely
+// client-side since the id never appears in the URL (PLAN.md section 3):
 //   - no fragment            -> the editor, for creating a new page
 //   - a read fragment (#1r…) -> the public read-only viewer
 //   - a write fragment (#1m…) -> the editor, prefilled, for editing an
 //                                 existing page
+// "Created" and "Your pages" are reached from inside the app (buttons),
+// never from the URL — src/scripts/screens.mjs just toggles visibility.
 //
 // The editor form is hidden by default in the markup and only shown by
 // this file, so a read/write link never flashes the wrong content first.
@@ -15,9 +17,12 @@
 import { initEditor } from './editor.mjs';
 import { initCreateFlow } from './create-flow.mjs';
 import { initYourPages } from './your-pages.mjs';
-import { prefillFromPayload } from './prefill.mjs';
 import { renderMethods, showViewerState } from './viewer.mjs';
 import * as api from '../lib/api.mjs';
+import { detectLang, t } from '../lib/i18n.mjs';
+import { getSavedTheme, setSavedTheme, applyTheme, effectiveTheme } from '../lib/theme.mjs';
+import { showScreen, navigateHard } from './screens.mjs';
+import * as ui from './ui.mjs';
 
 /** Fetches and decrypts the page a `loadFromFragment` result points to. */
 async function fetchPayload(dammeli, loaded) {
@@ -29,18 +34,64 @@ async function fetchPayload(dammeli, loaded) {
 	return JSON.parse(new TextDecoder().decode(plaintext));
 }
 
+function buildEditorTopBar(editorRoot, lang, { onPages }) {
+	applyTheme(getSavedTheme());
+	const themeIcon = () => (effectiveTheme() === 'dark' ? 'sun' : 'moon');
+	const themeLabel = () => (effectiveTheme() === 'dark' ? t(lang, 'nav.themeLight') : t(lang, 'nav.themeDark'));
+
+	function render() {
+		const themeBtn = ui.iconButton({
+			iconName: themeIcon(),
+			label: themeLabel(),
+			onClick: () => {
+				setSavedTheme(effectiveTheme() === 'dark' ? 'light' : 'dark');
+				applyTheme(getSavedTheme());
+				render();
+			},
+		});
+		const pagesBtn = ui.iconButton({ iconName: 'bookmark', label: t(lang, 'nav.yourPages'), onClick: onPages });
+		const { header } = ui.topBar({ right: [pagesBtn, themeBtn] });
+		editorRoot.querySelector('[data-topbar-editor]').replaceChildren(header);
+	}
+	render();
+}
+
+function buildViewerTopBar(viewerRoot) {
+	const homeLink = ui.wordmarkLink(17);
+	homeLink.addEventListener('click', (event) => {
+		// Same reasoning as the footer's "Fanne una tua" link: this page and
+		// "/" share a path, only the fragment differs, so a plain click would
+		// never reload and boot() would never switch back to the editor.
+		if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+		event.preventDefault();
+		navigateHard('/');
+	});
+	const { header } = ui.topBar({ wordmarkFallback: false, right: [homeLink] });
+	viewerRoot.querySelector('[data-topbar-viewer]').replaceChildren(header);
+}
+
 export async function boot() {
-	const editorForm = document.getElementById('editor');
-	const viewerRoot = document.querySelector('[data-viewer]');
+	const lang = detectLang();
+	document.documentElement.lang = lang;
+
+	const editorRoot = document.querySelector('[data-screen="editor"]');
+	const yourPagesRoot = document.querySelector('[data-screen="your-pages"]');
+	const viewerRoot = document.querySelector('[data-screen="viewer"]');
+
+	const yourPages = initYourPages(yourPagesRoot, lang, {
+		onBack: () => showScreen('editor'),
+		onNew: () => showScreen('editor'),
+	});
+	const goToYourPages = () => yourPages.showAndRefresh();
 
 	const hash = location.hash;
 
 	if (!hash) {
-		editorForm.hidden = false;
-		initEditor(editorForm);
-		initCreateFlow(editorForm);
-		const yourPagesRoot = document.querySelector('[data-your-pages]');
-		if (yourPagesRoot) initYourPages(yourPagesRoot);
+		editorRoot.hidden = false;
+		buildEditorTopBar(editorRoot, lang, { onPages: goToYourPages });
+		const editor = initEditor(editorRoot, lang);
+		initCreateFlow(editorRoot, editor, lang, { onPages: goToYourPages });
+		showScreen('editor');
 		return;
 	}
 
@@ -49,8 +100,10 @@ export async function boot() {
 	try {
 		loaded = await dammeli.loadFromFragment(hash);
 	} catch {
-		viewerRoot.hidden = false;
+		buildViewerTopBar(viewerRoot);
+		showScreen('viewer');
 		showViewerState(viewerRoot, 'error');
+		viewerRoot.querySelector('[data-viewer-state="error"]').textContent = t(lang, 'viewer.error');
 		return;
 	}
 
@@ -58,43 +111,83 @@ export async function boot() {
 		// A write fragment: load the existing page into the editor instead
 		// of starting blank, since the whole point of an edit link is
 		// changing something that already exists.
-		editorForm.hidden = false;
-		initEditor(editorForm);
-		for (const el of editorForm.querySelectorAll('input, select, button[data-create]')) {
-			el.disabled = true;
-		}
+		editorRoot.hidden = false;
+		buildEditorTopBar(editorRoot, lang, { onPages: goToYourPages });
 
+		let payload;
 		try {
-			const payload = await fetchPayload(dammeli, loaded);
-			prefillFromPayload(editorForm, payload);
+			payload = await fetchPayload(dammeli, loaded);
 		} catch {
 			// Can't load what's supposed to be edited (deleted, tampered,
 			// truncated) — showing the empty form as if editing were working
 			// would risk looking like the page's data got lost, so this
 			// fails the same way the read-only viewer does instead.
-			editorForm.hidden = true;
-			viewerRoot.hidden = false;
+			buildViewerTopBar(viewerRoot);
+			showScreen('viewer');
 			showViewerState(viewerRoot, 'error');
+			viewerRoot.querySelector('[data-viewer-state="error"]').textContent = t(lang, 'viewer.error');
 			return;
 		}
 
-		for (const el of editorForm.querySelectorAll('input, select, button[data-create]')) {
-			el.disabled = false;
-		}
-		initCreateFlow(editorForm, { existingPage: loaded });
+		const editor = initEditor(editorRoot, lang, { prefill: payload });
+		initCreateFlow(editorRoot, editor, lang, { existingPage: loaded, onPages: goToYourPages });
+		showScreen('editor');
 		return;
 	}
 
-	viewerRoot.hidden = false;
+	buildViewerTopBar(viewerRoot);
+	showScreen('viewer');
 	showViewerState(viewerRoot, 'loading');
+	viewerRoot.querySelector('[data-viewer-state="loading"]').replaceChildren(ui.spinner(t(lang, 'viewer.loading')));
 	try {
 		const payload = await fetchPayload(dammeli, loaded);
-		renderMethods(viewerRoot.querySelector('[data-methods]'), payload.methods);
+
+		viewerRoot.querySelector('[data-page-kicker]').replaceChildren(ui.microLabel(t(lang, 'viewer.kicker'), { tone: 'strong' }));
+
+		const titleEl = viewerRoot.querySelector('[data-page-title]');
+		titleEl.textContent = payload.title || t(lang, 'viewer.defaultTitle');
+		document.title = `${payload.title || t(lang, 'viewer.defaultTitle')} — dammeli`;
+
+		renderMethods(viewerRoot.querySelector('[data-methods]'), payload.methods, lang);
+
+		const footerEl = viewerRoot.querySelector('[data-viewer-footer]');
+		footerEl.replaceChildren();
+		const brand = document.createElement('b');
+		brand.className = 'ds-text-muted';
+		brand.textContent = 'dammeli';
+		footerEl.append(`${t(lang, 'viewer.footerPre')} `, brand, t(lang, 'viewer.footerPost'), document.createElement('br'));
+		const cta = document.createElement('a');
+		cta.href = '/';
+		cta.className = 'ds-text-accent';
+		cta.textContent = t(lang, 'viewer.footerCta');
+		cta.addEventListener('click', (event) => {
+			// Same reasoning as your-pages.mjs's row link: same path, only the
+			// fragment differs (this page's #1r… vs none), so a plain click
+			// would never reload and boot() would never switch to the editor.
+			if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+			event.preventDefault();
+			navigateHard('/');
+		});
+		footerEl.appendChild(cta);
+		footerEl.append(' · ');
+		const howItWorksLink = document.createElement('a');
+		howItWorksLink.href = '/how-it-works';
+		howItWorksLink.className = 'ds-text-accent';
+		howItWorksLink.textContent = t(lang, 'viewer.howItWorks');
+		footerEl.appendChild(howItWorksLink);
+		footerEl.append(' · ');
+		const privacyLink = document.createElement('a');
+		privacyLink.href = '/privacy';
+		privacyLink.className = 'ds-text-accent';
+		privacyLink.textContent = t(lang, 'privacy.title');
+		footerEl.appendChild(privacyLink);
+
 		showViewerState(viewerRoot, 'loaded');
 	} catch {
 		// Covers a 404 from the API and a failed AES-GCM decrypt (tampered
 		// or truncated data) alike — both show the same message, same spirit
 		// as the server's own uniform 404 (PLAN.md section 6).
 		showViewerState(viewerRoot, 'error');
+		viewerRoot.querySelector('[data-viewer-state="error"]').textContent = t(lang, 'viewer.error');
 	}
 }

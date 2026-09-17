@@ -1,0 +1,1070 @@
+/* dammeli design system — component classes.
+ *
+ * Faithful translation of the design system's React components (inline
+ * styles + onMouseEnter/onMouseDown state) into plain CSS classes with
+ * :hover/:active — this project has no React, so hover/press are real
+ * pseudo-classes instead of JS-tracked state. Every value here is a design
+ * token from tokens/*.css, never a literal, so a token change here always
+ * matches the source design system.
+ */
+
+.ds-page {
+	max-width: var(--page-max);
+	margin: 0 auto;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	background: var(--surface-page);
+}
+.ds-body {
+	flex: 1;
+	padding: var(--s-5) var(--gutter) var(--s-10);
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-4);
+}
+.ds-sticky {
+	position: sticky;
+	bottom: 0;
+	padding: var(--s-3) var(--gutter) var(--s-5);
+	background: var(--surface-page);
+	border-top: 1px solid var(--border-hairline);
+}
+
+/* Button */
+.ds-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--s-2);
+	font-family: var(--font-core);
+	font-weight: var(--w-bold);
+	letter-spacing: -0.01em;
+	border-radius: var(--r-control);
+	border: var(--bw-strong) solid var(--ink-line);
+	cursor: pointer;
+	text-decoration: none;
+	-webkit-tap-highlight-color: transparent;
+	transition:
+		background 90ms cubic-bezier(0.22, 0.61, 0.36, 1),
+		box-shadow 90ms cubic-bezier(0.22, 0.61, 0.36, 1),
+		transform 90ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.ds-btn:disabled {
+	opacity: 0.4;
+	pointer-events: none;
+}
+.ds-btn--lg {
+	min-height: 56px;
+	padding: 0 var(--s-6);
+	font-size: 18px;
+}
+.ds-btn--md {
+	min-height: var(--field-h);
+	padding: 0 var(--s-5);
+	font-size: var(--size-body);
+}
+.ds-btn--sm {
+	min-height: 38px;
+	padding: 0 var(--s-4);
+	font-size: var(--size-small);
+}
+.ds-btn--full {
+	width: 100%;
+}
+.ds-btn--primary,
+.ds-btn--secondary,
+.ds-btn--danger {
+	box-shadow: var(--shadow-hard-sm);
+}
+.ds-btn--primary:active,
+.ds-btn--secondary:active,
+.ds-btn--danger:active {
+	box-shadow: 1px 1px 0 var(--ink-shadow);
+	transform: translate(1px, 1px);
+}
+.ds-btn--primary {
+	background: var(--accent);
+	color: var(--on-accent);
+}
+.ds-btn--primary:hover {
+	background: var(--accent-hover);
+}
+.ds-btn--secondary {
+	background: var(--surface-card);
+	color: var(--text-strong);
+}
+.ds-btn--secondary:hover {
+	background: var(--accent-soft);
+}
+.ds-btn--ghost {
+	background: transparent;
+	color: var(--text-body);
+	border-color: transparent;
+}
+.ds-btn--ghost:hover {
+	background: var(--surface-sunken);
+}
+.ds-btn--quiet {
+	background: var(--surface-sunken);
+	color: var(--text-strong);
+	border-color: transparent;
+}
+.ds-btn--danger {
+	background: transparent;
+	color: var(--rosso-600);
+}
+.ds-btn--danger:hover {
+	background: var(--accent-soft);
+}
+
+/* IconButton */
+.ds-icon-btn {
+	width: 44px;
+	height: 44px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--r-control);
+	cursor: pointer;
+	border: var(--bw-strong) solid transparent;
+	background: transparent;
+	color: var(--text-body);
+	transition: background 90ms cubic-bezier(0.22, 0.61, 0.36, 1);
+	-webkit-tap-highlight-color: transparent;
+}
+.ds-icon-btn:hover {
+	background: var(--surface-sunken);
+}
+.ds-icon-btn--outline {
+	border-color: var(--ink-line);
+	background: var(--surface-card);
+	box-shadow: var(--shadow-hard-sm);
+}
+.ds-icon-btn--outline:active {
+	box-shadow: 1px 1px 0 var(--ink-shadow);
+	transform: translate(1px, 1px);
+}
+
+/* Card */
+.ds-card {
+	border-radius: var(--r-card);
+	padding: var(--s-5);
+}
+.ds-card--lifted {
+	box-shadow: var(--shadow-hard);
+}
+.ds-card--default {
+	background: var(--surface-card);
+	border: var(--bw-strong) solid var(--ink-line);
+}
+.ds-card--sunken {
+	background: var(--surface-sunken);
+	border: var(--bw) dashed var(--border-hairline);
+}
+.ds-card--accent {
+	background: var(--accent-soft);
+	border: var(--bw-strong) solid var(--ink-line);
+}
+
+/* Field */
+.ds-field {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-2);
+}
+.ds-field__label {
+	font-size: var(--size-small);
+	font-weight: var(--w-bold);
+	color: var(--text-strong);
+	letter-spacing: -0.01em;
+}
+.ds-field__label-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--s-2);
+}
+.ds-field__hint-toggle {
+	width: 20px;
+	height: 20px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	border: none;
+	background: transparent;
+	padding: 0;
+	color: var(--text-faint);
+	cursor: pointer;
+	transition: color 90ms cubic-bezier(0.22, 0.61, 0.36, 1);
+	-webkit-tap-highlight-color: transparent;
+}
+.ds-field__hint-toggle:hover,
+.ds-field__hint-toggle:focus-visible {
+	color: var(--text-accent);
+}
+.ds-field__hint {
+	display: none;
+	flex-basis: 100%;
+	font-size: var(--size-micro);
+	color: var(--text-muted);
+	line-height: 1.35;
+}
+/* Hovering or focusing the "?" peeks the hint without pinning it open —
+   clicking (see ui.mjs's field()) toggles --open itself for a persistent
+   open/closed state, on touch devices especially. */
+.ds-field__hint-toggle:hover ~ .ds-field__hint,
+.ds-field__hint-toggle:focus-visible ~ .ds-field__hint,
+.ds-field__hint--open {
+	display: block;
+}
+.ds-field__input {
+	min-height: var(--field-h);
+	padding: 0 var(--s-4);
+	width: 100%;
+	font-family: var(--font-core);
+	font-size: var(--size-body);
+	color: var(--text-strong);
+	background: var(--surface-card);
+	border-radius: var(--r-control);
+	border: var(--bw-strong) solid var(--ink-line);
+	outline: none;
+	transition: box-shadow 90ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.ds-field__input:focus {
+	box-shadow: var(--shadow-hard-sm);
+}
+.ds-field__input--mono {
+	font-family: var(--font-mono);
+	font-size: var(--size-small);
+}
+.ds-field__input--error {
+	border-color: var(--rosso-500);
+}
+.ds-field__row {
+	position: relative;
+	display: flex;
+}
+.ds-field__input--clearable {
+	padding-right: 40px;
+}
+.ds-field__clear {
+	position: absolute;
+	right: var(--s-1);
+	top: 50%;
+	transform: translateY(-50%);
+	width: 32px;
+	height: 32px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--r-control);
+	border: none;
+	background: transparent;
+	color: var(--text-faint);
+	cursor: pointer;
+	transition: color 90ms cubic-bezier(0.22, 0.61, 0.36, 1), background 90ms cubic-bezier(0.22, 0.61, 0.36, 1);
+	-webkit-tap-highlight-color: transparent;
+}
+.ds-field__clear:hover {
+	color: var(--text-strong);
+	background: var(--surface-sunken);
+}
+.ds-field__confirm {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--s-2);
+	font-size: var(--size-micro);
+	color: var(--ok);
+}
+.ds-field__error {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--s-2);
+	font-size: var(--size-micro);
+	color: var(--rosso-600);
+}
+.ds-paste-confirm {
+	align-self: flex-start;
+	display: inline-flex;
+	align-items: center;
+	gap: var(--s-2);
+	padding: 3px 8px;
+	border-radius: var(--r-xs);
+	background: var(--ok-soft);
+	font-size: var(--size-micro);
+	color: var(--ok);
+}
+.ds-paste-confirm b {
+	font-family: var(--font-mono);
+	letter-spacing: 0.06em;
+}
+
+/* Badge */
+.ds-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--s-1);
+	padding: 3px 8px;
+	border-radius: var(--r-xs);
+	border: var(--bw-strong) solid var(--ink-line);
+	font-size: var(--label-size);
+	font-weight: var(--w-bold);
+	font-family: var(--font-mono);
+	letter-spacing: var(--label-track);
+	text-transform: uppercase;
+}
+.ds-badge--neutral {
+	background: var(--surface-card);
+	color: var(--text-muted);
+}
+.ds-badge--ok {
+	background: var(--ok-soft);
+	color: var(--ok);
+}
+.ds-badge--accent {
+	background: var(--accent);
+	color: var(--on-accent);
+}
+.ds-badge--warn {
+	background: var(--warn-soft);
+	color: var(--text-strong);
+}
+.ds-badge--tilt {
+	transform: rotate(-2.5deg);
+}
+
+/* MicroLabel */
+.ds-micro-label {
+	font-family: var(--font-mono);
+	font-size: var(--label-size);
+	letter-spacing: var(--label-track);
+	text-transform: uppercase;
+	font-weight: var(--w-semibold);
+	color: var(--text-faint);
+}
+.ds-micro-label--accent {
+	color: var(--text-accent);
+}
+.ds-micro-label--strong {
+	color: var(--text-strong);
+}
+
+/* Notice */
+.ds-notice {
+	display: flex;
+	gap: var(--s-3);
+	padding: var(--s-3) var(--s-4);
+	border-radius: var(--r-sm);
+}
+.ds-notice__icon {
+	padding-top: 2px;
+}
+.ds-notice__text {
+	font-size: var(--size-micro);
+	line-height: 1.45;
+}
+.ds-notice__title {
+	color: var(--text-strong);
+	font-weight: var(--w-bold);
+}
+.ds-notice--neutral {
+	background: transparent;
+	border: 1px dashed var(--border-hairline);
+	color: var(--text-muted);
+}
+.ds-notice--neutral .ds-notice__icon {
+	color: var(--text-faint);
+}
+.ds-notice--keep {
+	background: var(--warn-soft);
+	border: var(--bw-strong) solid var(--ink-line);
+	color: var(--text-body);
+}
+.ds-notice--keep .ds-notice__icon {
+	color: var(--text-strong);
+}
+.ds-notice--ok {
+	background: var(--ok-soft);
+	border: 1px dashed var(--ok);
+	color: var(--text-body);
+}
+.ds-notice--ok .ds-notice__icon {
+	color: var(--ok);
+}
+
+/* TopBar */
+.ds-top-bar {
+	display: flex;
+	align-items: center;
+	gap: var(--s-2);
+	min-height: 58px;
+	padding: 0 var(--gutter);
+	background: var(--surface-page);
+	border-bottom: var(--bw-strong) solid var(--ink-line);
+}
+.ds-top-bar__title {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	align-items: center;
+	gap: var(--s-2);
+}
+.ds-top-bar__title-text {
+	font-size: var(--size-section);
+	font-weight: var(--w-bold);
+	letter-spacing: -0.02em;
+	color: var(--text-strong);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.ds-top-bar__right {
+	display: flex;
+	align-items: center;
+	gap: var(--s-1);
+}
+
+/* Wordmark */
+.ds-wordmark {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--text-strong);
+}
+.ds-wordmark-link {
+	display: inline-flex;
+	text-decoration: none;
+	-webkit-tap-highlight-color: transparent;
+}
+.ds-wordmark__text {
+	font-family: var(--font-core);
+	font-weight: var(--w-bold);
+	letter-spacing: -0.045em;
+	line-height: 1;
+	font-size: 20px;
+}
+.ds-wordmark__dot {
+	color: var(--accent);
+}
+
+/* PageRow */
+.ds-page-row {
+	display: flex;
+	align-items: center;
+	gap: var(--s-3);
+	min-height: 66px;
+	padding: var(--s-3) var(--gutter);
+	border-bottom: 1px dashed var(--border-hairline);
+}
+.ds-page-row:hover {
+	background: var(--surface-card);
+}
+.ds-page-row__main {
+	flex: 1;
+	min-width: 0;
+	background: none;
+	border: none;
+	padding: 0;
+	text-align: left;
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	text-decoration: none;
+}
+.ds-page-row__name {
+	font-size: var(--size-body);
+	font-weight: var(--w-bold);
+	letter-spacing: -0.015em;
+	color: var(--text-strong);
+}
+.ds-page-row__url {
+	font-family: var(--font-mono);
+	font-size: var(--size-micro);
+	color: var(--text-accent);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.ds-page-row__action {
+	width: 44px;
+	height: 44px;
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--text-body);
+}
+
+/* MethodTile */
+.ds-method-tile {
+	position: relative;
+	display: inline-flex;
+	flex: none;
+}
+.ds-method-tile__mark {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--r-sm);
+	border: var(--bw-strong) solid var(--ink-line);
+	box-shadow: var(--shadow-hard-sm);
+	color: var(--ink-0);
+	transition:
+		transform 0.08s,
+		box-shadow 0.08s;
+}
+.ds-method-tile__letter {
+	font-family: var(--font-core);
+	font-weight: var(--w-bold);
+	line-height: 1;
+}
+.ds-method-tile__mark--48 .ds-method-tile__letter {
+	font-size: 20px;
+}
+.ds-method-tile__mark--56 .ds-method-tile__letter {
+	font-size: 22px;
+}
+.ds-method-tile--selected .ds-method-tile__mark {
+	box-shadow: none;
+	transform: translate(2px, 2px);
+}
+.ds-method-tile__check {
+	position: absolute;
+	top: -6px;
+	right: -6px;
+	width: 20px;
+	height: 20px;
+	border-radius: 999px;
+	background: var(--ok);
+	color: var(--paper-0);
+	border: 2px solid var(--ink-line);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	transition: transform 0.08s;
+}
+.ds-method-tile--selected .ds-method-tile__check {
+	transform: translate(2px, 2px);
+}
+
+/* MethodGrid */
+.ds-method-grid__buttons {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+	gap: var(--s-3);
+	row-gap: var(--s-4);
+}
+.ds-method-grid__btn {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	padding: 4px 0 0;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+	/* A press-and-hold drag needs to win over the page's own scroll
+	   gesture starting on the same tile (src/scripts/editor.mjs). */
+	touch-action: none;
+	user-select: none;
+}
+.ds-method-grid__btn--dragging {
+	opacity: 0.55;
+}
+.ds-method-grid__btn--dragging .ds-method-tile__mark {
+	box-shadow: none;
+	transform: translate(2px, 2px);
+}
+.ds-method-grid__label {
+	font-size: var(--size-micro);
+	line-height: 1.1;
+	text-align: center;
+	font-weight: var(--w-medium);
+	color: var(--text-muted);
+	max-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.ds-method-grid__btn--selected .ds-method-grid__label {
+	font-weight: var(--w-bold);
+	color: var(--text-strong);
+}
+.ds-method-grid__popover-wrap {
+	position: relative;
+	margin-top: var(--s-4);
+}
+.ds-method-grid__arrow {
+	position: absolute;
+	top: -7px;
+	left: calc(50% - 8px);
+	width: 14px;
+	height: 14px;
+	background: var(--surface-card);
+	border-left: var(--bw-strong) solid var(--ink-line);
+	border-top: var(--bw-strong) solid var(--ink-line);
+	transform: rotate(45deg);
+	/* Must paint above the popover box, not just come before it in the
+	   DOM: `.ds-method-grid__popover` is `position: relative` (to anchor
+	   the preferred star), which makes it a positioned descendant too —
+	   without a z-index the two are stacked in tree order, and the
+	   popover's own top border would be drawn over the arrow's tip. */
+	z-index: 1;
+}
+.ds-method-grid__popover {
+	position: relative;
+	background: var(--surface-card);
+	border: var(--bw-strong) solid var(--ink-line);
+	border-radius: var(--r-card);
+	box-shadow: var(--shadow-hard-sm);
+	padding: var(--s-4);
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-3);
+}
+.ds-method-grid__popover-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--s-3);
+	padding-right: 28px; /* room for the absolutely-positioned preferred star */
+}
+.ds-method-grid__popover-title {
+	font-size: var(--size-body);
+	font-weight: var(--w-bold);
+	letter-spacing: -0.015em;
+}
+.ds-method-grid__popover-hint {
+	font-size: var(--size-micro);
+	color: var(--text-muted);
+	line-height: 1.4;
+	border-top: 1px dashed var(--border-hairline);
+	padding-top: var(--s-3);
+}
+
+/* PayButton */
+.ds-pay-btn {
+	width: 100%;
+	min-height: 78px;
+	display: flex;
+	align-items: center;
+	gap: var(--s-4);
+	padding: var(--s-4);
+	cursor: pointer;
+	text-align: left;
+	background: var(--surface-card);
+	color: var(--text-strong);
+	border: var(--bw-strong) solid var(--ink-line);
+	border-radius: var(--r-card);
+	box-shadow: var(--shadow-hard);
+	transition:
+		background 90ms cubic-bezier(0.22, 0.61, 0.36, 1),
+		box-shadow 90ms cubic-bezier(0.22, 0.61, 0.36, 1),
+		transform 90ms cubic-bezier(0.22, 0.61, 0.36, 1);
+	-webkit-tap-highlight-color: transparent;
+}
+.ds-pay-btn:hover {
+	background: var(--accent-soft);
+}
+.ds-pay-btn:active {
+	box-shadow: 1px 1px 0 var(--ink-shadow);
+	transform: translate(3px, 3px);
+}
+.ds-pay-btn__info {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+.ds-pay-btn__label-row {
+	display: flex;
+	align-items: center;
+	gap: var(--s-2);
+	min-width: 0;
+}
+.ds-pay-btn__label {
+	font-size: 20px;
+	font-weight: var(--w-bold);
+	letter-spacing: -0.02em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.ds-pay-btn__note {
+	font-family: var(--font-mono);
+	font-size: var(--size-micro);
+	color: var(--text-muted);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.ds-pay-btn__action {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-family: var(--font-mono);
+	font-size: var(--label-size);
+	letter-spacing: var(--label-track);
+	text-transform: uppercase;
+	font-weight: var(--w-bold);
+	color: var(--text-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ds-btn,
+	.ds-icon-btn,
+	.ds-field__input,
+	.ds-method-tile__mark,
+	.ds-method-tile__check,
+	.ds-pay-btn {
+		transition-duration: 0ms !important;
+	}
+}
+
+/* ---------------------------------------------------------------------
+ * Layout/utility classes.
+ *
+ * CSP (astro.config.mjs security.csp) forbids inline style="" attributes
+ * and script-set element.style.* alike — Astro only computes hashes for
+ * real stylesheet content, never for attribute-based styles. Every value
+ * that would otherwise be a one-off inline style lives here instead, as
+ * a real class; only per-instance *choices between a fixed, small set of
+ * classes* happen at runtime (e.g. which tint/size modifier to apply).
+ * --------------------------------------------------------------------- */
+
+.ds-icon--inline {
+	display: inline-flex;
+}
+.ds-icon-btn--back {
+	margin-left: -10px;
+}
+
+.ds-wordmark__text--sm {
+	font-size: 17px;
+}
+
+/* Method tile size modifiers (methodMarkSvg's own viewBox already scales
+   with the size argument; these size the tinted square around it). */
+.ds-method-tile__mark--48 {
+	width: 48px;
+	height: 48px;
+}
+.ds-method-tile__mark--56 {
+	width: 56px;
+	height: 56px;
+}
+
+/* Method tile tint modifiers — no third-party logos, so the tint is the
+   only per-method color; see src/vendor/marks.mjs for the mark itself. */
+.ds-method-tile__mark--satispay {
+	background: var(--rosso-400);
+}
+.ds-method-tile__mark--revolut {
+	background: var(--paper-3);
+}
+.ds-method-tile__mark--paypal {
+	background: var(--senape-100);
+}
+.ds-method-tile__mark--iban {
+	background: var(--oliva-100);
+}
+.ds-method-tile__mark--crypto {
+	background: var(--paper-2);
+}
+.ds-method-tile__mark--add {
+	background: var(--surface-sunken);
+	border-style: dashed;
+	box-shadow: none;
+	color: var(--text-faint);
+}
+.ds-method-tile__mark--preferred {
+	border-color: var(--accent);
+	box-shadow: 2px 2px 0 var(--accent);
+}
+
+/* The editor popover's "preferred method" star — top-right corner, no
+   label text (self-explanatory once filled/unfilled). */
+.ds-star-toggle {
+	position: absolute;
+	top: var(--s-3);
+	right: var(--s-3);
+	background: none;
+	border: none;
+	padding: 4px;
+	margin: -4px;
+	cursor: pointer;
+	color: var(--text-faint);
+	display: inline-flex;
+	transition: color 90ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.ds-star-toggle:hover {
+	color: var(--text-muted);
+}
+.ds-star-toggle--active,
+.ds-star-toggle--active:hover {
+	color: var(--accent);
+}
+
+/* Editor screen (src/pages/index.astro + src/scripts/editor.mjs). */
+.editor-intro {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-2);
+}
+.editor-subtitle {
+	color: var(--text-muted);
+	max-width: var(--measure);
+}
+.editor-methods-section {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-3);
+	margin-top: var(--s-2);
+}
+.editor-footnote {
+	font-size: var(--size-micro);
+	color: var(--text-faint);
+	text-align: center;
+	margin-top: var(--s-2);
+}
+
+/* "Created" screen. */
+.ds-body--lg-gap {
+	gap: var(--s-5);
+}
+.created-intro {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-2);
+	align-items: flex-start;
+}
+.created-url {
+	font-family: var(--font-mono);
+	font-size: var(--size-small);
+	color: var(--text-accent);
+	word-break: break-all;
+}
+.created-actions {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-3);
+}
+.created-qr-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--s-3);
+}
+.created-qr-frame {
+	background: var(--surface-card);
+	padding: var(--s-3);
+	border-radius: var(--r-sm);
+	border: var(--bw-strong) solid var(--ink-line);
+	box-shadow: var(--shadow-hard);
+}
+.created-ghost-row {
+	display: flex;
+	gap: var(--s-3);
+	flex-wrap: wrap;
+}
+.created-edit-link {
+	font-size: var(--size-micro);
+	color: var(--text-faint);
+}
+
+/* "Your pages" screen. */
+.ds-body--flush {
+	padding: 0;
+	gap: 0;
+}
+.your-pages-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.your-pages-notice-wrap {
+	padding: var(--s-5) var(--gutter);
+}
+.ds-page-row__actions {
+	display: flex;
+	flex: none;
+	gap: 4px;
+}
+.ds-page-row-empty {
+	padding: var(--s-10) var(--gutter);
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-3);
+	align-items: center;
+}
+.ds-page-row-empty__icon {
+	color: var(--text-faint);
+}
+.ds-page-row-empty__text {
+	font-size: var(--size-body);
+	color: var(--text-muted);
+	max-width: 26ch;
+}
+
+/* Public viewer screen. */
+.viewer-loading {
+	display: flex;
+	justify-content: center;
+	padding: var(--s-8) 0;
+}
+.ds-spinner-wrap {
+	display: inline-flex;
+}
+.ds-spinner {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	border: var(--bw-strong) solid var(--border-hairline);
+	border-top-color: var(--accent);
+	animation: ds-spin 700ms linear infinite;
+}
+@keyframes ds-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+.viewer-loaded {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-5);
+}
+.viewer-heading {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-1);
+	padding-top: var(--s-2);
+}
+.viewer-title {
+	font-size: 32px;
+}
+.viewer-methods {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-3);
+}
+.viewer-footer {
+	font-size: var(--size-micro);
+	color: var(--text-faint);
+	text-align: center;
+	line-height: 1.5;
+}
+.ds-text-muted {
+	color: var(--text-muted);
+}
+.ds-text-accent {
+	color: var(--text-accent);
+}
+
+/* "How it works" page (src/pages/how-it-works.astro). */
+.how-intro {
+	color: var(--text-muted);
+	line-height: 1.5;
+}
+.how-steps {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-5);
+}
+.how-step {
+	display: flex;
+	gap: var(--s-3);
+	align-items: flex-start;
+}
+.how-step__icon {
+	width: 40px;
+	height: 40px;
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--r-sm);
+	background: var(--surface-sunken);
+	color: var(--text-accent);
+}
+.how-step__body {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding-top: 6px;
+}
+.how-step__body h3 {
+	letter-spacing: -0.015em;
+}
+.how-step__body p {
+	color: var(--text-muted);
+	line-height: 1.5;
+}
+.how-privacy-link {
+	display: inline-block;
+	margin-top: var(--s-3);
+	font-size: var(--size-small);
+}
+
+/* Privacy page (src/pages/privacy.astro). */
+.privacy-sections {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-5);
+}
+.privacy-section h2 {
+	font-size: var(--size-body);
+	letter-spacing: -0.015em;
+	margin-bottom: 4px;
+}
+.privacy-section p {
+	color: var(--text-muted);
+	line-height: 1.5;
+}
+
+/* Public viewer's IBAN card (src/scripts/viewer.mjs's renderIbanCard). */
+.iban-card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--s-4);
+}
+.iban-card__header {
+	display: flex;
+	align-items: center;
+	gap: var(--s-3);
+}
+.iban-card__row {
+	display: flex;
+	align-items: center;
+	gap: var(--s-3);
+}
+.iban-card__field {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+.iban-card__value {
+	font-size: var(--size-body);
+	font-weight: var(--w-semibold);
+	color: var(--text-strong);
+	overflow-wrap: break-word;
+}
+.iban-card__value--mono {
+	font-family: var(--font-mono);
+	font-size: var(--size-small);
+	word-break: break-all;
+}
+.iban-card__divider {
+	border-top: 1px dashed var(--border-hairline);
+}
