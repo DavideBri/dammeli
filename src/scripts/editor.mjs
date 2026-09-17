@@ -222,9 +222,12 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		popoverWrap.replaceChildren();
 		if (!selected) return;
 
-		const index = ALL.indexOf(selected);
 		const arrow = document.createElement('span');
-		arrow.className = `ds-method-grid__arrow ds-method-grid__arrow--pos-${index}`;
+		// Centered rather than pointing at the selected tile: with the grid
+		// now wrapping to multiple rows (more methods can be added later),
+		// there's no single well-defined column position to point at, and
+		// CSP forbids computing one as an inline style anyway.
+		arrow.className = 'ds-method-grid__arrow';
 		arrow.setAttribute('aria-hidden', 'true');
 
 		const pop = document.createElement('div');

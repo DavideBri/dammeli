@@ -11,7 +11,7 @@ import * as api from '../lib/api.mjs';
 import { createLocalPagesStore } from '../lib/local-pages.mjs';
 import { renderQrCode } from '../lib/qr.mjs';
 import { t } from '../lib/i18n.mjs';
-import { showScreen } from './screens.mjs';
+import { showScreen, navigateHard } from './screens.mjs';
 import * as ui from './ui.mjs';
 
 function buildWhatsAppUrl(lang, link) {
@@ -74,7 +74,13 @@ function renderCreatedScreen(createdRoot, lang, { title, readUrl, editUrl }, { o
 		size: 'sm',
 		iconName: 'eye',
 		text: t(lang, 'created.viewPublic'),
-		onClick: () => window.open(readUrl, '_blank', 'noopener,noreferrer'),
+		// Not window.open(): same-path-different-hash new-tab opens are
+		// unreliable on WebViews that silently fall back to navigating the
+		// current tab, which — same as an in-tab link — wouldn't reload and
+		// would leave the "Created" screen on top of a stale viewer. This
+		// always works, at the cost of leaving the "Created" screen (the
+		// browser's back button returns to it).
+		onClick: () => navigateHard(readUrl),
 	});
 	createdRoot.querySelector('[data-view-public-btn]').replaceChildren(viewPublicBtn);
 

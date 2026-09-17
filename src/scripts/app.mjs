@@ -21,7 +21,7 @@ import { renderMethods, showViewerState } from './viewer.mjs';
 import * as api from '../lib/api.mjs';
 import { detectLang, setSavedLang, t } from '../lib/i18n.mjs';
 import { getSavedTheme, setSavedTheme, applyTheme, effectiveTheme } from '../lib/theme.mjs';
-import { showScreen } from './screens.mjs';
+import { showScreen, navigateHard } from './screens.mjs';
 import * as ui from './ui.mjs';
 
 /** Fetches and decrypts the page a `loadFromFragment` result points to. */
@@ -179,6 +179,14 @@ export async function boot() {
 		cta.href = '/';
 		cta.className = 'ds-text-accent';
 		cta.textContent = t(lang, 'viewer.footerCta');
+		cta.addEventListener('click', (event) => {
+			// Same reasoning as your-pages.mjs's row link: same path, only the
+			// fragment differs (this page's #1r… vs none), so a plain click
+			// would never reload and boot() would never switch to the editor.
+			if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+			event.preventDefault();
+			navigateHard('/');
+		});
 		footerEl.appendChild(cta);
 
 		showViewerState(viewerRoot, 'loaded');

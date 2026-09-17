@@ -6,7 +6,7 @@
 import { createLocalPagesStore } from '../lib/local-pages.mjs';
 import * as api from '../lib/api.mjs';
 import { t } from '../lib/i18n.mjs';
-import { showScreen } from './screens.mjs';
+import { showScreen, navigateHard } from './screens.mjs';
 import * as ui from './ui.mjs';
 
 function shortId(id) {
@@ -30,6 +30,16 @@ function renderRow(page, lang, onDeleted) {
 	const main = document.createElement('a');
 	main.className = 'ds-page-row__main';
 	main.href = page.editLink;
+	main.addEventListener('click', (event) => {
+		// A plain click on this same-path-different-hash link would never
+		// reload (see navigateHard's doc comment) and boot() would never
+		// re-run. Modified clicks (ctrl/cmd/middle/shift) are left alone so
+		// "open in a new tab" still works — a genuinely new tab always does
+		// a real load, no matter the hash.
+		if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+		event.preventDefault();
+		navigateHard(page.editLink);
+	});
 	const name = document.createElement('span');
 	name.className = 'ds-page-row__name';
 	name.textContent = page.title || t(lang, 'myPages.rowFallbackName', { id: shortId(page.id) });

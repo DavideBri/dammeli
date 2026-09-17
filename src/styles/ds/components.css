@@ -475,6 +475,7 @@
 /* MethodGrid */
 .ds-method-grid__buttons {
 	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
 	gap: var(--s-3);
 	row-gap: var(--s-4);
 }
@@ -511,6 +512,7 @@
 .ds-method-grid__arrow {
 	position: absolute;
 	top: -7px;
+	left: calc(50% - 8px);
 	width: 14px;
 	height: 14px;
 	background: var(--surface-card);
@@ -681,25 +683,6 @@
 }
 .ds-method-tile__mark--crypto {
 	background: var(--paper-2);
-}
-
-/* Popover pointer position: the editor's method grid is always 5 columns
-   (satispay/revolut/paypal/iban/crypto), so 5 fixed offsets cover every
-   case instead of a computed inline `left`. */
-.ds-method-grid__arrow--pos-0 {
-	left: calc(10% - 8px);
-}
-.ds-method-grid__arrow--pos-1 {
-	left: calc(30% - 8px);
-}
-.ds-method-grid__arrow--pos-2 {
-	left: calc(50% - 8px);
-}
-.ds-method-grid__arrow--pos-3 {
-	left: calc(70% - 8px);
-}
-.ds-method-grid__arrow--pos-4 {
-	left: calc(90% - 8px);
 }
 
 /* Editor screen (src/pages/index.astro + src/scripts/editor.mjs). */
