@@ -95,9 +95,11 @@ it. The database contains only noise.
 - [x] Public read-only page — fetches, decrypts, and renders the methods
       for a recipient opening a read link; unstyled-but-real, same
       minimal Tailwind pass as the editor. No deep link for
-      Satispay/Revolut (no verified URL scheme, same honesty bar as the
-      editor's placeholder instructions) — copy-to-clipboard works for
-      every method regardless
+      Satispay/Revolut at first (no verified URL scheme, same honesty
+      bar as the editor's placeholder instructions) — copy-to-clipboard
+      works for every method regardless. Revolut's own `revolut.me/<tag>`
+      profile-link format added in 0.7; Satispay's still needs a verified
+      scheme
 - [x] QR generated locally, vendored library — `qrcode-generator` by
       Kazuhiko Arase (MIT), vendored in `src/vendor/`, rendered as inline
       SVG, no CDN
@@ -126,7 +128,10 @@ undocked domain (0.1).
       (tap a tile, a popover opens below it) — replaces the always-open
       cards and their manual up/down reordering (see PLAN.md section 5
       for the "order is information" tradeoff this made)
-- [x] Page-title field ("Per cosa?" / "What for?")
+- [x] Page-title field ("Titolo della pagina" / "Page title" — renamed
+      from the original "Per cosa?"/"What for?" in 0.7, framed as the
+      page's own title rather than a payment-request line, e.g. to tell
+      a personal page apart from a work one)
 - [x] "Created" screen (badge, QR framed with a hard shadow, keep-the-link
       notice, ghost actions), separated from the always-visible editor
 - [x] Custom-drawn marks per payment method, no third-party logos
@@ -140,6 +145,35 @@ undocked domain (0.1).
 - [x] Every inline `style=""`/`element.style.*` removed from the app in
       the process — CSP's `style-src` has no hash mechanism for those,
       unlike `<style>` blocks and stylesheets
+
+---
+
+## 0.7 Editor and sharing fixes
+
+- [x] Method-tile grid actually lays out horizontally, wrapping to more
+      rows as needed — 0.6 shipped it without `grid-template-columns`,
+      so it silently collapsed to a single vertical column
+- [x] Same-page, fragment-only navigations (a "your pages" row's edit
+      link, "come la vedono", the public page's "make your own" footer
+      link) now force a real reload (`navigateHard()` in
+      `src/scripts/screens.mjs`) — browsers never reload for those on
+      their own, so `boot()` never re-ran and the app stayed stuck on
+      whatever was already on screen
+- [x] Selecting a method scrolls its popover into view, instead of
+      leaving it below the fold for the user to find
+- [x] "Your pages" shows and copies the **read** (share) link, not the
+      edit link — derived from the stored write link when not saved
+      directly (pages saved before 0.7)
+- [x] Saving changes to an existing page shows the "Created"/share
+      screen again (read link, QR, copy) instead of just a toast on the
+      button — the only place the read link is easy to re-share from
+- [x] "Other methods" now allows up to 5 custom entries instead of one
+      fixed generic slot, each getting its own tile — deliberately
+      generic (any label, any value), not crypto-specific despite the
+      internal `type: "crypto"` card shape (PLAN.md section 5)
+- [x] Revolut direct link via `revolut.me/<tag>`, Revolut's own public
+      profile-payment format — Satispay still has no verified deep-link
+      scheme, so it stays copy-to-clipboard only
 
 ---
 

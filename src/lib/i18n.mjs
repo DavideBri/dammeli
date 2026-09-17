@@ -33,9 +33,10 @@ const dict = {
 		'editor.h1': 'Dammi i soldi.',
 		'editor.subtitle':
 			"Metti i tuoi metodi di pagamento, ottieni un link. Chi te lo deve dare paga con l'app che ha già.",
-		'editor.titleFieldLabel': 'Per cosa?',
-		'editor.titleFieldHint': 'Lo vede chi paga. Facoltativo.',
-		'editor.titleFieldPlaceholder': 'Cena da Nino',
+		'editor.titleFieldLabel': 'Titolo della pagina',
+		'editor.titleFieldHint':
+			'Utile per distinguere le tue pagine — personale, lavoro, un evento. Lo vede anche chi paga.',
+		'editor.titleFieldPlaceholder': 'Paga Bruno',
 		'editor.methodsHeading': 'Come vuoi essere pagato',
 		'editor.filledCount': '{{count}} su {{total}}',
 		'editor.footnote': 'Nessun account, nessuna email. Quello che scrivi resta nel link.',
@@ -49,6 +50,8 @@ const dict = {
 		'editor.needOneMethod': 'Aggiungi almeno un metodo di pagamento.',
 		'editor.filledBadge': 'inserito',
 		'editor.pasteConfirmPrefix': 'Finisce con',
+		'editor.addMethodLabel': 'Aggiungi',
+		'editor.removeMethod': 'Rimuovi questo metodo',
 
 		'methods.satispay.label': 'Satispay',
 		'methods.satispay.fieldLabel': 'Numero di telefono',
@@ -78,11 +81,12 @@ const dict = {
 		'methods.iban.holderTitle': 'Intestatario del conto',
 
 		'methods.crypto.label': 'Altri metodi',
-		'methods.crypto.hint': "Indirizzi crypto o qualsiasi altra cosa: metti un'etichetta e il valore.",
+		'methods.crypto.hint':
+			"Generico apposta: crypto, un altro servizio di pagamento, qualsiasi cosa. Metti un'etichetta e il valore — fino a 5.",
 		'methods.crypto.labelFieldLabel': 'Etichetta',
-		'methods.crypto.labelFieldPlaceholder': 'Bitcoin',
-		'methods.crypto.valueFieldLabel': 'Indirizzo',
-		'methods.crypto.valuePlaceholder': 'bc1q…',
+		'methods.crypto.labelFieldPlaceholder': 'Es. Bitcoin, Wise, Klarna…',
+		'methods.crypto.valueFieldLabel': 'Valore',
+		'methods.crypto.valuePlaceholder': 'Indirizzo, link o altro',
 
 		'created.badge': 'pronta',
 		'created.fallbackTitle': 'La tua pagina è pronta',
@@ -135,9 +139,10 @@ const dict = {
 		'editor.h1': 'Gimme the money.',
 		'editor.subtitle':
 			'Add your payment methods, get one link. Whoever owes you pays with the app they already have.',
-		'editor.titleFieldLabel': 'What for?',
-		'editor.titleFieldHint': 'The payer sees this. Optional.',
-		'editor.titleFieldPlaceholder': "Dinner at Nino's",
+		'editor.titleFieldLabel': 'Page title',
+		'editor.titleFieldHint':
+			'Useful to tell your pages apart — personal, work, an event. The payer sees it too.',
+		'editor.titleFieldPlaceholder': 'Pay Bruno',
 		'editor.methodsHeading': 'How you want to get paid',
 		'editor.filledCount': '{{count}} of {{total}}',
 		'editor.footnote': 'No account, no email. What you write stays in the link.',
@@ -151,6 +156,8 @@ const dict = {
 		'editor.needOneMethod': 'Add at least one payment method first.',
 		'editor.filledBadge': 'added',
 		'editor.pasteConfirmPrefix': 'Ends with',
+		'editor.addMethodLabel': 'Add',
+		'editor.removeMethod': 'Remove this method',
 
 		'methods.satispay.label': 'Satispay',
 		'methods.satispay.fieldLabel': 'Phone number',
@@ -177,11 +184,12 @@ const dict = {
 		'methods.iban.holderTitle': 'Account holder',
 
 		'methods.crypto.label': 'Other methods',
-		'methods.crypto.hint': 'Crypto addresses or anything else: add a label and the value.',
+		'methods.crypto.hint':
+			'Deliberately generic: crypto, another payment service, anything. Add a label and the value — up to 5.',
 		'methods.crypto.labelFieldLabel': 'Label',
-		'methods.crypto.labelFieldPlaceholder': 'Bitcoin',
-		'methods.crypto.valueFieldLabel': 'Address',
-		'methods.crypto.valuePlaceholder': 'bc1q…',
+		'methods.crypto.labelFieldPlaceholder': 'E.g. Bitcoin, Wise, Klarna…',
+		'methods.crypto.valueFieldLabel': 'Value',
+		'methods.crypto.valuePlaceholder': 'Address, link, or anything else',
 
 		'created.badge': 'ready',
 		'created.fallbackTitle': 'Your page is ready',

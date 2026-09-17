@@ -188,6 +188,18 @@ export function methodTile({ type, size = 56, checked = false, selected = false 
 	return wrap;
 }
 
+/** The dashed, muted "add another" tile for the custom-methods grid. */
+export function addTile(size = 56) {
+	const wrap = document.createElement('span');
+	wrap.className = 'ds-method-tile';
+	wrap.setAttribute('aria-hidden', 'true');
+	const mark = document.createElement('span');
+	mark.className = `ds-method-tile__mark ds-method-tile__mark--${size} ds-method-tile__mark--add`;
+	mark.appendChild(icon('plus', { size: Math.round(size * 0.45), strokeWidth: 2.2 }));
+	wrap.appendChild(mark);
+	return wrap;
+}
+
 export function topBar({ title, onBack, backLabel, right = [], wordmarkFallback = true } = {}) {
 	const header = document.createElement('header');
 	header.className = 'ds-top-bar';

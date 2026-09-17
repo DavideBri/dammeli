@@ -13,14 +13,23 @@ function shortId(id) {
 	return id.slice(0, 8);
 }
 
-async function deriveWriteAuth(editLink) {
+/**
+ * Everything derivable from a saved edit link: write-auth (to delete)
+ * and the read link (to share). A write fragment carries the master, so
+ * this needs no network round trip — see PLAN.md section 3.
+ */
+async function loadEditLink(editLink) {
 	// @vite-ignore: see src/scripts/create-flow.mjs for why.
 	const dammeli = await import(/* @vite-ignore */ '/crypto.js');
 	const loaded = await dammeli.loadFromFragment(new URL(editLink).hash);
 	if (loaded.type !== 'm') {
 		throw new Error('not an edit link');
 	}
-	return { idHex: dammeli.toHex(loaded.id), wtHex: dammeli.toHex(loaded.writeToken) };
+	return {
+		idHex: dammeli.toHex(loaded.id),
+		wtHex: dammeli.toHex(loaded.writeToken),
+		readLink: `${location.origin}/#${dammeli.encodeFragment('r', loaded.readKey)}`,
+	};
 }
 
 function renderRow(page, lang, onDeleted) {
@@ -45,9 +54,24 @@ function renderRow(page, lang, onDeleted) {
 	name.textContent = page.title || t(lang, 'myPages.rowFallbackName', { id: shortId(page.id) });
 	const url = document.createElement('span');
 	url.className = 'ds-page-row__url';
-	url.textContent = page.editLink;
+	// The share (read) link, not the edit link this row navigates to on
+	// click — that's the one worth showing/copying here. Pages saved
+	// before 0.7 didn't store it, so it's derived lazily for those.
+	url.textContent = page.readLink ?? '…';
 	main.append(name, url);
 	row.appendChild(main);
+
+	const readLinkPromise = page.readLink
+		? Promise.resolve(page.readLink)
+		: loadEditLink(page.editLink)
+				.then(({ readLink }) => {
+					url.textContent = readLink;
+					return readLink;
+				})
+				.catch(() => {
+					url.textContent = page.editLink;
+					return null;
+				});
 
 	const actions = document.createElement('div');
 	actions.className = 'ds-page-row__actions';
@@ -55,12 +79,13 @@ function renderRow(page, lang, onDeleted) {
 	const copyBtn = document.createElement('button');
 	copyBtn.type = 'button';
 	copyBtn.className = 'ds-page-row__action';
-	copyBtn.setAttribute('aria-label', t(lang, 'created.copyEditLink'));
-	copyBtn.title = t(lang, 'created.copyEditLink');
+	copyBtn.setAttribute('aria-label', t(lang, 'created.copyLink'));
+	copyBtn.title = t(lang, 'created.copyLink');
 	copyBtn.appendChild(ui.icon('copy', { size: 18, strokeWidth: 2 }));
 	copyBtn.addEventListener('click', async (event) => {
 		event.preventDefault();
-		await navigator.clipboard.writeText(page.editLink);
+		const link = (await readLinkPromise) ?? page.editLink;
+		await navigator.clipboard.writeText(link);
 		const original = copyBtn.innerHTML;
 		copyBtn.replaceChildren(ui.icon('check', { size: 18, strokeWidth: 2 }));
 		setTimeout(() => {
@@ -80,7 +105,7 @@ function renderRow(page, lang, onDeleted) {
 		if (!confirm(t(lang, 'common.deleteConfirm'))) return;
 		deleteBtn.disabled = true;
 		try {
-			const { idHex, wtHex } = await deriveWriteAuth(page.editLink);
+			const { idHex, wtHex } = await loadEditLink(page.editLink);
 			await api.deletePage(idHex, { wt: wtHex });
 			onDeleted(page.id);
 		} catch {

@@ -148,15 +148,18 @@ user.**
   still displays in whatever custom order its creator chose.
   - The redesigned editor (0.6, the dammeli design system's fixed
     tile-grid picker) always emits satispay, revolut, paypal, iban, then
-    the one free-form "other methods" slot, in that fixed order — the
-    manual up/down reordering UI is gone. Accepted consequence of
-    adopting the design system as given; nothing stops a future editor
-    from writing a different order into the same array.
-- The free-form "other methods" slot's `type` is now whatever label the
-  user typed (e.g. `"Bitcoin"`, `"Monero"`), not a value from a fixed
-  list — `methodLabel()`/the viewer fall back to displaying the type
-  string itself for anything it doesn't recognize as one of the four main
-  methods. `buildDirectLink()` still special-cases `type` matching
+    the free-form "other methods" entries in the order they were added
+    (0.7: up to 5 of them, not just one) — the manual up/down reordering
+    UI is gone. Accepted consequence of adopting the design system as
+    given; nothing stops a future editor from writing a different order
+    into the same array.
+- The free-form "other methods" entries' `type` is now whatever label the
+  user typed (e.g. `"Bitcoin"`, `"Monero"`, `"Wise"`), not a value from a
+  fixed list, and there can be **up to 5 of them** (0.7) — each is its own
+  array entry with `type` set to that entry's own label, not a shared
+  `"crypto"` type. `methodLabel()`/the viewer fall back to displaying the
+  type string itself for anything it doesn't recognize as one of the four
+  main methods. `buildDirectLink()` still special-cases `type` matching
   `"bitcoin"` case-insensitively for the BIP21 `bitcoin:` deep link.
 - **`value` holds only the handle, never the full URL.** If Revolut
   changes its URL format, a handle only needs a deploy; a saved URL would

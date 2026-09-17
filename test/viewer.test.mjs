@@ -23,8 +23,15 @@ test('buildDirectLink: bitcoin URI (BIP21)', () => {
 	assert.equal(buildDirectLink({ type: 'bitcoin', value: 'bc1qxyz' }), 'bitcoin:bc1qxyz');
 });
 
-test('buildDirectLink: no confident link format for satispay/revolut/iban', () => {
+test('buildDirectLink: revolut.me, Revolut\'s own public profile-link format', () => {
+	assert.equal(buildDirectLink({ type: 'revolut', value: 'brunoxyz' }), 'https://revolut.me/brunoxyz');
+});
+
+test('buildDirectLink: a leading @ on a revolut tag is stripped, same as paypal expects a bare handle', () => {
+	assert.equal(buildDirectLink({ type: 'revolut', value: '@brunoxyz' }), 'https://revolut.me/brunoxyz');
+});
+
+test('buildDirectLink: no confident link format for satispay/iban', () => {
 	assert.equal(buildDirectLink({ type: 'satispay', value: 'brunoxyz' }), null);
-	assert.equal(buildDirectLink({ type: 'revolut', value: 'brunoxyz' }), null);
 	assert.equal(buildDirectLink({ type: 'iban', value: 'IT60X0542811101000000123456' }), null);
 });

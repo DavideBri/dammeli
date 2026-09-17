@@ -684,6 +684,12 @@
 .ds-method-tile__mark--crypto {
 	background: var(--paper-2);
 }
+.ds-method-tile__mark--add {
+	background: var(--surface-sunken);
+	border-style: dashed;
+	box-shadow: none;
+	color: var(--text-faint);
+}
 
 /* Editor screen (src/pages/index.astro + src/scripts/editor.mjs). */
 .editor-intro {

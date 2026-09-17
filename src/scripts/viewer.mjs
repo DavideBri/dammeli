@@ -21,12 +21,18 @@ export function methodLabel(type) {
 
 /**
  * Only for methods whose link format is solid enough to trust blindly on
- * a payment page. Satispay/Revolut deep links are deliberately left out:
- * same honesty bar as the editor's instructions — no verified current URL
- * scheme for those two, and a wrong link here is worse than no link at all.
+ * a payment page — same honesty bar as the editor's instructions: a wrong
+ * link here is worse than no link at all.
+ *
+ * Satispay is deliberately still left out: unlike revolut.me (Revolut's
+ * own public profile-link feature) or paypal.me, there's no verified,
+ * documented consumer-to-consumer deep link that opens the app straight
+ * to paying a given phone number. Needs the real scheme confirmed against
+ * the live app before it can be added here.
  */
 export function buildDirectLink(method) {
 	if (method.type === 'paypal') return `https://paypal.me/${encodeURIComponent(method.value)}`;
+	if (method.type === 'revolut') return `https://revolut.me/${encodeURIComponent(method.value.replace(/^@/, ''))}`;
 	if (method.type?.toLowerCase() === 'bitcoin') return `bitcoin:${method.value}`;
 	return null;
 }

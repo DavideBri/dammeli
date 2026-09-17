@@ -111,10 +111,10 @@ function renderCreatedScreen(createdRoot, lang, { title, readUrl, editUrl }, { o
 /**
  * `existingPage` (from `dammeli.loadFromFragment` on a write fragment —
  * `{ master, readKey, writeToken, id }`, all raw bytes) switches this
- * into edit mode: PUT instead of POST, no link generation (they're
- * unchanged), no "Created" screen (the user already has the link they
- * used to get here) — just a brief "Saved!" on the button, same pattern
- * as the copy buttons.
+ * into edit mode: PUT instead of POST, no new links generated (they're
+ * unchanged) — but the "Created" screen (here doubling as a "Saved"
+ * screen) is shown again regardless, since that's the only place the
+ * read link is easy to re-share from.
  */
 export function initCreateFlow(
 	editorRoot,
@@ -155,17 +155,25 @@ export function initCreateFlow(
 					ct: dammeli.toHex(ciphertext),
 					wt: dammeli.toHex(existingPage.writeToken),
 				});
+
+				const editUrl = location.href;
+				const readUrl = `${location.origin}/#${dammeli.encodeFragment('r', existingPage.readKey)}`;
 				// Re-save in case this device's localStorage lost track of it
 				// (e.g. the edit link was opened from a bookmark saved
 				// elsewhere): idempotent either way.
-				localPages.save({ id: dammeli.toHex(existingPage.id), editLink: location.href, title: payload.title ?? '' });
+				localPages.save({
+					id: dammeli.toHex(existingPage.id),
+					editLink: editUrl,
+					readLink: readUrl,
+					title: payload.title ?? '',
+				});
 
+				const createdRoot = document.querySelector('[data-screen="created"]');
+				renderCreatedScreen(createdRoot, lang, { title: payload.title ?? '', readUrl, editUrl }, { onPages });
+				showScreen('created');
 				button.disabled = false;
 				editor.setDisabled(false);
-				button.textContent = t(lang, 'editor.saved');
-				setTimeout(() => {
-					button.textContent = idleLabel;
-				}, 1500);
+				button.textContent = idleLabel;
 				return;
 			}
 
@@ -183,7 +191,7 @@ export function initCreateFlow(
 			const readUrl = `${location.origin}/${page.readFragment}`;
 			const editUrl = `${location.origin}/${page.writeFragment}`;
 
-			localPages.save({ id: dammeli.toHex(page.id), editLink: editUrl, title: payload.title ?? '' });
+			localPages.save({ id: dammeli.toHex(page.id), editLink: editUrl, readLink: readUrl, title: payload.title ?? '' });
 
 			const createdRoot = document.querySelector('[data-screen="created"]');
 			renderCreatedScreen(createdRoot, lang, { title: payload.title ?? '', readUrl, editUrl }, { onPages });
