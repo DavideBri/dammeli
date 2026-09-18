@@ -94,23 +94,20 @@ const dict = {
 		'created.whatsapp': 'Invia su WhatsApp',
 		'created.whatsappText': 'Ecco la mia pagina dammeli per pagarmi: {{link}}',
 		'created.qrHint': 'oppure fallo inquadrare',
-		'created.noticeTitle': 'Tieni il link.',
-		'created.noticeBody':
-			"È l'unico modo per tornare su questa pagina e cambiarla. Non ce l'abbiamo: se lo perdi, ne fai un'altra.",
 		'created.viewPublic': 'Come la vedono',
 		'created.copyEditLink': 'Copia link di modifica',
 
 		'myPages.title': 'Le tue pagine',
 		'myPages.emptyText': 'Qui finiscono le pagine che crei da questo telefono.',
 		'myPages.emptyCta': 'Fanne una',
-		'myPages.rowFallbackName': 'Pagina …{{id}}',
+		'myPages.untitledName': 'Pagina senza titolo',
 		'myPages.notice':
 			"L'elenco sta solo su questo telefono. Se cambi dispositivo o cancelli i dati del browser, restano solo i link che hai salvato.",
 
 		'viewer.loading': 'Caricamento…',
 		'viewer.error':
 			"Questa pagina non esiste, o il link è incompleto. Se l'hai appena ricevuto, chiedi a chi te l'ha mandato di controllare di averlo copiato tutto.",
-		'viewer.defaultTitle': 'Dammi i soldi',
+		'viewer.defaultTitle': 'Pagina di pagamento',
 		'viewer.kicker': 'Scegli come pagare',
 		'viewer.preferredBadge': 'Preferito',
 		'viewer.footerPre': 'Pagina fatta con',
@@ -239,23 +236,20 @@ const dict = {
 		'created.whatsapp': 'Send on WhatsApp',
 		'created.whatsappText': "Here's my dammeli page to pay me: {{link}}",
 		'created.qrHint': 'or have them scan it',
-		'created.noticeTitle': 'Keep the link.',
-		'created.noticeBody':
-			"It's the only way back into this page to change it. We don't have it: if you lose it, you make another one.",
 		'created.viewPublic': 'How they see it',
 		'created.copyEditLink': 'Copy edit link',
 
 		'myPages.title': 'Your pages',
 		'myPages.emptyText': 'Pages you create from this phone end up here.',
 		'myPages.emptyCta': 'Make one',
-		'myPages.rowFallbackName': 'Page …{{id}}',
+		'myPages.untitledName': 'Untitled page',
 		'myPages.notice':
 			'This list only lives on this phone. If you switch devices or clear browser data, only the links you saved elsewhere remain.',
 
 		'viewer.loading': 'Loading…',
 		'viewer.error':
 			"This page doesn't exist, or the link is incomplete. If you just received it, ask whoever sent it to check they copied the whole thing.",
-		'viewer.defaultTitle': 'Gimme the money',
+		'viewer.defaultTitle': 'Payment page',
 		'viewer.kicker': 'Choose how to pay',
 		'viewer.preferredBadge': 'Preferred',
 		'viewer.footerPre': 'Page made with',

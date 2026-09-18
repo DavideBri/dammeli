@@ -9,8 +9,8 @@ test('t: looks up a known key for each language', () => {
 });
 
 test('t: substitutes {{placeholder}} vars', () => {
-	assert.equal(t('it', 'myPages.rowFallbackName', { id: 'ab12' }), 'Pagina …ab12');
-	assert.equal(t('en', 'myPages.rowFallbackName', { id: 'ab12' }), 'Page …ab12');
+	assert.equal(t('it', 'created.whatsappText', { link: 'https://damme.li/#1rabc' }), 'Ecco la mia pagina dammeli per pagarmi: https://damme.li/#1rabc');
+	assert.equal(t('en', 'created.whatsappText', { link: 'https://damme.li/#1rabc' }), "Here's my dammeli page to pay me: https://damme.li/#1rabc");
 });
 
 test('t: an unknown key falls back to the key itself rather than crashing', () => {

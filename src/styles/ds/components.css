@@ -480,14 +480,6 @@
 	letter-spacing: -0.015em;
 	color: var(--text-strong);
 }
-.ds-page-row__url {
-	font-family: var(--font-mono);
-	font-size: var(--size-micro);
-	color: var(--text-accent);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
 .ds-page-row__action {
 	width: 44px;
 	height: 44px;
@@ -843,12 +835,6 @@
 	gap: var(--s-2);
 	align-items: flex-start;
 }
-.created-url {
-	font-family: var(--font-mono);
-	font-size: var(--size-small);
-	color: var(--text-accent);
-	word-break: break-all;
-}
 .created-actions {
 	display: flex;
 	flex-direction: column;
@@ -871,10 +857,6 @@
 	display: flex;
 	gap: var(--s-3);
 	flex-wrap: wrap;
-}
-.created-edit-link {
-	font-size: var(--size-micro);
-	color: var(--text-faint);
 }
 
 /* "Your pages" screen. */

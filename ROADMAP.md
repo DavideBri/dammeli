@@ -294,6 +294,23 @@ undocked domain (0.1).
       subtitle sentence — the headline's own key word ("securely"/
       "al sicuro") is now the link to "How it works", so there's nothing
       left to explain in a second line
+- [x] "Your pages" rows show only the title, never the raw link — a saved
+      page with no title gets a shared default name ("Pagina senza
+      titolo"/"Untitled page"), numbered from the second one on so
+      several untitled pages stay distinguishable (the first stays
+      unnumbered)
+- [x] "Created" screen simplified: no "keep the link" warning notice, no
+      visible read/edit link text (both still readable by scripts/tests,
+      just not shown — see `src/pages/index.astro`). A third ghost
+      button, "Modifica", sits below the QR next to "Come la vedono"/
+      "Le tue pagine", going straight back into the (still-filled) editor
+- [x] Public viewer topbar redesigned: the wordmark (home link) moves to
+      its usual left slot, and the "Fanne una tua"/"Make your own" CTA
+      that used to sit at the bottom of the page moves up into the
+      topbar's right slot, visible without scrolling
+- [x] Softer fallback title on the public page when the creator didn't
+      set one — "Dammi i soldi"/"Gimme the money" read as demanding;
+      replaced with the plain "Pagina di pagamento"/"Payment page"
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**

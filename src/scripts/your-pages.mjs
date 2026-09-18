@@ -9,10 +9,6 @@ import { t } from '../lib/i18n.mjs';
 import { showScreen, navigateHard } from './screens.mjs';
 import * as ui from './ui.mjs';
 
-function shortId(id) {
-	return id.slice(0, 8);
-}
-
 /**
  * Everything derivable from a saved edit link: write-auth (to delete)
  * and the read link (to share). A write fragment carries the master, so
@@ -32,7 +28,7 @@ async function loadEditLink(editLink) {
 	};
 }
 
-function renderRow(page, lang, onDeleted) {
+function renderRow(page, lang, fallbackName, onDeleted) {
 	const row = document.createElement('li');
 	row.className = 'ds-page-row';
 
@@ -51,27 +47,19 @@ function renderRow(page, lang, onDeleted) {
 	});
 	const name = document.createElement('span');
 	name.className = 'ds-page-row__name';
-	name.textContent = page.title || t(lang, 'myPages.rowFallbackName', { id: shortId(page.id) });
-	const url = document.createElement('span');
-	url.className = 'ds-page-row__url';
-	// The share (read) link, not the edit link this row navigates to on
-	// click — that's the one worth showing/copying here. Pages saved
-	// before 0.7 didn't store it, so it's derived lazily for those.
-	url.textContent = page.readLink ?? '…';
-	main.append(name, url);
+	name.textContent = page.title || fallbackName;
+	main.appendChild(name);
 	row.appendChild(main);
 
+	// The share (read) link, not the edit link this row navigates to on
+	// click — that's the one the copy button hands out. Pages saved before
+	// 0.7 didn't store it, so it's derived lazily for those. Nothing in the
+	// row displays it anymore, only the copy button needs the resolved value.
 	const readLinkPromise = page.readLink
 		? Promise.resolve(page.readLink)
 		: loadEditLink(page.editLink)
-				.then(({ readLink }) => {
-					url.textContent = readLink;
-					return readLink;
-				})
-				.catch(() => {
-					url.textContent = page.editLink;
-					return null;
-				});
+				.then(({ readLink }) => readLink)
+				.catch(() => null);
 
 	const actions = document.createElement('div');
 	actions.className = 'ds-page-row__actions';
@@ -151,13 +139,23 @@ export function initYourPages(root, lang, { store = createLocalPagesStore(), onB
 			list.appendChild(empty);
 			return;
 		}
+		// Untitled pages share one generic name, numbered from the second one
+		// on — the first stays plain, since "Untitled page 1" reads odd when
+		// there's nothing yet to distinguish it from.
+		let untitledCount = 0;
 		list.replaceChildren(
-			...pages.map((page) =>
-				renderRow(page, lang, (id) => {
+			...pages.map((page) => {
+				let fallbackName = null;
+				if (!page.title) {
+					untitledCount += 1;
+					const base = t(lang, 'myPages.untitledName');
+					fallbackName = untitledCount === 1 ? base : `${base} ${untitledCount}`;
+				}
+				return renderRow(page, lang, fallbackName, (id) => {
 					store.remove(id);
 					render();
-				}),
-			),
+				});
+			}),
 		);
 	}
 

@@ -50,7 +50,9 @@ import SocialMeta from '../components/SocialMeta.astro';
 					<div class="created-intro">
 						<div data-created-badge></div>
 						<h2 data-created-title></h2>
-						<p class="created-url" data-read-link></p>
+						<!-- Holds the read URL for scripts/tests to read back — never
+						     shown to the visitor, see create-flow.mjs. -->
+						<p data-read-link hidden></p>
 					</div>
 
 					<div class="created-actions">
@@ -63,14 +65,16 @@ import SocialMeta from '../components/SocialMeta.astro';
 						<div data-qr-hint></div>
 					</div>
 
-					<div data-keep-link-notice></div>
-
 					<div class="created-ghost-row">
+						<div data-edit-page-btn></div>
 						<div data-view-public-btn></div>
 						<div data-created-your-pages-btn></div>
 					</div>
 
-					<p class="created-edit-link" data-edit-link hidden></p>
+					<!-- Same as data-read-link above: holds the edit URL for
+					     scripts/tests, never shown — the copy button next to it
+					     is the only way a visitor gets at it. -->
+					<p data-edit-link hidden></p>
 					<div data-copy-edit-link-btn></div>
 				</div>
 			</section>
