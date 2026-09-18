@@ -5,7 +5,7 @@ import { detectLang, t } from '../src/lib/i18n.mjs';
 
 test('t: looks up a known key for each language', () => {
 	assert.equal(t('it', 'editor.h1'), 'I tuoi metodi di pagamento, mai in chiaro.');
-	assert.equal(t('en', 'editor.h1'), 'Your payment methods, never exposed.');
+	assert.equal(t('en', 'editor.h1'), 'Share your payment methods, securely.');
 });
 
 test('t: substitutes {{placeholder}} vars', () => {

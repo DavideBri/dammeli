@@ -278,7 +278,13 @@ undocked domain (0.1).
       (`public/og-image.png`, source mockup in `tools/og-image.html`) —
       a per-page dynamic image isn't possible without breaking the
       privacy model, since a shared page's title lives only in the URL
-      fragment, which never reaches the server (PLAN.md section 3)
+      fragment, which never reaches the server (PLAN.md section 3).
+      Pared back to just the logo mark and wordmark on the paper
+      background after the first version (tagline + method-icon row)
+      read as too busy for a share preview
+- [x] Real favicon (`public/favicon.svg`, PNG fallback, and an
+      apple-touch-icon for iOS home-screen bookmarks) — the product's own
+      logo mark, replacing the empty `data:,` placeholder
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**

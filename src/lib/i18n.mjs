@@ -176,7 +176,7 @@ const dict = {
 		'nav.edit': 'Edit',
 		'nav.done': 'Done.',
 
-		'editor.h1': 'Your payment methods, never exposed.',
+		'editor.h1': 'Share your payment methods, securely.',
 		'editor.subtitle':
 			"They go into one encrypted link — not even we can read it, only whoever holds it can.",
 		'editor.titleFieldLabel': 'Page title',
