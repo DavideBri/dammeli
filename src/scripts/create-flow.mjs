@@ -39,6 +39,8 @@ function renderCreatedScreen(createdRoot, lang, { title, readUrl, editUrl }, { o
 
 	createdRoot.querySelector('[data-created-badge]').replaceChildren(ui.badge(t(lang, 'created.badge'), { tone: 'accent', tilt: true }));
 	createdRoot.querySelector('[data-created-title]').textContent = title || t(lang, 'created.fallbackTitle');
+	// Stays hidden (see index.astro) — not shown to the visitor, just
+	// readable by scripts/tests that need the actual URL.
 	createdRoot.querySelector('[data-read-link]').textContent = readUrl;
 
 	const copyLinkBtn = ui.copyFeedbackButton({
@@ -65,9 +67,14 @@ function renderCreatedScreen(createdRoot, lang, { title, readUrl, editUrl }, { o
 	createdRoot.querySelector('[data-qr]').replaceChildren(renderQrCode(readUrl));
 	createdRoot.querySelector('[data-qr-hint]').replaceChildren(ui.microLabel(t(lang, 'created.qrHint')));
 
-	createdRoot.querySelector('[data-keep-link-notice]').replaceChildren(
-		ui.notice({ tone: 'keep', iconName: 'bookmark', title: t(lang, 'created.noticeTitle'), body: t(lang, 'created.noticeBody') }),
-	);
+	const editPageBtn = ui.button({
+		variant: 'ghost',
+		size: 'sm',
+		iconName: 'pencil',
+		text: t(lang, 'nav.edit'),
+		onClick: () => showScreen('editor'),
+	});
+	createdRoot.querySelector('[data-edit-page-btn]').replaceChildren(editPageBtn);
 
 	const viewPublicBtn = ui.button({
 		variant: 'ghost',
@@ -93,9 +100,8 @@ function renderCreatedScreen(createdRoot, lang, { title, readUrl, editUrl }, { o
 	});
 	createdRoot.querySelector('[data-created-your-pages-btn]').replaceChildren(yourPagesBtn);
 
-	const editLinkEl = createdRoot.querySelector('[data-edit-link]');
-	editLinkEl.textContent = editUrl;
-	editLinkEl.hidden = false;
+	// Same as data-read-link above: stays hidden, just readable by scripts/tests.
+	createdRoot.querySelector('[data-edit-link]').textContent = editUrl;
 
 	const copyEditBtn = ui.copyFeedbackButton({
 		variant: 'ghost',

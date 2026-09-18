@@ -28,9 +28,9 @@ const dict = {
 		'nav.edit': 'Modifica',
 		'nav.done': 'Fatto.',
 
-		'editor.h1': 'I tuoi metodi di pagamento, mai in chiaro.',
-		'editor.subtitle':
-			'Finiscono in un link cifrato — nemmeno noi possiamo leggerlo, solo chi ce l\'ha.',
+		'editor.h1Prefix': 'I tuoi metodi di pagamento, sempre ',
+		'editor.h1LinkWord': 'al sicuro',
+		'editor.h1Suffix': '.',
 		'editor.titleFieldLabel': 'Titolo della pagina',
 		'editor.titleFieldHint':
 			'Utile per distinguere le tue pagine — personale, lavoro, un evento. Lo vede anche chi paga.',
@@ -45,7 +45,6 @@ const dict = {
 		'editor.createError': 'Qualcosa è andato storto creando la pagina. Riprova.',
 		'editor.saveError': 'Qualcosa è andato storto salvando le modifiche. Riprova.',
 		'editor.needOneMethod': 'Aggiungi almeno un metodo di pagamento.',
-		'editor.filledBadge': 'inserito',
 		'editor.pasteConfirmPrefix': 'Finisce con',
 		'editor.addMethodLabel': 'Aggiungi',
 		'editor.removeMethod': 'Rimuovi questo metodo',
@@ -95,23 +94,20 @@ const dict = {
 		'created.whatsapp': 'Invia su WhatsApp',
 		'created.whatsappText': 'Ecco la mia pagina dammeli per pagarmi: {{link}}',
 		'created.qrHint': 'oppure fallo inquadrare',
-		'created.noticeTitle': 'Tieni il link.',
-		'created.noticeBody':
-			"È l'unico modo per tornare su questa pagina e cambiarla. Non ce l'abbiamo: se lo perdi, ne fai un'altra.",
 		'created.viewPublic': 'Come la vedono',
 		'created.copyEditLink': 'Copia link di modifica',
 
 		'myPages.title': 'Le tue pagine',
 		'myPages.emptyText': 'Qui finiscono le pagine che crei da questo telefono.',
 		'myPages.emptyCta': 'Fanne una',
-		'myPages.rowFallbackName': 'Pagina …{{id}}',
+		'myPages.untitledName': 'Pagina senza titolo',
 		'myPages.notice':
 			"L'elenco sta solo su questo telefono. Se cambi dispositivo o cancelli i dati del browser, restano solo i link che hai salvato.",
 
 		'viewer.loading': 'Caricamento…',
 		'viewer.error':
 			"Questa pagina non esiste, o il link è incompleto. Se l'hai appena ricevuto, chiedi a chi te l'ha mandato di controllare di averlo copiato tutto.",
-		'viewer.defaultTitle': 'Dammi i soldi',
+		'viewer.defaultTitle': 'Pagina di pagamento',
 		'viewer.kicker': 'Scegli come pagare',
 		'viewer.preferredBadge': 'Preferito',
 		'viewer.footerPre': 'Pagina fatta con',
@@ -120,35 +116,27 @@ const dict = {
 		'viewer.howItWorks': 'Come funziona',
 
 		'howItWorks.title': 'Come funziona',
-		'howItWorks.intro':
-			'In breve: crei una pagina con i tuoi metodi di pagamento, ottieni un link, lo condividi. Nessun account, nessuna email, e non possiamo leggere quello che ci scrivi — nemmeno se lo volessimo. Ecco come, senza tecnicismi.',
-		'howItWorks.step1Title': 'Metti i tuoi metodi di pagamento',
-		'howItWorks.step1Body':
-			'Satispay, Revolut, PayPal, IBAN, o qualsiasi altra cosa — cripto, un altro servizio, quello che ti serve. Tutto resta sul tuo telefono finché non premi "Crea la pagina".',
-		'howItWorks.step2Title': 'Tutto viene cifrato prima di partire',
-		'howItWorks.step2Body':
-			'Nel momento in cui crei la pagina, quello che hai scritto viene trasformato in un blocco illeggibile proprio dentro il tuo browser — prima ancora che qualsiasi dato lasci il tuo telefono. Quello che arriva ai nostri server è già incomprensibile.',
-		'howItWorks.step3Title': 'La chiave vive solo nel link',
-		'howItWorks.step3Body':
-			"La parte del link dopo il cancelletto (#) è la chiave che serve per leggere la pagina — e quella parte non viene mai inviata da nessuna parte, resta solo nel browser di chi apre il link. Senza quel link, quello che abbiamo salvato è solo rumore, anche per noi.",
-		'howItWorks.step4Title': 'Tieni il link, non lo teniamo noi',
-		'howItWorks.step4Body':
-			"È l'unico modo per tornare sulla tua pagina e modificarla — lo salviamo su questo dispositivo per comodità, ma se cambi telefono o cancelli i dati del browser e non hai il link da un'altra parte, quella pagina è persa per sempre. Nessun recupero: è il prezzo di non avere un account.",
-		'howItWorks.hostingTitle': 'E chi ospita tutto questo?',
-		'howItWorks.hostingBody':
-			'Il sito e il database girano su fornitori esterni. Vedono solo blocchi cifrati illeggibili, mai i tuoi dati in chiaro — ma è giusto saperlo, quindi lo scriviamo qui invece che nascondertelo.',
-		'howItWorks.privacyLink': 'Leggi la pagina privacy completa',
+		'howItWorks.scene1Caption': 'Metti i metodi che usi già.',
+		'howItWorks.scene2Caption': 'Li cifriamo sul tuo dispositivo prima di inviarli a noi — la chiave resta solo a te.',
+		'howItWorks.scene3Caption': 'Condividi la chiave — il link — con chi vuoi farti pagare!',
+		'howItWorks.scene3Tagline': 'No chiave, no party.',
+		'howItWorks.privacyQuestion': 'Vuoi entrare più nel dettaglio?',
+		'howItWorks.privacyLink': 'Leggi la nostra privacy',
 		'howItWorks.cta': 'Crea la tua pagina',
 
 		'privacy.title': 'Privacy',
 		'privacy.intro':
 			'In breve: non possiamo leggere le tue pagine, non ti chiediamo un account né un\'email, e non ti tracciamo. Qui sotto i dettagli, fornitore per fornitore.',
+		'privacy.factNoAccount': 'Niente account',
+		'privacy.factNoEmail': 'Niente email',
+		'privacy.factEncrypted': 'Cifrato prima di partire',
+		'privacy.factNoTracking': 'Niente tracciamento',
 		'privacy.seeTitle': 'Cosa vediamo noi',
 		'privacy.seeBody':
-			'Niente di quello che scrivi. Ogni pagina viene cifrata dentro il tuo browser prima ancora di partire (vedi "Come funziona"): quello che arriva ai nostri server è già un blocco illeggibile, e resta tale finché qualcuno non apre il link con la chiave giusta — chiave che i nostri sistemi non vedono mai.',
+			'Niente di quello che scrivi. Cifriamo ogni pagina nel tuo browser prima ancora che parta (vedi "Come funziona"): quello che arriva ai nostri server è già un blocco illeggibile, e resta tale finché qualcuno non apre il link con la chiave giusta — chiave che non vediamo mai.',
 		'privacy.dontTitle': 'Cosa non facciamo',
 		'privacy.dontBody':
-			'Nessun account, nessuna email richiesta, nessuno script di tracciamento o analytics, nessun cookie. Non sappiamo chi sei e non proviamo a scoprirlo.',
+			'Nessun account, nessuna email richiesta, nessuno script di tracciamento o analytics, nessun cookie. Non sappiamo chi sei, e non proviamo a scoprirlo.',
 		'privacy.providersTitle': 'Chi ospita il sito',
 		'privacy.providersBody':
 			'Il sito e le funzioni che lo fanno funzionare girano su Netlify, il database su Supabase — entrambi fornitori americani, scelti per velocità di sviluppo, non per principio. Come ogni servizio web ricevono le richieste che gli mandi, quindi cose come il tuo indirizzo IP e l\'orario — ma il contenuto delle tue pagine resta sempre un blocco cifrato, illeggibile anche per loro. L\'obiettivo è spostare tutto su un server europeo appena possibile.',
@@ -177,9 +165,9 @@ const dict = {
 		'nav.edit': 'Edit',
 		'nav.done': 'Done.',
 
-		'editor.h1': 'Your payment methods, never exposed.',
-		'editor.subtitle':
-			"They go into one encrypted link — not even we can read it, only whoever holds it can.",
+		'editor.h1Prefix': 'Share your payment methods, ',
+		'editor.h1LinkWord': 'securely',
+		'editor.h1Suffix': '.',
 		'editor.titleFieldLabel': 'Page title',
 		'editor.titleFieldHint':
 			'Useful to tell your pages apart — personal, work, an event. The payer sees it too.',
@@ -194,7 +182,6 @@ const dict = {
 		'editor.createError': 'Something went wrong creating the page. Please try again.',
 		'editor.saveError': 'Something went wrong saving your changes. Please try again.',
 		'editor.needOneMethod': 'Add at least one payment method first.',
-		'editor.filledBadge': 'added',
 		'editor.pasteConfirmPrefix': 'Ends with',
 		'editor.addMethodLabel': 'Add',
 		'editor.removeMethod': 'Remove this method',
@@ -241,23 +228,20 @@ const dict = {
 		'created.whatsapp': 'Send on WhatsApp',
 		'created.whatsappText': "Here's my dammeli page to pay me: {{link}}",
 		'created.qrHint': 'or have them scan it',
-		'created.noticeTitle': 'Keep the link.',
-		'created.noticeBody':
-			"It's the only way back into this page to change it. We don't have it: if you lose it, you make another one.",
 		'created.viewPublic': 'How they see it',
 		'created.copyEditLink': 'Copy edit link',
 
 		'myPages.title': 'Your pages',
 		'myPages.emptyText': 'Pages you create from this phone end up here.',
 		'myPages.emptyCta': 'Make one',
-		'myPages.rowFallbackName': 'Page …{{id}}',
+		'myPages.untitledName': 'Untitled page',
 		'myPages.notice':
 			'This list only lives on this phone. If you switch devices or clear browser data, only the links you saved elsewhere remain.',
 
 		'viewer.loading': 'Loading…',
 		'viewer.error':
 			"This page doesn't exist, or the link is incomplete. If you just received it, ask whoever sent it to check they copied the whole thing.",
-		'viewer.defaultTitle': 'Gimme the money',
+		'viewer.defaultTitle': 'Payment page',
 		'viewer.kicker': 'Choose how to pay',
 		'viewer.preferredBadge': 'Preferred',
 		'viewer.footerPre': 'Page made with',
@@ -266,32 +250,24 @@ const dict = {
 		'viewer.howItWorks': 'How it works',
 
 		'howItWorks.title': 'How it works',
-		'howItWorks.intro':
-			"Short version: you create a page with your payment methods, get a link, share it. No account, no email, and we can't read what you write — not even if we wanted to. Here's how, without the jargon.",
-		'howItWorks.step1Title': 'Add your payment methods',
-		'howItWorks.step1Body':
-			"Satispay, Revolut, PayPal, IBAN, or anything else — crypto, another service, whatever you need. It all stays on your phone until you press \"Create page\".",
-		'howItWorks.step2Title': 'Everything is encrypted before it leaves',
-		'howItWorks.step2Body':
-			"The moment you create the page, what you wrote is turned into an unreadable block right inside your browser — before any of it leaves your phone. What reaches our servers is already meaningless.",
-		'howItWorks.step3Title': 'The key lives only in the link',
-		'howItWorks.step3Body':
-			"The part of the link after the hash (#) is the key needed to read the page — and that part is never sent anywhere, it stays only in the browser of whoever opens the link. Without that link, what we've stored is just noise, even to us.",
-		'howItWorks.step4Title': 'Keep the link — we don\'t',
-		'howItWorks.step4Body':
-			"It's the only way back to your page to edit it — we save it on this device for convenience, but if you switch phones or clear your browser data without a copy saved elsewhere, that page is gone for good. No recovery: that's the cost of not having an account.",
-		'howItWorks.hostingTitle': 'Who hosts all this?',
-		'howItWorks.hostingBody':
-			'The site and database run on outside providers. They only ever see unreadable encrypted blocks, never your data in the clear — but it\'s worth knowing, so we say it here instead of hiding it.',
-		'howItWorks.privacyLink': 'Read the full privacy page',
+		'howItWorks.scene1Caption': 'Add the ones you already use.',
+		'howItWorks.scene2Caption': 'We encrypt them on your device before they reach us — the key stays only with you.',
+		'howItWorks.scene3Caption': 'Share the key — the link — with whoever you want to pay you!',
+		'howItWorks.scene3Tagline': 'No key, no party.',
+		'howItWorks.privacyQuestion': 'Want the details?',
+		'howItWorks.privacyLink': 'Read our privacy page',
 		'howItWorks.cta': 'Create your page',
 
 		'privacy.title': 'Privacy',
 		'privacy.intro':
 			"In short: we can't read your pages, we never ask for an account or an email, and we don't track you. Here are the details, provider by provider.",
+		'privacy.factNoAccount': 'No account',
+		'privacy.factNoEmail': 'No email',
+		'privacy.factEncrypted': 'Encrypted before it leaves',
+		'privacy.factNoTracking': 'No tracking',
 		'privacy.seeTitle': 'What we can see',
 		'privacy.seeBody':
-			'Nothing you write. Every page is encrypted inside your own browser before it even leaves it (see "How it works") — what reaches our servers is already an unreadable block, and stays that way until someone opens the link with the right key, a key our systems never see.',
+			'Nothing you write. We encrypt every page in your own browser before it even leaves it (see "How it works") — what reaches our servers is already an unreadable block, and stays that way until someone opens the link with the right key, a key we never see.',
 		'privacy.dontTitle': "What we don't do",
 		'privacy.dontBody':
 			"No account, no email required, no tracking or analytics scripts, no cookies. We don't know who you are, and we don't try to find out.",

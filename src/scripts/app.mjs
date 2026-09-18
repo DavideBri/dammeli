@@ -56,17 +56,27 @@ function buildEditorTopBar(editorRoot, lang, { onPages }) {
 	render();
 }
 
-function buildViewerTopBar(viewerRoot) {
-	const homeLink = ui.wordmarkLink(17);
-	homeLink.addEventListener('click', (event) => {
-		// Same reasoning as the footer's "Fanne una tua" link: this page and
-		// "/" share a path, only the fragment differs, so a plain click would
-		// never reload and boot() would never switch back to the editor.
+function buildViewerTopBar(viewerRoot, lang) {
+	// The wordmark sits in its usual title slot (left) and doubles as a home
+	// link, same as everywhere else it appears with no page title of its
+	// own — see ui.mjs's topBar(). The "make your own" CTA moves here from
+	// the footer, on the right, where it's seen without scrolling.
+	const createCta = ui.button({
+		variant: 'primary',
+		size: 'sm',
+		text: t(lang, 'viewer.footerCta'),
+		onClick: () => navigateHard('/'),
+	});
+	const { header, titleWrap } = ui.topBar({ right: [createCta] });
+	titleWrap.querySelector('.ds-wordmark-link')?.addEventListener('click', (event) => {
+		// Same reasoning as the "how it works"/"privacy" footer links: this
+		// page and "/" share a path, only the fragment differs, so a plain
+		// click would never reload and boot() would never switch back to
+		// the editor.
 		if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
 		event.preventDefault();
 		navigateHard('/');
 	});
-	const { header } = ui.topBar({ wordmarkFallback: false, right: [homeLink] });
 	viewerRoot.querySelector('[data-topbar-viewer]').replaceChildren(header);
 }
 
@@ -100,7 +110,7 @@ export async function boot() {
 	try {
 		loaded = await dammeli.loadFromFragment(hash);
 	} catch {
-		buildViewerTopBar(viewerRoot);
+		buildViewerTopBar(viewerRoot, lang);
 		showScreen('viewer');
 		showViewerState(viewerRoot, 'error');
 		viewerRoot.querySelector('[data-viewer-state="error"]').textContent = t(lang, 'viewer.error');
@@ -114,6 +124,16 @@ export async function boot() {
 		editorRoot.hidden = false;
 		buildEditorTopBar(editorRoot, lang, { onPages: goToYourPages });
 
+		// The form itself (initEditor()'s DOM) doesn't exist yet — only the
+		// fetch/decrypt below builds it — so a spinner stands in instead of
+		// a blank screen for that moment, same as the read-only viewer's own
+		// loading state.
+		const formEl = editorRoot.querySelector('[data-editor-form]');
+		const loadingEl = editorRoot.querySelector('[data-editor-loading]');
+		formEl.hidden = true;
+		loadingEl.hidden = false;
+		loadingEl.replaceChildren(ui.spinner(t(lang, 'viewer.loading')));
+
 		let payload;
 		try {
 			payload = await fetchPayload(dammeli, loaded);
@@ -122,20 +142,22 @@ export async function boot() {
 			// truncated) — showing the empty form as if editing were working
 			// would risk looking like the page's data got lost, so this
 			// fails the same way the read-only viewer does instead.
-			buildViewerTopBar(viewerRoot);
+			buildViewerTopBar(viewerRoot, lang);
 			showScreen('viewer');
 			showViewerState(viewerRoot, 'error');
 			viewerRoot.querySelector('[data-viewer-state="error"]').textContent = t(lang, 'viewer.error');
 			return;
 		}
 
+		loadingEl.hidden = true;
+		formEl.hidden = false;
 		const editor = initEditor(editorRoot, lang, { prefill: payload });
 		initCreateFlow(editorRoot, editor, lang, { existingPage: loaded, onPages: goToYourPages });
 		showScreen('editor');
 		return;
 	}
 
-	buildViewerTopBar(viewerRoot);
+	buildViewerTopBar(viewerRoot, lang);
 	showScreen('viewer');
 	showViewerState(viewerRoot, 'loading');
 	viewerRoot.querySelector('[data-viewer-state="loading"]').replaceChildren(ui.spinner(t(lang, 'viewer.loading')));
@@ -156,20 +178,8 @@ export async function boot() {
 		brand.className = 'ds-text-muted';
 		brand.textContent = 'dammeli';
 		footerEl.append(`${t(lang, 'viewer.footerPre')} `, brand, t(lang, 'viewer.footerPost'), document.createElement('br'));
-		const cta = document.createElement('a');
-		cta.href = '/';
-		cta.className = 'ds-text-accent';
-		cta.textContent = t(lang, 'viewer.footerCta');
-		cta.addEventListener('click', (event) => {
-			// Same reasoning as your-pages.mjs's row link: same path, only the
-			// fragment differs (this page's #1r… vs none), so a plain click
-			// would never reload and boot() would never switch to the editor.
-			if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-			event.preventDefault();
-			navigateHard('/');
-		});
-		footerEl.appendChild(cta);
-		footerEl.append(' · ');
+		// The "make your own" CTA lives in the topbar now (buildViewerTopBar),
+		// not here — seen without scrolling, instead of buried at the bottom.
 		const howItWorksLink = document.createElement('a');
 		howItWorksLink.href = '/how-it-works';
 		howItWorksLink.className = 'ds-text-accent';

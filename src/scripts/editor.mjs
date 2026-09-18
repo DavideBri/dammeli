@@ -8,7 +8,7 @@ import { normalizeHandleFromUrl, normalizeIban, confirmationSuffix } from '../li
 import { t } from '../lib/i18n.mjs';
 import * as ui from './ui.mjs';
 
-const ORDER = ['satispay', 'revolut', 'paypal', 'iban'];
+const ORDER = ['iban', 'paypal', 'revolut', 'satispay'];
 const MAX_CUSTOM = 5;
 
 const HANDLE_DOMAINS = {
@@ -78,13 +78,15 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 	const popoverWrap = root.querySelector('[data-method-popover-wrap]');
 	const createBtn = root.querySelector('[data-create]');
 
-	root.querySelector('[data-editor-h1]').textContent = t(lang, 'editor.h1');
-	const subtitleEl = root.querySelector('[data-editor-subtitle]');
-	const introHowItWorksLink = document.createElement('a');
-	introHowItWorksLink.href = '/how-it-works';
-	introHowItWorksLink.className = 'ds-text-accent';
-	introHowItWorksLink.textContent = t(lang, 'viewer.howItWorks');
-	subtitleEl.replaceChildren(`${t(lang, 'editor.subtitle')} `, introHowItWorksLink);
+	// The headline doubles as the "how it works" pointer: its one link word
+	// (e.g. "securely"/"al sicuro") goes straight to that page — no separate
+	// subtitle sentence needed just to hold a link.
+	const h1El = root.querySelector('[data-editor-h1]');
+	const h1Link = document.createElement('a');
+	h1Link.href = '/how-it-works';
+	h1Link.className = 'ds-text-accent';
+	h1Link.textContent = t(lang, 'editor.h1LinkWord');
+	h1El.replaceChildren(t(lang, 'editor.h1Prefix'), h1Link, t(lang, 'editor.h1Suffix'));
 	root.querySelector('[data-editor-methods-heading]').textContent = t(lang, 'editor.methodsHeading');
 	const footnoteEl = root.querySelector('[data-editor-footnote]');
 	const privacyLink = document.createElement('a');
@@ -380,28 +382,21 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		});
 	}
 
-	/** Slots inside the currently-open popover that depend on "is this
+	/** Slot inside the currently-open popover that depends on "is this
 	 * filled now", refreshed in place after a field blurs — never a full
 	 * renderPopover(), which would also replace the field inputs
 	 * themselves (see buildMainField's blur handler). */
-	let headBadgeSlot = null;
 	let preferredSlot = null;
 	function refreshFilledDependents() {
 		if (!selected) return;
-		const filled = isFilled(selected);
-		if (headBadgeSlot) {
-			headBadgeSlot.replaceChildren();
-			if (filled) headBadgeSlot.appendChild(ui.microLabel(t(lang, 'editor.filledBadge'), { tone: 'accent' }));
-		}
 		if (preferredSlot) {
 			preferredSlot.replaceChildren();
-			if (filled) preferredSlot.appendChild(buildPreferredStar(selected));
+			if (isFilled(selected)) preferredSlot.appendChild(buildPreferredStar(selected));
 		}
 	}
 
 	function renderPopover() {
 		popoverWrap.replaceChildren();
-		headBadgeSlot = null;
 		preferredSlot = null;
 		if (!selected) return;
 
@@ -422,8 +417,6 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		titleSpan.className = 'ds-method-grid__popover-title';
 		titleSpan.textContent = tileLabel(selected);
 		head.appendChild(titleSpan);
-		headBadgeSlot = document.createElement('span');
-		head.appendChild(headBadgeSlot);
 		pop.appendChild(head);
 
 		if (isCustomId(selected)) {

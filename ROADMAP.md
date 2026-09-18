@@ -224,6 +224,10 @@ undocked domain (0.1).
 - [x] IBAN participates in both: preferred moves its card above the
       pay-button list instead of leaving it pinned after; dragging
       changes its position relative to the other methods the same way
+- [x] Default tile order for a brand-new page changed to IBAN, PayPal,
+      Revolut, Satispay, Aggiungi (`ORDER` in `src/scripts/editor.mjs`) —
+      an editing an existing page still restores that page's own saved
+      order regardless of this default
 - [x] Popover arrow regression fixed: making the popover `position:
       relative` (to anchor the star) turned it into a positioned
       descendant sharing a stacking order with the arrow, so the
@@ -274,7 +278,88 @@ undocked domain (0.1).
       (`public/og-image.png`, source mockup in `tools/og-image.html`) —
       a per-page dynamic image isn't possible without breaking the
       privacy model, since a shared page's title lives only in the URL
-      fragment, which never reaches the server (PLAN.md section 3)
+      fragment, which never reaches the server (PLAN.md section 3).
+      Pared back to just the logo mark and wordmark on the paper
+      background after the first version (tagline + method-icon row)
+      read as too busy for a share preview
+- [x] Real favicon (`public/favicon.svg`, PNG fallback, and an
+      apple-touch-icon for iOS home-screen bookmarks) — the product's own
+      logo mark, replacing the empty `data:,` placeholder
+- [x] Dark mode lightened: the original surfaces (`#141210`/`#1D1A17`/
+      `#100E0C`) read as near-black rather than a warm charcoal —
+      brightened to `#2E2924`/`#3B342C`/`#221E18` (`src/styles/ds/colors.css`,
+      both the `data-theme="dark"` override and the
+      `prefers-color-scheme` default)
+- [x] Editor intro simplified further: one headline, no separate
+      subtitle sentence — the headline's own key word ("securely"/
+      "al sicuro") is now the link to "How it works", so there's nothing
+      left to explain in a second line
+- [x] "Your pages" rows show only the title, never the raw link — a saved
+      page with no title gets a shared default name ("Pagina senza
+      titolo"/"Untitled page"), numbered from the second one on so
+      several untitled pages stay distinguishable (the first stays
+      unnumbered)
+- [x] "Created" screen simplified: no "keep the link" warning notice, no
+      visible read/edit link text (both still readable by scripts/tests,
+      just not shown — see `src/pages/index.astro`). A third ghost
+      button, "Modifica", sits below the QR next to "Come la vedono"/
+      "Le tue pagine", going straight back into the (still-filled) editor
+- [x] Public viewer topbar redesigned: the wordmark (home link) moves to
+      its usual left slot, and the "Fanne una tua"/"Make your own" CTA
+      that used to sit at the bottom of the page moves up into the
+      topbar's right slot, visible without scrolling
+- [x] Softer fallback title on the public page when the creator didn't
+      set one — "Dammi i soldi"/"Gimme the money" read as demanding;
+      replaced with the plain "Pagina di pagamento"/"Payment page"
+- [x] "How it works" rewritten as three short, literal, animated scenes
+      instead of a wall of text — explain-like-I'm-five, not a technical
+      writeup. Scene 1 reuses the real method tiles from the editor
+      itself (not an abstraction); scene 2 is a padlock snapping shut
+      over a few "unreadable" dashes; scene 3 is a link travelling
+      between two phones, looping. All hand-drawn SVG in the same
+      stroke-based style as the rest of the design system, animated
+      with plain CSS `@keyframes` (no JS, no inline styles — CSP-safe),
+      with a `prefers-reduced-motion` fallback to a static end-state.
+      The old 4-step text list and the hosting-providers notice box are
+      gone; what's left of that (the providers) is one link to the full
+      privacy page, plus a one-line reminder to save the link
+- [x] Opening an edit link no longer shows a blank editor screen while
+      the existing page is fetched/decrypted — a spinner (the same
+      `ui.spinner()` as the read-only viewer's own loading state) fills
+      that gap, since `initEditor()`'s DOM doesn't exist yet at that
+      point. Needed `[data-editor-form]` (wrapping `.ds-body` +
+      `.ds-sticky`) to pick up `.ds-page`'s flex layout itself, otherwise
+      `.ds-body`'s `flex: 1` — which pins the sticky create/save button
+      to the bottom on short pages — had no flex container to apply to
+- [x] "How it works" copy pass: dropped the "In tre passaggi"/"Three
+      steps." lead-in and the "save the link to edit later" reminder —
+      both redundant once the three scenes speak for themselves. Scene
+      2's caption now names who's on each side of the encryption
+      ("Li cifriamo... la chiave resta solo a te"/"We encrypt them...
+      the key stays only with you"), scene 3's is a direct call to
+      action ("Condividi la chiave — il link —
+      con chi vuoi farti pagare!"/"Share the key — the link — with
+      whoever you want to pay you!") with a small punchline underneath
+      ("No chiave, no party."/"No key, no party."). The privacy link at
+      the bottom is now a question + link ("Vuoi entrare più nel
+      dettaglio? Leggi la nostra privacy"/"Want the details? Read our
+      privacy page") instead of a bare link
+- [x] Privacy page redesign: a scannable "at a glance" strip (4 short
+      facts — no account, no email, encrypted before it leaves the
+      device, no tracking) sits above the existing detailed sections, for
+      whoever just wants the headline; each detailed section (what we
+      see, what we don't do, who hosts the site, what stays on your
+      phone) now carries its own small icon for quicker scanning. Body
+      copy for "what we see" and "what we don't do" tightened to active
+      voice to match the how-it-works rewrite. Section order, the beta
+      notice, and the back button are unchanged — the redesign is
+      additive, not a restructure
+- [x] Open Graph title/description reworded to match the redesigned
+      home's tone ("dammeli — pagamenti sempre al sicuro") and, since
+      this is the card whoever receives a payment link actually sees,
+      written from the recipient's side rather than the creator's — "un
+      link cifrato per pagare", not "your payment methods". The OG image
+      itself (logo + wordmark) was already fine and untouched
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**

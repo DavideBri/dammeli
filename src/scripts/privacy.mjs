@@ -2,10 +2,44 @@
 // see, and what stays only on the visitor's own device. Same static,
 // bilingual pattern as how-it-works.mjs — no separate content pipeline for
 // one more page.
+//
+// Two layers on purpose: a scannable "at a glance" strip for whoever just
+// wants the headline facts, and the full, specific sections below for
+// whoever wants to actually check them — a privacy page earns trust with
+// precision, not with a punchy one-liner alone.
 
 import { detectLang, t } from '../lib/i18n.mjs';
 import { getSavedTheme, applyTheme } from '../lib/theme.mjs';
 import * as ui from './ui.mjs';
+
+const SECTION_ICONS = { see: 'eye-off', dont: 'x', providers: 'server', device: 'smartphone' };
+
+function buildFact(text) {
+	const item = document.createElement('div');
+	item.className = 'privacy-fact';
+	item.appendChild(ui.icon('check', { size: 16, strokeWidth: 2.5 }));
+	const span = document.createElement('span');
+	span.textContent = text;
+	item.appendChild(span);
+	return item;
+}
+
+function buildSection(key, lang) {
+	const el = document.createElement('div');
+	el.className = 'privacy-section';
+	const head = document.createElement('div');
+	head.className = 'privacy-section__head';
+	const iconWrap = document.createElement('span');
+	iconWrap.className = 'privacy-section__icon';
+	iconWrap.appendChild(ui.icon(SECTION_ICONS[key], { size: 18, strokeWidth: 1.9 }));
+	const h2 = document.createElement('h2');
+	h2.textContent = t(lang, `privacy.${key}Title`);
+	head.append(iconWrap, h2);
+	const p = document.createElement('p');
+	p.textContent = t(lang, `privacy.${key}Body`);
+	el.append(head, p);
+	return el;
+}
 
 export function initPrivacy() {
 	applyTheme(getSavedTheme());
@@ -27,22 +61,15 @@ export function initPrivacy() {
 	document.querySelector('[data-title]').textContent = t(lang, 'privacy.title');
 	document.querySelector('[data-intro]').textContent = t(lang, 'privacy.intro');
 
-	const sections = ['see', 'dont', 'providers', 'device'].map((key) => ({
-		title: t(lang, `privacy.${key}Title`),
-		body: t(lang, `privacy.${key}Body`),
-	}));
+	document.querySelector('[data-quickfacts]').replaceChildren(
+		buildFact(t(lang, 'privacy.factNoAccount')),
+		buildFact(t(lang, 'privacy.factNoEmail')),
+		buildFact(t(lang, 'privacy.factEncrypted')),
+		buildFact(t(lang, 'privacy.factNoTracking')),
+	);
 
 	document.querySelector('[data-sections]').replaceChildren(
-		...sections.map((section) => {
-			const el = document.createElement('div');
-			el.className = 'privacy-section';
-			const h2 = document.createElement('h2');
-			h2.textContent = section.title;
-			const p = document.createElement('p');
-			p.textContent = section.body;
-			el.append(h2, p);
-			return el;
-		}),
+		...['see', 'dont', 'providers', 'device'].map((key) => buildSection(key, lang)),
 	);
 
 	document.querySelector('[data-beta-notice]').replaceChildren(

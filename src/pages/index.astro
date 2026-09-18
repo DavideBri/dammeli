@@ -7,10 +7,12 @@ import SocialMeta from '../components/SocialMeta.astro';
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>damme.li</title>
-		<link rel="icon" href="data:," />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/png" href="/favicon.png" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<SocialMeta
-			title="dammeli — pagamenti in un link cifrato"
-			description="Metti i tuoi metodi di pagamento in un link cifrato: nessun account, nessuna email, e nemmeno noi possiamo leggerlo."
+			title="dammeli — pagamenti sempre al sicuro"
+			description="Un link cifrato per pagare: nessun account, nessuna email, e nemmeno noi possiamo leggerlo."
 			path="/"
 		/>
 		<script type="module" src="/crypto.js"></script>
@@ -19,27 +21,32 @@ import SocialMeta from '../components/SocialMeta.astro';
 		<div id="app">
 			<section class="ds-page" data-screen="editor" hidden>
 				<div data-topbar-editor></div>
-				<div class="ds-body">
-					<div class="editor-intro">
-						<h1 data-editor-h1></h1>
-						<p data-editor-subtitle class="editor-subtitle"></p>
-					</div>
-
-					<div data-title-field></div>
-
-					<div class="editor-methods-section">
-						<h3 data-editor-methods-heading></h3>
-						<div>
-							<div class="ds-method-grid__buttons" data-method-tiles></div>
-							<div data-method-popover-wrap></div>
+				<!-- Shown only while an edit link's existing page is being
+				     fetched/decrypted (app.mjs) — a blank-new-page editor never
+				     needs this, initEditor() runs synchronously for that. -->
+				<div class="editor-loading" data-editor-loading hidden></div>
+				<div data-editor-form>
+					<div class="ds-body">
+						<div class="editor-intro">
+							<h1 data-editor-h1></h1>
 						</div>
-					</div>
 
-					<p data-editor-footnote class="editor-footnote"></p>
-					<p data-create-error class="ds-field__error" hidden></p>
-				</div>
-				<div class="ds-sticky">
-					<button type="button" class="ds-btn ds-btn--primary ds-btn--lg ds-btn--full" data-create disabled></button>
+						<div data-title-field></div>
+
+						<div class="editor-methods-section">
+							<h3 data-editor-methods-heading></h3>
+							<div>
+								<div class="ds-method-grid__buttons" data-method-tiles></div>
+								<div data-method-popover-wrap></div>
+							</div>
+						</div>
+
+						<p data-editor-footnote class="editor-footnote"></p>
+						<p data-create-error class="ds-field__error" hidden></p>
+					</div>
+					<div class="ds-sticky">
+						<button type="button" class="ds-btn ds-btn--primary ds-btn--lg ds-btn--full" data-create disabled></button>
+					</div>
 				</div>
 			</section>
 
@@ -49,7 +56,9 @@ import SocialMeta from '../components/SocialMeta.astro';
 					<div class="created-intro">
 						<div data-created-badge></div>
 						<h2 data-created-title></h2>
-						<p class="created-url" data-read-link></p>
+						<!-- Holds the read URL for scripts/tests to read back — never
+						     shown to the visitor, see create-flow.mjs. -->
+						<p data-read-link hidden></p>
 					</div>
 
 					<div class="created-actions">
@@ -62,14 +71,16 @@ import SocialMeta from '../components/SocialMeta.astro';
 						<div data-qr-hint></div>
 					</div>
 
-					<div data-keep-link-notice></div>
-
 					<div class="created-ghost-row">
+						<div data-edit-page-btn></div>
 						<div data-view-public-btn></div>
 						<div data-created-your-pages-btn></div>
 					</div>
 
-					<p class="created-edit-link" data-edit-link hidden></p>
+					<!-- Same as data-read-link above: holds the edit URL for
+					     scripts/tests, never shown — the copy button next to it
+					     is the only way a visitor gets at it. -->
+					<p data-edit-link hidden></p>
 					<div data-copy-edit-link-btn></div>
 				</div>
 			</section>
