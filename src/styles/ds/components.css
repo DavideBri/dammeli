@@ -987,6 +987,12 @@
 	letter-spacing: -0.01em;
 	max-width: 34ch;
 }
+.how-scene__tagline {
+	margin-top: calc(-1 * var(--s-2));
+	font-size: var(--size-small);
+	font-weight: var(--w-bold);
+	color: var(--text-accent);
+}
 
 /* Scene 1: the real method tiles landing in, one after another. */
 .how-scene1-row {
@@ -1131,16 +1137,10 @@
 	}
 }
 
-.how-keep-note {
+.how-privacy-line {
+	text-align: center;
 	font-size: var(--size-small);
 	color: var(--text-muted);
-	text-align: center;
-}
-.how-privacy-link {
-	display: block;
-	text-align: center;
-	margin-top: calc(-1 * var(--s-2));
-	font-size: var(--size-small);
 }
 
 @media (prefers-reduced-motion: reduce) {

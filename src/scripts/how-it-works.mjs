@@ -62,7 +62,7 @@ function buildScene3() {
 	return wrap.firstElementChild;
 }
 
-function buildScene(art, caption) {
+function buildScene(art, caption, tagline) {
 	const card = document.createElement('div');
 	card.className = 'ds-card ds-card--sunken how-scene';
 	card.appendChild(art);
@@ -70,6 +70,12 @@ function buildScene(art, caption) {
 	p.className = 'how-scene__caption';
 	p.textContent = caption;
 	card.appendChild(p);
+	if (tagline) {
+		const small = document.createElement('p');
+		small.className = 'how-scene__tagline';
+		small.textContent = tagline;
+		card.appendChild(small);
+	}
 	return card;
 }
 
@@ -91,21 +97,18 @@ export function initHowItWorks() {
 	document.querySelector('[data-topbar]').replaceChildren(header);
 
 	document.querySelector('[data-title]').textContent = t(lang, 'howItWorks.title');
-	document.querySelector('[data-intro]').textContent = t(lang, 'howItWorks.intro');
 
 	document.querySelector('[data-scenes]').replaceChildren(
 		buildScene(buildScene1(), t(lang, 'howItWorks.scene1Caption')),
 		buildScene(buildScene2(), t(lang, 'howItWorks.scene2Caption')),
-		buildScene(buildScene3(), t(lang, 'howItWorks.scene3Caption')),
+		buildScene(buildScene3(), t(lang, 'howItWorks.scene3Caption'), t(lang, 'howItWorks.scene3Tagline')),
 	);
-
-	document.querySelector('[data-keep-note]').textContent = t(lang, 'howItWorks.keepLinkNote');
 
 	const privacyLink = document.createElement('a');
 	privacyLink.href = '/privacy';
-	privacyLink.className = 'ds-text-accent how-privacy-link';
+	privacyLink.className = 'ds-text-accent';
 	privacyLink.textContent = t(lang, 'howItWorks.privacyLink');
-	document.querySelector('[data-privacy-link]').replaceChildren(privacyLink);
+	document.querySelector('[data-privacy-line]').replaceChildren(`${t(lang, 'howItWorks.privacyQuestion')} `, privacyLink);
 
 	const ctaBtn = ui.button({
 		variant: 'primary',

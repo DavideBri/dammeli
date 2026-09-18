@@ -331,6 +331,19 @@ undocked domain (0.1).
       `.ds-sticky`) to pick up `.ds-page`'s flex layout itself, otherwise
       `.ds-body`'s `flex: 1` — which pins the sticky create/save button
       to the bottom on short pages — had no flex container to apply to
+- [x] "How it works" copy pass: dropped the "In tre passaggi"/"Three
+      steps." lead-in and the "save the link to edit later" reminder —
+      both redundant once the three scenes speak for themselves. Scene
+      2's caption now names who's on each side of the encryption
+      ("Li cifriamo... la chiave resta solo a te"/"We encrypt them...
+      the key stays only with you"), scene 3's is a direct call to
+      action ("Condividi la chiave — il link —
+      con chi vuoi farti pagare!"/"Share the key — the link — with
+      whoever you want to pay you!") with a small punchline underneath
+      ("No chiave, no party."/"No key, no party."). The privacy link at
+      the bottom is now a question + link ("Vuoi entrare più nel
+      dettaglio? Leggi la nostra privacy"/"Want the details? Read our
+      privacy page") instead of a bare link
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
