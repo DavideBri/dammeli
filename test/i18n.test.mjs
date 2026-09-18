@@ -4,8 +4,8 @@ import assert from 'node:assert/strict';
 import { detectLang, t } from '../src/lib/i18n.mjs';
 
 test('t: looks up a known key for each language', () => {
-	assert.equal(t('it', 'editor.h1'), 'I tuoi metodi di pagamento, mai in chiaro.');
-	assert.equal(t('en', 'editor.h1'), 'Share your payment methods, securely.');
+	assert.equal(t('it', 'editor.h1Prefix'), 'I tuoi metodi di pagamento, sempre ');
+	assert.equal(t('en', 'editor.h1Prefix'), 'Share your payment methods, ');
 });
 
 test('t: substitutes {{placeholder}} vars', () => {

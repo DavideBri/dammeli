@@ -285,6 +285,15 @@ undocked domain (0.1).
 - [x] Real favicon (`public/favicon.svg`, PNG fallback, and an
       apple-touch-icon for iOS home-screen bookmarks) — the product's own
       logo mark, replacing the empty `data:,` placeholder
+- [x] Dark mode lightened: the original surfaces (`#141210`/`#1D1A17`/
+      `#100E0C`) read as near-black rather than a warm charcoal —
+      brightened to `#2E2924`/`#3B342C`/`#221E18` (`src/styles/ds/colors.css`,
+      both the `data-theme="dark"` override and the
+      `prefers-color-scheme` default)
+- [x] Editor intro simplified further: one headline, no separate
+      subtitle sentence — the headline's own key word ("securely"/
+      "al sicuro") is now the link to "How it works", so there's nothing
+      left to explain in a second line
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**

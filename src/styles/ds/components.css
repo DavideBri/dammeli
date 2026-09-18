@@ -820,10 +820,6 @@
 	flex-direction: column;
 	gap: var(--s-2);
 }
-.editor-subtitle {
-	color: var(--text-muted);
-	max-width: var(--measure);
-}
 .editor-methods-section {
 	display: flex;
 	flex-direction: column;

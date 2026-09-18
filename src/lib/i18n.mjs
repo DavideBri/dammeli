@@ -28,9 +28,9 @@ const dict = {
 		'nav.edit': 'Modifica',
 		'nav.done': 'Fatto.',
 
-		'editor.h1': 'I tuoi metodi di pagamento, mai in chiaro.',
-		'editor.subtitle':
-			'Finiscono in un link cifrato — nemmeno noi possiamo leggerlo, solo chi ce l\'ha.',
+		'editor.h1Prefix': 'I tuoi metodi di pagamento, sempre ',
+		'editor.h1LinkWord': 'al sicuro',
+		'editor.h1Suffix': '.',
 		'editor.titleFieldLabel': 'Titolo della pagina',
 		'editor.titleFieldHint':
 			'Utile per distinguere le tue pagine — personale, lavoro, un evento. Lo vede anche chi paga.',
@@ -176,9 +176,9 @@ const dict = {
 		'nav.edit': 'Edit',
 		'nav.done': 'Done.',
 
-		'editor.h1': 'Share your payment methods, securely.',
-		'editor.subtitle':
-			"They go into one encrypted link — not even we can read it, only whoever holds it can.",
+		'editor.h1Prefix': 'Share your payment methods, ',
+		'editor.h1LinkWord': 'securely',
+		'editor.h1Suffix': '.',
 		'editor.titleFieldLabel': 'Page title',
 		'editor.titleFieldHint':
 			'Useful to tell your pages apart — personal, work, an event. The payer sees it too.',
