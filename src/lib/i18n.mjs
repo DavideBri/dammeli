@@ -1,5 +1,5 @@
-// Bilingual (IT/EN) copy for the whole UI. A hand-written dictionary
-// rather than a library: two languages, no plurals beyond simple counts,
+// Trilingual (IT/EN/ES) copy for the whole UI. A hand-written dictionary
+// rather than a library: few languages, no plurals beyond simple counts,
 // no runtime-loaded bundles — a library would add weight (PLAN.md
 // constraint P1) for a problem this small.
 //
@@ -8,7 +8,7 @@
 // sync a manual choice to anyway beyond this one device, and the
 // device's own setting already does that job.
 
-export const LANGS = ['it', 'en'];
+export const LANGS = ['it', 'en', 'es'];
 
 const dict = {
 	it: {
@@ -282,14 +282,155 @@ const dict = {
 			"The project is young: we back up the database but haven't yet tested a full restore. Treat it as a beta — don't rely on it as the only copy of something you can't afford to lose.",
 		'privacy.back': 'Back to home',
 	},
+	es: {
+		'common.copy': 'Copiar',
+		'common.copied': '¡Copiado!',
+		'common.open': 'Abrir',
+		'common.delete': 'Eliminar',
+		'common.deleting': 'Eliminando…',
+		'common.deleteConfirm': '¿Eliminar esta página? No se puede deshacer.',
+		'common.deleteError': 'No se pudo eliminar la página. Inténtalo de nuevo.',
+
+		'nav.yourPages': 'Tus páginas',
+		'nav.newPage': 'Nueva página',
+		'nav.back': 'Atrás',
+		'nav.themeLight': 'Tema claro',
+		'nav.themeDark': 'Tema oscuro',
+		'nav.edit': 'Editar',
+		'nav.done': 'Hecho.',
+
+		'editor.h1Prefix': 'Tus métodos de pago, siempre ',
+		'editor.h1LinkWord': 'seguros',
+		'editor.h1Suffix': '.',
+		'editor.titleFieldLabel': 'Título de la página',
+		'editor.titleFieldHint':
+			'Útil para diferenciar tus páginas: personal, trabajo, un evento. También lo ve quien paga.',
+		'editor.hintToggle': 'Mostrar la sugerencia',
+		'editor.titleFieldPlaceholder': 'Paga a Bruno',
+		'editor.methodsHeading': 'Cómo quieres que te paguen',
+		'editor.createButton': 'Crear página',
+		'editor.saveButton': 'Guardar cambios',
+		'editor.creating': 'Creando…',
+		'editor.saving': 'Guardando…',
+		'editor.saved': '¡Guardado!',
+		'editor.createError': 'Algo salió mal al crear la página. Inténtalo de nuevo.',
+		'editor.saveError': 'Algo salió mal al guardar los cambios. Inténtalo de nuevo.',
+		'editor.needOneMethod': 'Añade al menos un método de pago.',
+		'editor.pasteConfirmPrefix': 'Termina en',
+		'editor.addMethodLabel': 'Añadir',
+		'editor.removeMethod': 'Quitar este método',
+		'editor.preferredLabel': 'Método preferido',
+		'editor.preferredHint': 'Método preferido — se mostrará primero a quien paga.',
+		'editor.clearField': 'Vaciar el campo',
+
+		'methods.satispay.label': 'Satispay',
+		'methods.satispay.fieldLabel': 'Número de teléfono',
+		'methods.satispay.placeholder': '+39 340 118 4417',
+		'methods.satispay.hint':
+			'En tu perfil, debajo de tu nombre: es el número de teléfono con el que te registraste.',
+
+		'methods.revolut.label': 'Revolut',
+		'methods.revolut.fieldLabel': 'Tu @tag',
+		'methods.revolut.placeholder': '@mariorossi',
+		'methods.revolut.hint': 'Abre Revolut → toca tu nombre arriba → tu @tag está debajo de tu foto.',
+
+		'methods.paypal.label': 'PayPal',
+		'methods.paypal.fieldLabel': 'Tu enlace de PayPal.Me',
+		'methods.paypal.placeholder': 'paypal.me/mariorossi',
+		'methods.paypal.hint':
+			'PayPal.Me: en el menú, "Solicitar dinero" → tu enlace termina en /nombre.',
+
+		'methods.iban.label': 'IBAN',
+		'methods.iban.fieldLabel': 'IBAN',
+		'methods.iban.placeholder': 'IT60 X054 2811 1010 0000 0123 456',
+		'methods.iban.hint':
+			'27 caracteres, empieza con IT. Lo encuentras en la app de tu banco, en datos de la cuenta.',
+		'methods.iban.holderLabel': 'Titular de la cuenta, exactamente como figura en el banco',
+		'methods.iban.holderHint': 'Los bancos europeos comprueban que el nombre coincida con el IBAN.',
+		'methods.iban.holderPlaceholder': 'Mario Rossi',
+		'methods.iban.holderTitle': 'Titular de la cuenta',
+
+		'methods.crypto.label': 'Otros métodos',
+		'methods.crypto.hint':
+			'Genérico a propósito: cripto, otro servicio de pago, lo que sea. Añade una etiqueta y el valor — hasta 5.',
+		'methods.crypto.labelFieldLabel': 'Etiqueta',
+		'methods.crypto.labelFieldPlaceholder': 'Ej. Bitcoin, Wise, Klarna…',
+		'methods.crypto.valueFieldLabel': 'Valor',
+		'methods.crypto.valuePlaceholder': 'Dirección, enlace u otro',
+
+		'created.badge': 'lista',
+		'created.fallbackTitle': 'Tu página está lista',
+		'created.copyLink': 'Copiar enlace',
+		'created.linkCopied': 'Enlace copiado',
+		'created.whatsapp': 'Enviar por WhatsApp',
+		'created.whatsappText': 'Aquí tienes mi página de dammeli para pagarme: {{link}}',
+		'created.qrHint': 'o haz que lo escaneen',
+		'created.viewPublic': 'Cómo la ven',
+		'created.copyEditLink': 'Copiar enlace de edición',
+
+		'myPages.title': 'Tus páginas',
+		'myPages.emptyText': 'Aquí aparecen las páginas que crees desde este teléfono.',
+		'myPages.emptyCta': 'Crea una',
+		'myPages.untitledName': 'Página sin título',
+		'myPages.notice':
+			'Esta lista solo está en este teléfono. Si cambias de dispositivo o borras los datos del navegador, solo quedan los enlaces que hayas guardado.',
+
+		'viewer.loading': 'Cargando…',
+		'viewer.error':
+			'Esta página no existe, o el enlace está incompleto. Si acabas de recibirlo, pídele a quien te lo envió que compruebe haberlo copiado entero.',
+		'viewer.defaultTitle': 'Página de pago',
+		'viewer.kicker': 'Elige cómo pagar',
+		'viewer.preferredBadge': 'Preferido',
+		'viewer.footerPre': 'Página hecha con',
+		'viewer.footerPost': '. Sin cuenta, sin email.',
+		'viewer.footerCta': 'Crea la tuya',
+		'viewer.howItWorks': 'Cómo funciona',
+
+		'howItWorks.title': 'Cómo funciona',
+		'howItWorks.scene1Caption': 'Añade los métodos que ya usas.',
+		'howItWorks.scene2Caption':
+			'Los ciframos en tu dispositivo antes de enviárnoslos — la clave se queda solo contigo.',
+		'howItWorks.scene3Caption': '¡Comparte la clave — el enlace — con quien quieras que te pague!',
+		'howItWorks.scene3Tagline': 'Sin clave, no hay fiesta.',
+		'howItWorks.privacyQuestion': '¿Quieres más detalles?',
+		'howItWorks.privacyLink': 'Lee nuestra privacidad',
+		'howItWorks.cta': 'Crea tu página',
+
+		'privacy.title': 'Privacidad',
+		'privacy.intro':
+			'En resumen: no podemos leer tus páginas, no te pedimos cuenta ni email, y no te rastreamos. Aquí abajo los detalles, proveedor por proveedor.',
+		'privacy.factNoAccount': 'Sin cuenta',
+		'privacy.factNoEmail': 'Sin email',
+		'privacy.factEncrypted': 'Cifrado antes de salir',
+		'privacy.factNoTracking': 'Sin rastreo',
+		'privacy.seeTitle': 'Qué vemos nosotros',
+		'privacy.seeBody':
+			'Nada de lo que escribes. Ciframos cada página en tu navegador antes de que salga de él (mira "Cómo funciona"): lo que llega a nuestros servidores ya es un bloque ilegible, y sigue así hasta que alguien abre el enlace con la clave correcta — una clave que nunca vemos.',
+		'privacy.dontTitle': 'Qué no hacemos',
+		'privacy.dontBody':
+			'Ninguna cuenta, ningún email requerido, ningún script de rastreo o analítica, ninguna cookie. No sabemos quién eres, y no intentamos averiguarlo.',
+		'privacy.providersTitle': 'Quién aloja el sitio',
+		'privacy.providersBody':
+			'El sitio y las funciones que lo hacen funcionar corren en Netlify, la base de datos en Supabase — ambos proveedores estadounidenses, elegidos por rapidez de desarrollo, no por principio. Como cualquier servicio web, reciben las solicitudes que les envías, así que cosas como tu dirección IP y la hora — pero el contenido de tus páginas siempre queda como un bloque cifrado, ilegible también para ellos. El objetivo es mover todo a un servidor europeo en cuanto sea posible.',
+		'privacy.deviceTitle': 'Qué queda en tu teléfono',
+		'privacy.deviceBody':
+			'El enlace para editar una página se guarda solo en tu navegador, en este dispositivo — no lo enviamos a ningún sitio y nunca lo vemos. Si cambias de teléfono o borras los datos del navegador sin haber guardado el enlace en otro sitio, esa página se pierde para siempre: sin recuperación posible, es el precio de no tener cuenta.',
+		'privacy.betaTitle': 'Una nota sobre la beta privada',
+		'privacy.betaBody':
+			'El proyecto es joven: hacemos copias de seguridad de la base de datos, pero todavía no hemos probado una restauración completa. Trátala como una beta — no la uses para la única copia de algo que no puedas permitirte perder.',
+		'privacy.back': 'Volver al inicio',
+	},
 };
 
 /** The browser's own language list decides; English if none of it matches. */
 export function detectLang(nav = globalThis.navigator) {
 	const candidates = nav?.languages?.length ? nav.languages : [nav?.language].filter(Boolean);
 	for (const candidate of candidates) {
-		if (typeof candidate === 'string' && candidate.toLowerCase().startsWith('it')) return 'it';
-		if (typeof candidate === 'string' && candidate.toLowerCase().startsWith('en')) return 'en';
+		if (typeof candidate !== 'string') continue;
+		const lower = candidate.toLowerCase();
+		if (lower.startsWith('it')) return 'it';
+		if (lower.startsWith('en')) return 'en';
+		if (lower.startsWith('es')) return 'es';
 	}
 	return 'en';
 }

@@ -365,13 +365,13 @@ Theme: `prefers-color-scheme` picks the default; an explicit choice
 per-device in `localStorage`. Same per-device pattern as "your pages" —
 no account, so nothing to sync it to.
 
-### Localization (0.6, revised 0.7)
+### Localization (0.6, revised 0.7, Spanish added 0.7)
 
-The UI is bilingual, Italian and English (`src/lib/i18n.mjs`): a
-hand-written `{it, en}` dictionary with `{{placeholder}}` substitution,
-not a library — two languages and no plurals don't justify one. Detection
-only, from the browser's own `navigator.languages`, defaulting to English
-if neither matches — 0.6 shipped a manual top-bar toggle on top of this,
+The UI is trilingual, Italian, English and Spanish (`src/lib/i18n.mjs`): a
+hand-written `{it, en, es}` dictionary with `{{placeholder}}` substitution,
+not a library — a handful of languages and no plurals don't justify one.
+Detection only, from the browser's own `navigator.languages`, defaulting to
+English if none match — 0.6 shipped a manual top-bar toggle on top of this,
 removed in 0.7: the device's own language setting already does that job,
 and a second, redundant place to control it wasn't worth the UI weight.
 
