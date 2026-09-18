@@ -380,28 +380,21 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		});
 	}
 
-	/** Slots inside the currently-open popover that depend on "is this
+	/** Slot inside the currently-open popover that depends on "is this
 	 * filled now", refreshed in place after a field blurs — never a full
 	 * renderPopover(), which would also replace the field inputs
 	 * themselves (see buildMainField's blur handler). */
-	let headBadgeSlot = null;
 	let preferredSlot = null;
 	function refreshFilledDependents() {
 		if (!selected) return;
-		const filled = isFilled(selected);
-		if (headBadgeSlot) {
-			headBadgeSlot.replaceChildren();
-			if (filled) headBadgeSlot.appendChild(ui.microLabel(t(lang, 'editor.filledBadge'), { tone: 'accent' }));
-		}
 		if (preferredSlot) {
 			preferredSlot.replaceChildren();
-			if (filled) preferredSlot.appendChild(buildPreferredStar(selected));
+			if (isFilled(selected)) preferredSlot.appendChild(buildPreferredStar(selected));
 		}
 	}
 
 	function renderPopover() {
 		popoverWrap.replaceChildren();
-		headBadgeSlot = null;
 		preferredSlot = null;
 		if (!selected) return;
 
@@ -422,8 +415,6 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		titleSpan.className = 'ds-method-grid__popover-title';
 		titleSpan.textContent = tileLabel(selected);
 		head.appendChild(titleSpan);
-		headBadgeSlot = document.createElement('span');
-		head.appendChild(headBadgeSlot);
 		pop.appendChild(head);
 
 		if (isCustomId(selected)) {
