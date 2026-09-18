@@ -344,6 +344,16 @@ undocked domain (0.1).
       the bottom is now a question + link ("Vuoi entrare più nel
       dettaglio? Leggi la nostra privacy"/"Want the details? Read our
       privacy page") instead of a bare link
+- [x] Privacy page redesign: a scannable "at a glance" strip (4 short
+      facts — no account, no email, encrypted before it leaves the
+      device, no tracking) sits above the existing detailed sections, for
+      whoever just wants the headline; each detailed section (what we
+      see, what we don't do, who hosts the site, what stays on your
+      phone) now carries its own small icon for quicker scanning. Body
+      copy for "what we see" and "what we don't do" tightened to active
+      voice to match the how-it-works rewrite. Section order, the beta
+      notice, and the back button are unchanged — the redesign is
+      additive, not a restructure
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**

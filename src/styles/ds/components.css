@@ -1160,15 +1160,44 @@
 }
 
 /* Privacy page (src/pages/privacy.astro). */
+.privacy-quickfacts {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: var(--s-3);
+	background: var(--surface-sunken);
+	border: var(--bw) dashed var(--border-hairline);
+	border-radius: var(--r-card);
+	padding: var(--s-4);
+}
+.privacy-fact {
+	display: flex;
+	align-items: center;
+	gap: var(--s-2);
+	font-size: var(--size-small);
+	color: var(--text-body);
+}
+.privacy-fact .ds-icon--inline {
+	flex-shrink: 0;
+	color: var(--accent);
+}
 .privacy-sections {
 	display: flex;
 	flex-direction: column;
 	gap: var(--s-5);
 }
+.privacy-section__head {
+	display: flex;
+	align-items: center;
+	gap: var(--s-2);
+	margin-bottom: 4px;
+}
+.privacy-section__icon {
+	display: flex;
+	color: var(--text-muted);
+}
 .privacy-section h2 {
 	font-size: var(--size-body);
 	letter-spacing: -0.015em;
-	margin-bottom: 4px;
 }
 .privacy-section p {
 	color: var(--text-muted);

@@ -127,12 +127,16 @@ const dict = {
 		'privacy.title': 'Privacy',
 		'privacy.intro':
 			'In breve: non possiamo leggere le tue pagine, non ti chiediamo un account né un\'email, e non ti tracciamo. Qui sotto i dettagli, fornitore per fornitore.',
+		'privacy.factNoAccount': 'Niente account',
+		'privacy.factNoEmail': 'Niente email',
+		'privacy.factEncrypted': 'Cifrato prima di partire',
+		'privacy.factNoTracking': 'Niente tracciamento',
 		'privacy.seeTitle': 'Cosa vediamo noi',
 		'privacy.seeBody':
-			'Niente di quello che scrivi. Ogni pagina viene cifrata dentro il tuo browser prima ancora di partire (vedi "Come funziona"): quello che arriva ai nostri server è già un blocco illeggibile, e resta tale finché qualcuno non apre il link con la chiave giusta — chiave che i nostri sistemi non vedono mai.',
+			'Niente di quello che scrivi. Cifriamo ogni pagina nel tuo browser prima ancora che parta (vedi "Come funziona"): quello che arriva ai nostri server è già un blocco illeggibile, e resta tale finché qualcuno non apre il link con la chiave giusta — chiave che non vediamo mai.',
 		'privacy.dontTitle': 'Cosa non facciamo',
 		'privacy.dontBody':
-			'Nessun account, nessuna email richiesta, nessuno script di tracciamento o analytics, nessun cookie. Non sappiamo chi sei e non proviamo a scoprirlo.',
+			'Nessun account, nessuna email richiesta, nessuno script di tracciamento o analytics, nessun cookie. Non sappiamo chi sei, e non proviamo a scoprirlo.',
 		'privacy.providersTitle': 'Chi ospita il sito',
 		'privacy.providersBody':
 			'Il sito e le funzioni che lo fanno funzionare girano su Netlify, il database su Supabase — entrambi fornitori americani, scelti per velocità di sviluppo, non per principio. Come ogni servizio web ricevono le richieste che gli mandi, quindi cose come il tuo indirizzo IP e l\'orario — ma il contenuto delle tue pagine resta sempre un blocco cifrato, illeggibile anche per loro. L\'obiettivo è spostare tutto su un server europeo appena possibile.',
@@ -257,9 +261,13 @@ const dict = {
 		'privacy.title': 'Privacy',
 		'privacy.intro':
 			"In short: we can't read your pages, we never ask for an account or an email, and we don't track you. Here are the details, provider by provider.",
+		'privacy.factNoAccount': 'No account',
+		'privacy.factNoEmail': 'No email',
+		'privacy.factEncrypted': 'Encrypted before it leaves',
+		'privacy.factNoTracking': 'No tracking',
 		'privacy.seeTitle': 'What we can see',
 		'privacy.seeBody':
-			'Nothing you write. Every page is encrypted inside your own browser before it even leaves it (see "How it works") — what reaches our servers is already an unreadable block, and stays that way until someone opens the link with the right key, a key our systems never see.',
+			'Nothing you write. We encrypt every page in your own browser before it even leaves it (see "How it works") — what reaches our servers is already an unreadable block, and stays that way until someone opens the link with the right key, a key we never see.',
 		'privacy.dontTitle': "What we don't do",
 		'privacy.dontBody':
 			"No account, no email required, no tracking or analytics scripts, no cookies. We don't know who you are, and we don't try to find out.",
