@@ -224,6 +224,10 @@ undocked domain (0.1).
 - [x] IBAN participates in both: preferred moves its card above the
       pay-button list instead of leaving it pinned after; dragging
       changes its position relative to the other methods the same way
+- [x] Default tile order for a brand-new page changed to IBAN, PayPal,
+      Revolut, Satispay, Aggiungi (`ORDER` in `src/scripts/editor.mjs`) —
+      an editing an existing page still restores that page's own saved
+      order regardless of this default
 - [x] Popover arrow regression fixed: making the popover `position:
       relative` (to anchor the star) turned it into a positioned
       descendant sharing a stacking order with the arrow, so the

@@ -8,7 +8,7 @@ import { normalizeHandleFromUrl, normalizeIban, confirmationSuffix } from '../li
 import { t } from '../lib/i18n.mjs';
 import * as ui from './ui.mjs';
 
-const ORDER = ['satispay', 'revolut', 'paypal', 'iban'];
+const ORDER = ['iban', 'paypal', 'revolut', 'satispay'];
 const MAX_CUSTOM = 5;
 
 const HANDLE_DOMAINS = {
