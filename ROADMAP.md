@@ -354,6 +354,12 @@ undocked domain (0.1).
       voice to match the how-it-works rewrite. Section order, the beta
       notice, and the back button are unchanged — the redesign is
       additive, not a restructure
+- [x] Open Graph title/description reworded to match the redesigned
+      home's tone ("dammeli — pagamenti sempre al sicuro") and, since
+      this is the card whoever receives a payment link actually sees,
+      written from the recipient's side rather than the creator's — "un
+      link cifrato per pagare", not "your payment methods". The OG image
+      itself (logo + wordmark) was already fine and untouched
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
