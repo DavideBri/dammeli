@@ -360,6 +360,13 @@ undocked domain (0.1).
       written from the recipient's side rather than the creator's — "un
       link cifrato per pagare", not "your payment methods". The OG image
       itself (logo + wordmark) was already fine and untouched
+- [x] Spanish added as a third UI language (`src/lib/i18n.mjs`'s `{it, en,
+      es}` dictionary, hand-translated and checked key-for-key against
+      `it`/`en` — a new test enforces that all three dictionaries stay in
+      sync). `detectLang()` now also recognizes `es*` browser locales,
+      still falling back to English for anything else. Covers the whole
+      UI: editor, Your pages, Created screen, public viewer, How it works
+      (including its three animated scenes), and the privacy page
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
