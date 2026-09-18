@@ -948,49 +948,201 @@
 	color: var(--text-accent);
 }
 
-/* "How it works" page (src/pages/how-it-works.astro). */
+/* "How it works" page (src/pages/how-it-works.astro) — three short,
+   literal, animated scenes instead of a wall of text. */
 .how-intro {
 	color: var(--text-muted);
 	line-height: 1.5;
 }
-.how-steps {
+.how-scenes {
 	display: flex;
 	flex-direction: column;
-	gap: var(--s-5);
+	gap: var(--s-4);
 }
-.how-step {
+.how-scene {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--s-3);
+	text-align: center;
+}
+.how-scene__caption {
+	font-size: var(--size-body);
+	font-weight: var(--w-bold);
+	color: var(--text-strong);
+	letter-spacing: -0.01em;
+	max-width: 34ch;
+}
+
+/* Scene 1: the real method tiles landing in, one after another. */
+.how-scene1-row {
 	display: flex;
 	gap: var(--s-3);
-	align-items: flex-start;
-}
-.how-step__icon {
-	width: 40px;
-	height: 40px;
-	flex: none;
-	display: inline-flex;
-	align-items: center;
+	flex-wrap: wrap;
 	justify-content: center;
-	border-radius: var(--r-sm);
-	background: var(--surface-sunken);
-	color: var(--text-accent);
 }
-.how-step__body {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	padding-top: 6px;
+.how-scene1-row .ds-method-tile {
+	opacity: 0;
+	animation: how-pop-in 500ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
-.how-step__body h3 {
-	letter-spacing: -0.015em;
+.how-scene1-row .ds-method-tile:nth-child(1) {
+	animation-delay: 80ms;
 }
-.how-step__body p {
+.how-scene1-row .ds-method-tile:nth-child(2) {
+	animation-delay: 220ms;
+}
+.how-scene1-row .ds-method-tile:nth-child(3) {
+	animation-delay: 360ms;
+}
+.how-scene1-row .ds-method-tile:nth-child(4) {
+	animation-delay: 500ms;
+}
+@keyframes how-pop-in {
+	from {
+		opacity: 0;
+		transform: scale(0.6) translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+	}
+}
+
+/* Scene 2: a padlock snapping shut over a few "unreadable" dashes. */
+.how-scene2-art {
+	width: 160px;
+	height: 112px;
+	color: var(--text-strong);
+}
+.how-cipher rect {
+	fill: var(--border-hairline);
+	opacity: 0;
+	animation: how-fade-in 300ms ease-out forwards;
+}
+.how-cipher rect:nth-child(1) {
+	animation-delay: 700ms;
+}
+.how-cipher rect:nth-child(2) {
+	animation-delay: 780ms;
+}
+.how-cipher rect:nth-child(3) {
+	animation-delay: 860ms;
+}
+.how-cipher rect:nth-child(4) {
+	animation-delay: 940ms;
+}
+.how-cipher rect:nth-child(5) {
+	animation-delay: 1020ms;
+}
+.how-cipher rect:nth-child(6) {
+	animation-delay: 1100ms;
+}
+@keyframes how-fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+.how-lock-shackle {
+	transform-origin: 100px 62px;
+	animation: how-lock-close 550ms cubic-bezier(0.34, 1.56, 0.64, 1) 300ms both;
+}
+@keyframes how-lock-close {
+	from {
+		transform: rotate(-22deg) translate(-6px, -4px);
+	}
+	to {
+		transform: rotate(0deg) translate(0, 0);
+	}
+}
+.how-lock-body {
+	fill: var(--accent);
+	transform-origin: 100px 90px;
+	animation: how-lock-bounce 260ms ease-out 820ms both;
+}
+@keyframes how-lock-bounce {
+	0% {
+		transform: scale(1);
+	}
+	40% {
+		transform: scale(1.06);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+/* Scene 3: a link travelling from one phone to the other, on a loop. */
+.how-scene3-art {
+	width: 100%;
+	max-width: 280px;
+	height: 140px;
+	color: var(--text-strong);
+}
+.how-phone {
+	fill: var(--surface-card);
+}
+.how-dash-path {
+	stroke: var(--border-hairline);
+}
+.how-link-travel {
+	animation: how-link-travel 2600ms cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+.how-link-travel circle {
+	fill: var(--accent);
+}
+.how-link-travel path {
+	stroke: var(--on-accent);
+}
+@keyframes how-link-travel {
+	0% {
+		transform: translate(74px, 62px);
+		opacity: 0;
+	}
+	12% {
+		opacity: 1;
+	}
+	50% {
+		transform: translate(140px, 62px);
+		opacity: 1;
+	}
+	88% {
+		opacity: 1;
+	}
+	100% {
+		transform: translate(206px, 62px);
+		opacity: 0;
+	}
+}
+
+.how-keep-note {
+	font-size: var(--size-small);
 	color: var(--text-muted);
-	line-height: 1.5;
+	text-align: center;
 }
 .how-privacy-link {
-	display: inline-block;
-	margin-top: var(--s-3);
+	display: block;
+	text-align: center;
+	margin-top: calc(-1 * var(--s-2));
 	font-size: var(--size-small);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.how-scene1-row .ds-method-tile,
+	.how-cipher rect,
+	.how-lock-shackle,
+	.how-lock-body {
+		animation: none;
+		opacity: 1;
+		transform: none;
+	}
+	.how-link-travel {
+		animation: none;
+		transform: translate(140px, 62px);
+		opacity: 1;
+	}
 }
 
 /* Privacy page (src/pages/privacy.astro). */

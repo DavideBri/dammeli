@@ -311,6 +311,18 @@ undocked domain (0.1).
 - [x] Softer fallback title on the public page when the creator didn't
       set one — "Dammi i soldi"/"Gimme the money" read as demanding;
       replaced with the plain "Pagina di pagamento"/"Payment page"
+- [x] "How it works" rewritten as three short, literal, animated scenes
+      instead of a wall of text — explain-like-I'm-five, not a technical
+      writeup. Scene 1 reuses the real method tiles from the editor
+      itself (not an abstraction); scene 2 is a padlock snapping shut
+      over a few "unreadable" dashes; scene 3 is a link travelling
+      between two phones, looping. All hand-drawn SVG in the same
+      stroke-based style as the rest of the design system, animated
+      with plain CSS `@keyframes` (no JS, no inline styles — CSP-safe),
+      with a `prefers-reduced-motion` fallback to a static end-state.
+      The old 4-step text list and the hosting-providers notice box are
+      gone; what's left of that (the providers) is one link to the full
+      privacy page, plus a one-line reminder to save the link
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**

@@ -116,23 +116,11 @@ const dict = {
 		'viewer.howItWorks': 'Come funziona',
 
 		'howItWorks.title': 'Come funziona',
-		'howItWorks.intro':
-			'In breve: crei una pagina con i tuoi metodi di pagamento, ottieni un link, lo condividi. Nessun account, nessuna email, e non possiamo leggere quello che ci scrivi — nemmeno se lo volessimo. Ecco come, senza tecnicismi.',
-		'howItWorks.step1Title': 'Metti i tuoi metodi di pagamento',
-		'howItWorks.step1Body':
-			'Satispay, Revolut, PayPal, IBAN, o qualsiasi altra cosa — cripto, un altro servizio, quello che ti serve. Tutto resta sul tuo telefono finché non premi "Crea la pagina".',
-		'howItWorks.step2Title': 'Tutto viene cifrato prima di partire',
-		'howItWorks.step2Body':
-			'Nel momento in cui crei la pagina, quello che hai scritto viene trasformato in un blocco illeggibile proprio dentro il tuo browser — prima ancora che qualsiasi dato lasci il tuo telefono. Quello che arriva ai nostri server è già incomprensibile.',
-		'howItWorks.step3Title': 'La chiave vive solo nel link',
-		'howItWorks.step3Body':
-			"La parte del link dopo il cancelletto (#) è la chiave che serve per leggere la pagina — e quella parte non viene mai inviata da nessuna parte, resta solo nel browser di chi apre il link. Senza quel link, quello che abbiamo salvato è solo rumore, anche per noi.",
-		'howItWorks.step4Title': 'Tieni il link, non lo teniamo noi',
-		'howItWorks.step4Body':
-			"È l'unico modo per tornare sulla tua pagina e modificarla — lo salviamo su questo dispositivo per comodità, ma se cambi telefono o cancelli i dati del browser e non hai il link da un'altra parte, quella pagina è persa per sempre. Nessun recupero: è il prezzo di non avere un account.",
-		'howItWorks.hostingTitle': 'E chi ospita tutto questo?',
-		'howItWorks.hostingBody':
-			'Il sito e il database girano su fornitori esterni. Vedono solo blocchi cifrati illeggibili, mai i tuoi dati in chiaro — ma è giusto saperlo, quindi lo scriviamo qui invece che nascondertelo.',
+		'howItWorks.intro': 'In tre passaggi.',
+		'howItWorks.scene1Caption': 'Metti i metodi che usi già.',
+		'howItWorks.scene2Caption': 'Si chiudono a chiave, sul telefono, subito.',
+		'howItWorks.scene3Caption': 'Condividi il link. Solo chi lo apre li vede — nemmeno noi.',
+		'howItWorks.keepLinkNote': "Il link serve anche per modificare la pagina dopo — salvalo da qualche parte.",
 		'howItWorks.privacyLink': 'Leggi la pagina privacy completa',
 		'howItWorks.cta': 'Crea la tua pagina',
 
@@ -258,23 +246,11 @@ const dict = {
 		'viewer.howItWorks': 'How it works',
 
 		'howItWorks.title': 'How it works',
-		'howItWorks.intro':
-			"Short version: you create a page with your payment methods, get a link, share it. No account, no email, and we can't read what you write — not even if we wanted to. Here's how, without the jargon.",
-		'howItWorks.step1Title': 'Add your payment methods',
-		'howItWorks.step1Body':
-			"Satispay, Revolut, PayPal, IBAN, or anything else — crypto, another service, whatever you need. It all stays on your phone until you press \"Create page\".",
-		'howItWorks.step2Title': 'Everything is encrypted before it leaves',
-		'howItWorks.step2Body':
-			"The moment you create the page, what you wrote is turned into an unreadable block right inside your browser — before any of it leaves your phone. What reaches our servers is already meaningless.",
-		'howItWorks.step3Title': 'The key lives only in the link',
-		'howItWorks.step3Body':
-			"The part of the link after the hash (#) is the key needed to read the page — and that part is never sent anywhere, it stays only in the browser of whoever opens the link. Without that link, what we've stored is just noise, even to us.",
-		'howItWorks.step4Title': 'Keep the link — we don\'t',
-		'howItWorks.step4Body':
-			"It's the only way back to your page to edit it — we save it on this device for convenience, but if you switch phones or clear your browser data without a copy saved elsewhere, that page is gone for good. No recovery: that's the cost of not having an account.",
-		'howItWorks.hostingTitle': 'Who hosts all this?',
-		'howItWorks.hostingBody':
-			'The site and database run on outside providers. They only ever see unreadable encrypted blocks, never your data in the clear — but it\'s worth knowing, so we say it here instead of hiding it.',
+		'howItWorks.intro': 'Three steps.',
+		'howItWorks.scene1Caption': 'Add the ones you already use.',
+		'howItWorks.scene2Caption': 'They lock up, on your phone, right away.',
+		'howItWorks.scene3Caption': "Share the link. Only whoever opens it can see them — not even us.",
+		'howItWorks.keepLinkNote': "The link is also how you edit the page later — save it somewhere.",
 		'howItWorks.privacyLink': 'Read the full privacy page',
 		'howItWorks.cta': 'Create your page',
 
