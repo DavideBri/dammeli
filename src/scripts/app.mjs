@@ -124,6 +124,16 @@ export async function boot() {
 		editorRoot.hidden = false;
 		buildEditorTopBar(editorRoot, lang, { onPages: goToYourPages });
 
+		// The form itself (initEditor()'s DOM) doesn't exist yet — only the
+		// fetch/decrypt below builds it — so a spinner stands in instead of
+		// a blank screen for that moment, same as the read-only viewer's own
+		// loading state.
+		const formEl = editorRoot.querySelector('[data-editor-form]');
+		const loadingEl = editorRoot.querySelector('[data-editor-loading]');
+		formEl.hidden = true;
+		loadingEl.hidden = false;
+		loadingEl.replaceChildren(ui.spinner(t(lang, 'viewer.loading')));
+
 		let payload;
 		try {
 			payload = await fetchPayload(dammeli, loaded);
@@ -139,6 +149,8 @@ export async function boot() {
 			return;
 		}
 
+		loadingEl.hidden = true;
+		formEl.hidden = false;
 		const editor = initEditor(editorRoot, lang, { prefill: payload });
 		initCreateFlow(editorRoot, editor, lang, { existingPage: loaded, onPages: goToYourPages });
 		showScreen('editor');

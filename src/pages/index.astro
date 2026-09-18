@@ -21,26 +21,32 @@ import SocialMeta from '../components/SocialMeta.astro';
 		<div id="app">
 			<section class="ds-page" data-screen="editor" hidden>
 				<div data-topbar-editor></div>
-				<div class="ds-body">
-					<div class="editor-intro">
-						<h1 data-editor-h1></h1>
-					</div>
-
-					<div data-title-field></div>
-
-					<div class="editor-methods-section">
-						<h3 data-editor-methods-heading></h3>
-						<div>
-							<div class="ds-method-grid__buttons" data-method-tiles></div>
-							<div data-method-popover-wrap></div>
+				<!-- Shown only while an edit link's existing page is being
+				     fetched/decrypted (app.mjs) — a blank-new-page editor never
+				     needs this, initEditor() runs synchronously for that. -->
+				<div class="editor-loading" data-editor-loading hidden></div>
+				<div data-editor-form>
+					<div class="ds-body">
+						<div class="editor-intro">
+							<h1 data-editor-h1></h1>
 						</div>
-					</div>
 
-					<p data-editor-footnote class="editor-footnote"></p>
-					<p data-create-error class="ds-field__error" hidden></p>
-				</div>
-				<div class="ds-sticky">
-					<button type="button" class="ds-btn ds-btn--primary ds-btn--lg ds-btn--full" data-create disabled></button>
+						<div data-title-field></div>
+
+						<div class="editor-methods-section">
+							<h3 data-editor-methods-heading></h3>
+							<div>
+								<div class="ds-method-grid__buttons" data-method-tiles></div>
+								<div data-method-popover-wrap></div>
+							</div>
+						</div>
+
+						<p data-editor-footnote class="editor-footnote"></p>
+						<p data-create-error class="ds-field__error" hidden></p>
+					</div>
+					<div class="ds-sticky">
+						<button type="button" class="ds-btn ds-btn--primary ds-btn--lg ds-btn--full" data-create disabled></button>
+					</div>
 				</div>
 			</section>
 

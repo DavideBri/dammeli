@@ -323,6 +323,14 @@ undocked domain (0.1).
       The old 4-step text list and the hosting-providers notice box are
       gone; what's left of that (the providers) is one link to the full
       privacy page, plus a one-line reminder to save the link
+- [x] Opening an edit link no longer shows a blank editor screen while
+      the existing page is fetched/decrypted — a spinner (the same
+      `ui.spinner()` as the read-only viewer's own loading state) fills
+      that gap, since `initEditor()`'s DOM doesn't exist yet at that
+      point. Needed `[data-editor-form]` (wrapping `.ds-body` +
+      `.ds-sticky`) to pick up `.ds-page`'s flex layout itself, otherwise
+      `.ds-body`'s `flex: 1` — which pins the sticky create/save button
+      to the bottom on short pages — had no flex container to apply to
 - [ ] SHA-256 hash of `crypto.js` published
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**

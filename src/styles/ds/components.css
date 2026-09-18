@@ -807,6 +807,20 @@
 }
 
 /* Editor screen (src/pages/index.astro + src/scripts/editor.mjs). */
+.editor-loading {
+	display: flex;
+	justify-content: center;
+	padding: var(--s-8) 0;
+}
+/* Wraps .ds-body + .ds-sticky so the loading spinner above it can stand in
+   for both at once — needs the same flex-column/flex:1 as .ds-page's other
+   direct children, otherwise .ds-body's own flex:1 (which pins .ds-sticky
+   to the bottom of short pages) has no flex container to apply to. */
+[data-editor-form] {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
 .editor-intro {
 	display: flex;
 	flex-direction: column;
