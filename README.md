@@ -12,9 +12,10 @@ launch, see roadmap 1.5).
 
 ## Project status
 
-In development (`0.6`, design system and localization). The core loop
-works — create a page, share it, a recipient can pay — but the repo is
-still private and the domain isn't connected yet. See
+In development (`0.9`, private beta). The core loop works — create a
+page, share it, a recipient can pay — and the site is live at
+[damme.li](https://damme.li). Database backups exist but restore hasn't
+been tested yet, and it hasn't had real users beyond the team. See
 [`ROADMAP.md`](./ROADMAP.md).
 
 `0.x.y` until public launch. MAJOR only bumps when a link created with a
@@ -33,10 +34,12 @@ previous version would stop working, never for any other reason (see
   its own README there) — never a CDN or a remote QR-generation API.
 - Design system: tokens and component classes from a Claude Design
   export, translated by hand into plain CSS (`src/styles/ds/`) — no
-  React runtime, no third-party logos (custom-drawn payment-method marks
-  instead, see `src/vendor/README.md`).
-- UI in Italian and English (`src/lib/i18n.mjs`), detected from the
-  browser and switchable from the top bar.
+  React runtime. Satispay/Revolut/PayPal use each brand's own logo for
+  recognition; IBAN and "other methods" stay custom-drawn (see
+  `src/vendor/README.md` for the tradeoff).
+- UI in Italian, English, and Spanish (`src/lib/i18n.mjs`), detected
+  automatically from the browser's language settings — no manual
+  switch, so there's nowhere for it to drift from the device's own.
 - Hosting: [Netlify](https://netlify.com), automatic deploy from this repo.
 - Database (temporary, see migration note in `PLAN.md`):
   [Supabase](https://supabase.com).
@@ -91,6 +94,13 @@ Netlify and Supabase are US providers: they receive HTTP requests and see
 only unreadable encrypted blobs, never keys or plaintext data. The full
 list of providers and what each one sees is on the app's own
 [`/privacy`](./src/pages/privacy.astro) page.
+
+## AI-assisted development
+
+Most of the code, copy, and this documentation were written with Claude
+Code, directed and reviewed by a human at every step — not autonomously
+generated and shipped. If that changes anything for you, judge the code
+itself: it's all here to read.
 
 ## License
 

@@ -367,7 +367,8 @@ undocked domain (0.1).
       still falling back to English for anything else. Covers the whole
       UI: editor, Your pages, Created screen, public viewer, How it works
       (including its three animated scenes), and the privacy page
-- [ ] SHA-256 hash of `crypto.js` published
+- [x] SHA-256 hash of `crypto.js` published in `README.md`, kept in sync
+      by hand with every change to the file
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert
