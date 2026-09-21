@@ -289,9 +289,12 @@ by name. A plain handle field is a dead end for these — the payer still
 has to go add that person as a contact by hand before the app can find
 them. So a contact-based method's card asks for **name + phone**
 (`buildContactNameField()` in `editor.mjs`) — but the read-only page
-never shows either back as text (`buildContactCard()` in `viewer.mjs`):
+never shows either back as text (`buildContactRow()` in `viewer.mjs`,
+rendered at the same row height and chrome as every other method's —
+`.ds-pay-btn--static` — rather than IBAN's bigger dedicated card, since
+there's no single click action here to fill that row's usual spot):
 unlike IBAN, there's nothing here worth reading or copying by hand, only
-two actions:
+two small icon actions where the "open"/"copy" indicator normally sits:
 
 - **A one-tap "save contact"** (`src/lib/vcard.mjs`'s `buildVCard()`,
   downloaded as a `.vcf` via a `Blob` + `<a download>` — no server round

@@ -710,6 +710,25 @@
 	font-weight: var(--w-bold);
 	color: var(--text-accent);
 }
+/* A "row" with the same chrome as .ds-pay-btn but not itself a single
+ * click target — for a contact-based method (viewer.mjs's
+ * buildContactRow()), which needs two separate actions (save contact,
+ * open the app) instead of the one every other method's row has. */
+.ds-pay-btn--static {
+	cursor: default;
+}
+.ds-pay-btn--static:hover {
+	background: var(--surface-card);
+}
+.ds-pay-btn--static:active {
+	box-shadow: var(--shadow-hard);
+	transform: none;
+}
+.ds-pay-btn__contact-actions {
+	flex: none;
+	display: flex;
+	gap: var(--s-2);
+}
 
 @media (prefers-reduced-motion: reduce) {
 	.ds-btn,
@@ -1204,9 +1223,10 @@
 	line-height: 1.5;
 }
 
-/* Public viewer's "bigger card" methods — IBAN (buildIbanCard) and
-   contact-based methods like Satispay (buildContactCard), both in
-   src/scripts/viewer.mjs — anything with more than one copyable field. */
+/* Public viewer's IBAN card (buildIbanCard in src/scripts/viewer.mjs) —
+   the one method with more than one copyable field. Contact-based
+   methods (buildContactRow) render at the same row height as every
+   other method instead, see .ds-pay-btn--static below. */
 .ds-detail-card {
 	display: flex;
 	flex-direction: column;
@@ -1242,14 +1262,6 @@
 }
 .ds-detail-card__divider {
 	border-top: 1px dashed var(--border-hairline);
-}
-.ds-detail-card__actions {
-	display: flex;
-	gap: var(--s-3);
-	flex-wrap: wrap;
-}
-.ds-detail-card__actions .ds-btn {
-	flex: 1;
 }
 
 /* Editor's "reuse this contact" suggestion chip (ui.suggestionChip). */

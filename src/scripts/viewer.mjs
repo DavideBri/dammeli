@@ -30,7 +30,7 @@ export function methodLabel(type) {
  * own public profile-link feature) or paypal.me, there's no verified,
  * documented consumer-to-consumer deep link that opens the app straight
  * to paying a given phone number — it (and any future method like it)
- * gets its own dedicated card instead, see buildContactCard() below.
+ * gets its own dedicated row instead, see buildContactRow() below.
  */
 export function buildDirectLink(method) {
 	if (method.type === 'paypal') return `https://paypal.me/${encodeURIComponent(method.value)}`;
@@ -193,49 +193,62 @@ function buildIbanCard(method, lang) {
 	return card;
 }
 
+function contactActionButton(iconName, label, onClick) {
+	const btn = document.createElement('button');
+	btn.type = 'button';
+	btn.className = 'ds-icon-btn ds-icon-btn--outline';
+	btn.setAttribute('aria-label', label);
+	btn.title = label;
+	btn.appendChild(ui.icon(iconName, { size: 18, strokeWidth: 2 }));
+	btn.addEventListener('click', onClick);
+	return btn;
+}
+
 /**
  * A contact-based method (src/lib/contact-methods.mjs — Satispay today):
  * no direct pay-link exists, the app only sends to someone already in the
- * payer's contacts. Showing the raw name/number here too would just be
- * noise — a vCard download (gets the creator into the payer's contacts in
- * one tap, name and number both right) plus, where a scheme is known, a
- * button that opens the app itself for whoever already has the contact
- * *are* the whole card.
+ * payer's contacts, so there's no one button that "pays" like every other
+ * method's row has. Same row chrome as those (`.ds-pay-btn`, just not
+ * itself a click target — `--static`) so it doesn't stand out as its own
+ * bigger card, with two small icon actions where the single "open"/"copy"
+ * indicator normally sits: a vCard download (gets the creator into the
+ * payer's contacts, name and number both right, in one tap) and, where a
+ * scheme is known, opening the app itself for whoever already has the
+ * contact.
  */
-function buildContactCard(method, lang) {
-	const card = document.createElement('div');
-	card.className = 'ds-card ds-card--default ds-card--lifted ds-detail-card';
+function buildContactRow(method, lang) {
 	const label = t(lang, `methods.${method.type}.label`);
-	card.appendChild(detailCardHeader(method.type, label, method.preferred, lang));
 
-	const actions = document.createElement('div');
-	actions.className = 'ds-detail-card__actions';
-	actions.appendChild(
-		ui.button({
-			variant: 'secondary',
-			size: 'sm',
-			iconName: 'download',
-			text: t(lang, 'contact.saveButton'),
-			onClick: () => downloadVCard(method),
-		}),
-	);
+	const row = document.createElement('div');
+	row.className = 'ds-pay-btn ds-pay-btn--static';
+	row.appendChild(ui.methodTile({ type: method.type, size: 48, preferred: !!method.preferred }));
+
+	const info = document.createElement('span');
+	info.className = 'ds-pay-btn__info';
+	const labelRow = document.createElement('span');
+	labelRow.className = 'ds-pay-btn__label-row';
+	const labelSpan = document.createElement('span');
+	labelSpan.className = 'ds-pay-btn__label';
+	labelSpan.textContent = label;
+	labelRow.appendChild(labelSpan);
+	if (method.preferred) labelRow.appendChild(preferredBadge(lang));
+	info.appendChild(labelRow);
+	row.appendChild(info);
+
+	const actions = document.createElement('span');
+	actions.className = 'ds-pay-btn__contact-actions';
+	actions.appendChild(contactActionButton('download', t(lang, 'contact.saveButton'), () => downloadVCard(method)));
 	const scheme = APP_SCHEMES[method.type];
 	if (scheme) {
 		actions.appendChild(
-			ui.button({
-				variant: 'ghost',
-				size: 'sm',
-				iconName: 'arrow-up-right',
-				text: t(lang, 'contact.openAppLabel', { app: label }),
-				onClick: () => {
-					window.location.href = scheme;
-				},
+			contactActionButton('arrow-up-right', t(lang, 'contact.openAppLabel', { app: label }), () => {
+				window.location.href = scheme;
 			}),
 		);
 	}
-	card.appendChild(actions);
+	row.appendChild(actions);
 
-	return card;
+	return row;
 }
 
 function downloadVCard(method) {
@@ -252,17 +265,18 @@ function downloadVCard(method) {
 }
 
 /**
- * Renders every method into one ordered list — IBAN and contact-based
- * methods (src/lib/contact-methods.mjs) as their own bigger cards,
- * everything else as a pay-button — with the preferred one (if any)
- * moved to the front, badged, and tile-bordered in accent.
+ * Renders every method into one ordered list — IBAN as its own bigger
+ * card, everything else (including contact-based methods,
+ * src/lib/contact-methods.mjs) at the same pay-button row height — with
+ * the preferred one (if any) moved to the front, badged, and
+ * tile-bordered in accent.
  */
 export function renderMethods(container, methods, lang) {
 	const ordered = orderWithPreferredFirst(methods);
 	container.replaceChildren(
 		...ordered.map((method) => {
 			if (method.type === 'iban') return buildIbanCard(method, lang);
-			if (isContactBased(method.type)) return buildContactCard(method, lang);
+			if (isContactBased(method.type)) return buildContactRow(method, lang);
 			return renderMethodCard(method, lang);
 		}),
 	);

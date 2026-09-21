@@ -375,12 +375,17 @@ undocked domain (0.1).
       in your contacts" — so instead of a bare phone field, the editor
       now asks for name + phone (mirroring IBAN's holder field). Unlike
       IBAN, the read-only page never shows either back as text — nothing
-      there is worth reading or copying by hand — just two buttons: a
-      one-tap "save contact" (a vCard, `src/lib/vcard.mjs`, downloaded
+      there is worth reading or copying by hand. It also doesn't get
+      IBAN's bigger dedicated card: with no single click action to fill
+      the row every other method has, it looked out of place next to
+      them at first — now it's the same row height and chrome as
+      PayPal/Revolut (`.ds-pay-btn--static`), just with two small icon
+      buttons where the "open"/"copy" indicator normally sits: a one-tap
+      "save contact" (a vCard, `src/lib/vcard.mjs`, downloaded
       client-side via a `Blob` — no server round trip) so the creator
       lands in the payer's contacts, name and number both right, before
-      the payer even opens the app; and an "open the app" button on iOS
-      via `satispay://` (no documented Android link, so the button is
+      the payer even opens the app; and "open the app" on iOS via
+      `satispay://` (no documented Android link, so the button is
       iOS-only rather than a silent no-op there). If a page has more
       than one contact-based
       method, opening a second one's empty popover offers a "Usa
