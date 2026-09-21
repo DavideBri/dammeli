@@ -288,10 +288,10 @@ lets you send money to someone already in your own phone contacts, found
 by name. A plain handle field is a dead end for these — the payer still
 has to go add that person as a contact by hand before the app can find
 them. So a contact-based method's card asks for **name + phone**
-(`buildContactNameField()` in `editor.mjs`, the same "bigger card, two
-copyable fields" treatment IBAN already gets on the read-only page, see
-`buildContactCard()` in `viewer.mjs`) and the read-only page turns that
-into:
+(`buildContactNameField()` in `editor.mjs`) — but the read-only page
+never shows either back as text (`buildContactCard()` in `viewer.mjs`):
+unlike IBAN, there's nothing here worth reading or copying by hand, only
+two actions:
 
 - **A one-tap "save contact"** (`src/lib/vcard.mjs`'s `buildVCard()`,
   downloaded as a `.vcf` via a `Blob` + `<a download>` — no server round

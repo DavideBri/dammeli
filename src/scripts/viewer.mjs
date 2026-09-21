@@ -196,30 +196,17 @@ function buildIbanCard(method, lang) {
 /**
  * A contact-based method (src/lib/contact-methods.mjs — Satispay today):
  * no direct pay-link exists, the app only sends to someone already in the
- * payer's contacts. So instead of one "open"/"copy" button, this card
- * offers a vCard download (gets the creator into the payer's contacts in
+ * payer's contacts. Showing the raw name/number here too would just be
+ * noise — a vCard download (gets the creator into the payer's contacts in
  * one tap, name and number both right) plus, where a scheme is known, a
- * button that opens the app itself for whoever already has the contact.
+ * button that opens the app itself for whoever already has the contact
+ * *are* the whole card.
  */
 function buildContactCard(method, lang) {
 	const card = document.createElement('div');
 	card.className = 'ds-card ds-card--default ds-card--lifted ds-detail-card';
 	const label = t(lang, `methods.${method.type}.label`);
 	card.appendChild(detailCardHeader(method.type, label, method.preferred, lang));
-
-	if (method.name) {
-		card.appendChild(
-			detailFieldRow(t(lang, 'contact.nameFieldLabel'), method.name, {
-				copyLabel: `${t(lang, 'common.copy')} ${t(lang, 'contact.nameFieldLabel')}`,
-			}),
-		);
-		const divider = document.createElement('div');
-		divider.className = 'ds-detail-card__divider';
-		card.appendChild(divider);
-	}
-	card.appendChild(
-		detailFieldRow(null, method.value, { copyLabel: `${t(lang, 'common.copy')} ${label}` }),
-	);
 
 	const actions = document.createElement('div');
 	actions.className = 'ds-detail-card__actions';
