@@ -1204,40 +1204,70 @@
 	line-height: 1.5;
 }
 
-/* Public viewer's IBAN card (src/scripts/viewer.mjs's renderIbanCard). */
-.iban-card {
+/* Public viewer's "bigger card" methods — IBAN (buildIbanCard) and
+   contact-based methods like Satispay (buildContactCard), both in
+   src/scripts/viewer.mjs — anything with more than one copyable field. */
+.ds-detail-card {
 	display: flex;
 	flex-direction: column;
 	gap: var(--s-4);
 }
-.iban-card__header {
+.ds-detail-card__header {
 	display: flex;
 	align-items: center;
 	gap: var(--s-3);
 }
-.iban-card__row {
+.ds-detail-card__row {
 	display: flex;
 	align-items: center;
 	gap: var(--s-3);
 }
-.iban-card__field {
+.ds-detail-card__field {
 	flex: 1;
 	min-width: 0;
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
 }
-.iban-card__value {
+.ds-detail-card__value {
 	font-size: var(--size-body);
 	font-weight: var(--w-semibold);
 	color: var(--text-strong);
 	overflow-wrap: break-word;
 }
-.iban-card__value--mono {
+.ds-detail-card__value--mono {
 	font-family: var(--font-mono);
 	font-size: var(--size-small);
 	word-break: break-all;
 }
-.iban-card__divider {
+.ds-detail-card__divider {
 	border-top: 1px dashed var(--border-hairline);
+}
+.ds-detail-card__actions {
+	display: flex;
+	gap: var(--s-3);
+	flex-wrap: wrap;
+}
+.ds-detail-card__actions .ds-btn {
+	flex: 1;
+}
+
+/* Editor's "reuse this contact" suggestion chip (ui.suggestionChip). */
+.ds-suggestion-chip {
+	align-self: flex-start;
+	display: inline-flex;
+	align-items: center;
+	gap: var(--s-2);
+	padding: 3px 10px;
+	border-radius: var(--r-xs);
+	border: var(--bw) dashed var(--border-hairline);
+	background: var(--surface-sunken);
+	font-family: var(--font-mono);
+	font-size: var(--size-micro);
+	color: var(--text-accent);
+	cursor: pointer;
+}
+.ds-suggestion-chip:hover {
+	border-color: var(--accent);
+	border-style: solid;
 }

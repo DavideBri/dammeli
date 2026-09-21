@@ -3,10 +3,16 @@
 // from the page, this just decides what belongs in the final array and
 // in what shape.
 
+import { isContactBased } from './contact-methods.mjs';
+
 /**
- * @param {Array<{method: string, value: string, holder?: string, cryptoType?: string, preferred?: boolean}>} cards
+ * @param {Array<{method: string, value: string, holder?: string, name?: string, cryptoType?: string, preferred?: boolean}>} cards
  *   In the order they should appear in the payload (order is information).
- *   Empty values are dropped.
+ *   Empty values are dropped. `name` is only ever kept for a
+ *   contact-based method (src/lib/contact-methods.mjs) — same "must not
+ *   end up in the blob of someone using only Satispay [and nothing else
+ *   that needs it]" guarantee PLAN.md section 5 already makes for
+ *   `holder`, checked here rather than trusted from the caller.
  * @param {{title?: string}} [options] `title` is optional and page-level
  *   (PLAN.md section 5) — added post-v1 without a version bump, so it's
  *   simply omitted from the payload when blank rather than shipped as an
@@ -33,6 +39,10 @@ export function assemblePayload(cards, { title } = {}) {
 			entry = holder ? { type: 'iban', value, holder } : { type: 'iban', value };
 		} else {
 			entry = { type: card.method, value };
+			if (isContactBased(card.method)) {
+				const name = (card.name ?? '').trim();
+				if (name) entry.name = name;
+			}
 		}
 		if (card.preferred && !preferredTaken) {
 			entry.preferred = true;

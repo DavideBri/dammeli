@@ -3,6 +3,8 @@
 // hands this file the already-decrypted methods array.
 
 import { t } from '../lib/i18n.mjs';
+import { isContactBased, APP_SCHEMES } from '../lib/contact-methods.mjs';
+import { buildVCard, vcardFilename } from '../lib/vcard.mjs';
 import * as ui from './ui.mjs';
 
 const KNOWN_TYPES = new Set(['satispay', 'revolut', 'paypal', 'iban']);
@@ -27,8 +29,8 @@ export function methodLabel(type) {
  * Satispay is deliberately still left out: unlike revolut.me (Revolut's
  * own public profile-link feature) or paypal.me, there's no verified,
  * documented consumer-to-consumer deep link that opens the app straight
- * to paying a given phone number. Needs the real scheme confirmed against
- * the live app before it can be added here.
+ * to paying a given phone number — it (and any future method like it)
+ * gets its own dedicated card instead, see buildContactCard() below.
  */
 export function buildDirectLink(method) {
 	if (method.type === 'paypal') return `https://paypal.me/${encodeURIComponent(method.value)}`;
@@ -134,21 +136,33 @@ function copyIconButton(value, label) {
 	return btn;
 }
 
-function ibanFieldRow(label, value, { mono = false, copyLabel }) {
+function detailFieldRow(label, value, { mono = false, copyLabel }) {
 	const row = document.createElement('div');
-	row.className = 'iban-card__row';
+	row.className = 'ds-detail-card__row';
 
 	const field = document.createElement('div');
-	field.className = 'iban-card__field';
+	field.className = 'ds-detail-card__field';
 	if (label) field.appendChild(ui.microLabel(label));
 	const valueSpan = document.createElement('span');
-	valueSpan.className = mono ? 'iban-card__value iban-card__value--mono' : 'iban-card__value';
+	valueSpan.className = mono ? 'ds-detail-card__value ds-detail-card__value--mono' : 'ds-detail-card__value';
 	valueSpan.textContent = value;
 	field.appendChild(valueSpan);
 	row.appendChild(field);
 
 	row.appendChild(copyIconButton(value, copyLabel));
 	return row;
+}
+
+function detailCardHeader(type, label, preferred, lang) {
+	const header = document.createElement('div');
+	header.className = 'ds-detail-card__header';
+	header.appendChild(ui.methodTile({ type, size: 48, preferred: !!preferred }));
+	const title = document.createElement('span');
+	title.className = 'ds-pay-btn__label';
+	title.textContent = label;
+	header.appendChild(title);
+	if (preferred) header.appendChild(preferredBadge(lang));
+	return header;
 }
 
 /**
@@ -159,27 +173,18 @@ function ibanFieldRow(label, value, { mono = false, copyLabel }) {
  */
 function buildIbanCard(method, lang) {
 	const card = document.createElement('div');
-	card.className = 'ds-card ds-card--default ds-card--lifted iban-card';
-
-	const header = document.createElement('div');
-	header.className = 'iban-card__header';
-	header.appendChild(ui.methodTile({ type: 'iban', size: 48, preferred: !!method.preferred }));
-	const title = document.createElement('span');
-	title.className = 'ds-pay-btn__label';
-	title.textContent = t(lang, 'methods.iban.label');
-	header.appendChild(title);
-	if (method.preferred) header.appendChild(preferredBadge(lang));
-	card.appendChild(header);
+	card.className = 'ds-card ds-card--default ds-card--lifted ds-detail-card';
+	card.appendChild(detailCardHeader('iban', t(lang, 'methods.iban.label'), method.preferred, lang));
 
 	// No micro-label on this row — the header above it already says "IBAN".
-	card.appendChild(ibanFieldRow(null, method.value, { mono: true, copyLabel: `${t(lang, 'common.copy')} IBAN` }));
+	card.appendChild(detailFieldRow(null, method.value, { mono: true, copyLabel: `${t(lang, 'common.copy')} IBAN` }));
 
 	if (method.holder) {
 		const divider = document.createElement('div');
-		divider.className = 'iban-card__divider';
+		divider.className = 'ds-detail-card__divider';
 		card.appendChild(divider);
 		card.appendChild(
-			ibanFieldRow(t(lang, 'methods.iban.holderTitle'), method.holder, {
+			detailFieldRow(t(lang, 'methods.iban.holderTitle'), method.holder, {
 				copyLabel: `${t(lang, 'common.copy')} ${t(lang, 'methods.iban.holderTitle')}`,
 			}),
 		);
@@ -189,14 +194,90 @@ function buildIbanCard(method, lang) {
 }
 
 /**
- * Renders every method into one ordered list — IBAN as its own bigger
- * card, everything else as a pay-button — with the preferred one (if
- * any) moved to the front, badged, and tile-bordered in accent.
+ * A contact-based method (src/lib/contact-methods.mjs — Satispay today):
+ * no direct pay-link exists, the app only sends to someone already in the
+ * payer's contacts. So instead of one "open"/"copy" button, this card
+ * offers a vCard download (gets the creator into the payer's contacts in
+ * one tap, name and number both right) plus, where a scheme is known, a
+ * button that opens the app itself for whoever already has the contact.
+ */
+function buildContactCard(method, lang) {
+	const card = document.createElement('div');
+	card.className = 'ds-card ds-card--default ds-card--lifted ds-detail-card';
+	const label = t(lang, `methods.${method.type}.label`);
+	card.appendChild(detailCardHeader(method.type, label, method.preferred, lang));
+
+	if (method.name) {
+		card.appendChild(
+			detailFieldRow(t(lang, 'contact.nameFieldLabel'), method.name, {
+				copyLabel: `${t(lang, 'common.copy')} ${t(lang, 'contact.nameFieldLabel')}`,
+			}),
+		);
+		const divider = document.createElement('div');
+		divider.className = 'ds-detail-card__divider';
+		card.appendChild(divider);
+	}
+	card.appendChild(
+		detailFieldRow(null, method.value, { copyLabel: `${t(lang, 'common.copy')} ${label}` }),
+	);
+
+	const actions = document.createElement('div');
+	actions.className = 'ds-detail-card__actions';
+	actions.appendChild(
+		ui.button({
+			variant: 'secondary',
+			size: 'sm',
+			iconName: 'download',
+			text: t(lang, 'contact.saveButton'),
+			onClick: () => downloadVCard(method),
+		}),
+	);
+	const scheme = APP_SCHEMES[method.type];
+	if (scheme) {
+		actions.appendChild(
+			ui.button({
+				variant: 'ghost',
+				size: 'sm',
+				iconName: 'arrow-up-right',
+				text: t(lang, 'contact.openAppLabel', { app: label }),
+				onClick: () => {
+					window.location.href = scheme;
+				},
+			}),
+		);
+	}
+	card.appendChild(actions);
+
+	return card;
+}
+
+function downloadVCard(method) {
+	const name = method.name || methodLabel(method.type);
+	const blob = new Blob([buildVCard({ name, phone: method.value })], { type: 'text/vcard' });
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = vcardFilename(method.name);
+	document.body.appendChild(a);
+	a.click();
+	a.remove();
+	setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/**
+ * Renders every method into one ordered list — IBAN and contact-based
+ * methods (src/lib/contact-methods.mjs) as their own bigger cards,
+ * everything else as a pay-button — with the preferred one (if any)
+ * moved to the front, badged, and tile-bordered in accent.
  */
 export function renderMethods(container, methods, lang) {
 	const ordered = orderWithPreferredFirst(methods);
 	container.replaceChildren(
-		...ordered.map((method) => (method.type === 'iban' ? buildIbanCard(method, lang) : renderMethodCard(method, lang))),
+		...ordered.map((method) => {
+			if (method.type === 'iban') return buildIbanCard(method, lang);
+			if (isContactBased(method.type)) return buildContactCard(method, lang);
+			return renderMethodCard(method, lang);
+		}),
 	);
 }
 

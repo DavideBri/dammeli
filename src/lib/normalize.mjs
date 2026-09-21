@@ -46,3 +46,16 @@ export function confirmationSuffix(value, length = 4) {
 	const v = value ?? '';
 	return v.length <= length ? v : v.slice(-length);
 }
+
+/**
+ * First `head` characters, an ellipsis, last `tail` — e.g. "+39…417" for
+ * a phone number. Same spirit as confirmationSuffix: recognizable without
+ * repeating the whole value, for the editor's "reuse this contact"
+ * suggestion chip (a full phone number there would be redundant with the
+ * field the user is about to fill from it).
+ */
+export function maskMiddle(value, { head = 3, tail = 3 } = {}) {
+	const v = (value ?? '').trim();
+	if (v.length <= head + tail) return v;
+	return `${v.slice(0, head)}…${v.slice(-tail)}`;
+}

@@ -4,7 +4,8 @@
 // back out via getTitle()/getCards() at submit time. No network calls,
 // no persistence: this file only manages the form.
 
-import { normalizeHandleFromUrl, normalizeIban, confirmationSuffix } from '../lib/normalize.mjs';
+import { normalizeHandleFromUrl, normalizeIban, confirmationSuffix, maskMiddle } from '../lib/normalize.mjs';
+import { isContactBased, CONTACT_BASED_METHODS } from '../lib/contact-methods.mjs';
 import { t } from '../lib/i18n.mjs';
 import * as ui from './ui.mjs';
 
@@ -40,6 +41,10 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		title: prefill?.title ?? '',
 		values: { satispay: '', revolut: '', paypal: '', iban: '' },
 		holder: '',
+		/** Contact-based methods' name field (src/lib/contact-methods.mjs),
+		 * keyed by method id — same idea as `holder`, but generic to any
+		 * number of such methods instead of being IBAN-only. */
+		names: Object.fromEntries(CONTACT_BASED_METHODS.map((m) => [m, ''])),
 		/** @type {Array<{id: string, label: string, value: string}>} */
 		custom: [],
 		/** Every id (main + custom), in payload/display order. */
@@ -53,6 +58,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		if (ORDER.includes(entry.type)) {
 			state.values[entry.type] = entry.value ?? '';
 			if (entry.type === 'iban' && entry.holder) state.holder = entry.holder;
+			if (isContactBased(entry.type) && entry.name) state.names[entry.type] = entry.name;
 			state.order.push(entry.type);
 			seenMain.add(entry.type);
 			if (entry.preferred) state.preferred = entry.type;
@@ -246,6 +252,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			refreshConfirm();
 			updateCreateButton();
 			renderTilesInPlace();
+			if (isContactBased(method)) refreshContactSuggestion();
 		});
 		f.input.addEventListener('blur', () => {
 			f.input.value = normalizeValue(method, f.input.value);
@@ -282,6 +289,44 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			state.holder = f.input.value;
 		});
 		return f.wrap;
+	}
+
+	function buildContactNameField(method) {
+		const f = ui.field({
+			id: `field-${method}-name`,
+			label: t(lang, 'contact.nameFieldLabel'),
+			hint: t(lang, 'contact.nameFieldHint'),
+			hintToggleLabel: t(lang, 'editor.hintToggle'),
+			placeholder: t(lang, 'contact.nameFieldPlaceholder'),
+			value: state.names[method],
+			clearLabel: t(lang, 'editor.clearField'),
+		});
+		f.input.disabled = disabled;
+		f.input.addEventListener('input', () => {
+			state.names[method] = f.input.value;
+		});
+		f.input.addEventListener('blur', () => {
+			f.input.value = f.input.value.trim();
+			state.names[method] = f.input.value;
+		});
+		return f.wrap;
+	}
+
+	/** Another already-filled contact-based method's phone+name, if any —
+	 * offered as a one-click "reuse this" chip instead of retyping the same
+	 * contact twice (src/lib/contact-methods.mjs: Satispay today, any
+	 * future method added to that list for free). Only while `method`
+	 * itself is still empty — once it has its own value, there's nothing
+	 * left to suggest a replacement for. */
+	function contactSuggestionSource(method) {
+		if (state.values[method].trim()) return null;
+		for (const other of CONTACT_BASED_METHODS) {
+			if (other === method) continue;
+			const value = state.values[other]?.trim();
+			const name = state.names[other]?.trim();
+			if (value && name) return { value, name };
+		}
+		return null;
 	}
 
 	function buildCustomFields(id) {
@@ -382,11 +427,12 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		});
 	}
 
-	/** Slot inside the currently-open popover that depends on "is this
+	/** Slots inside the currently-open popover that depend on "is this
 	 * filled now", refreshed in place after a field blurs — never a full
 	 * renderPopover(), which would also replace the field inputs
 	 * themselves (see buildMainField's blur handler). */
 	let preferredSlot = null;
+	let suggestionSlot = null;
 	function refreshFilledDependents() {
 		if (!selected) return;
 		if (preferredSlot) {
@@ -395,9 +441,30 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 		}
 	}
 
+	/** The "reuse this contact" chip — live, not just on blur, so it
+	 * disappears the moment the user starts typing their own value instead
+	 * of accepting the suggestion (see buildMainField's input handler). */
+	function refreshContactSuggestion() {
+		if (!suggestionSlot) return;
+		suggestionSlot.replaceChildren();
+		const suggestion = contactSuggestionSource(selected);
+		if (suggestion) {
+			suggestionSlot.appendChild(
+				ui.suggestionChip(t(lang, 'contact.useSuggestion', { value: maskMiddle(suggestion.value) }), () => {
+					state.values[selected] = suggestion.value;
+					state.names[selected] = suggestion.name;
+					renderPopover();
+					renderTilesInPlace();
+					updateCreateButton();
+				}),
+			);
+		}
+	}
+
 	function renderPopover() {
 		popoverWrap.replaceChildren();
 		preferredSlot = null;
+		suggestionSlot = null;
 		if (!selected) return;
 
 		const arrow = document.createElement('span');
@@ -427,7 +494,14 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 			pop.appendChild(hint);
 		} else {
 			pop.appendChild(buildMainField(selected));
-			if (selected === 'iban') pop.appendChild(buildHolderField());
+			if (selected === 'iban') {
+				pop.appendChild(buildHolderField());
+			} else if (isContactBased(selected)) {
+				suggestionSlot = document.createElement('div');
+				pop.appendChild(suggestionSlot);
+				refreshContactSuggestion();
+				pop.appendChild(buildContactNameField(selected));
+			}
 			const hint = document.createElement('p');
 			hint.className = 'ds-method-grid__popover-hint';
 			hint.textContent = t(lang, `methods.${selected}.hint`);
@@ -552,6 +626,7 @@ export function initEditor(root, lang, { prefill = null } = {}) {
 						method: id,
 						value: state.values[id],
 						holder: id === 'iban' ? state.holder : undefined,
+						name: isContactBased(id) ? state.names[id] : undefined,
 						preferred,
 					};
 				}

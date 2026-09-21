@@ -369,6 +369,27 @@ undocked domain (0.1).
       (including its three animated scenes), and the privacy page
 - [x] SHA-256 hash of `crypto.js` published in `README.md`, kept in sync
       by hand with every change to the file
+- [x] Satispay (and any future method like it) reworked into a
+      **contact-based method** (`src/lib/contact-methods.mjs`): these
+      apps have no direct pay-link at all, only "send to someone already
+      in your contacts" — so instead of a bare phone field, the editor
+      now asks for name + phone (mirroring IBAN's holder field, same
+      "bigger card, two copyable fields" treatment on the read-only
+      page). That page can now offer a one-tap "save contact" (a vCard,
+      `src/lib/vcard.mjs`, downloaded client-side via a `Blob` — no
+      server round trip) so the creator lands in the payer's contacts,
+      name and number both right, before the payer even opens the app;
+      plus an "open the app" button on iOS via `satispay://` (no
+      documented Android link, so the button is iOS-only rather than a
+      silent no-op there). If a page has more than one contact-based
+      method, opening a second one's empty popover offers a "Usa
+      +39…417" chip (`ui.suggestionChip()`) that fills both fields from
+      whichever sibling method already has both set — one tap instead of
+      typing the same contact twice, live rather than just-on-blur so it
+      disappears the moment the user starts typing their own value.
+      Reverses PLAN.md section 5's original "holder only on iban" line:
+      `name` is now allowed on any contact-based method, checked by type
+      in `assemblePayload()` itself rather than trusted from the caller
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert

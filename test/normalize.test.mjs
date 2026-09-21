@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { normalizeHandleFromUrl, normalizeIban, confirmationSuffix } from '../src/lib/normalize.mjs';
+import { normalizeHandleFromUrl, normalizeIban, confirmationSuffix, maskMiddle } from '../src/lib/normalize.mjs';
 
 const PAYPAL_DOMAINS = ['paypal.me', 'paypal.com'];
 
@@ -63,4 +63,30 @@ test('confirmationSuffix: returns the last few characters', () => {
 test('confirmationSuffix: short values are returned whole, not padded', () => {
 	assert.equal(confirmationSuffix('ab'), 'ab');
 	assert.equal(confirmationSuffix(''), '');
+});
+
+test('maskMiddle: shows head and tail, ellipsis in between', () => {
+	assert.equal(maskMiddle('+39 340 118 4417'), '+39…417');
+});
+
+test('maskMiddle: short values (nothing to hide) are returned whole', () => {
+	assert.equal(maskMiddle('12345'), '12345');
+	assert.equal(maskMiddle('123456'), '123456');
+});
+
+test('maskMiddle: one character over the threshold gets masked', () => {
+	assert.equal(maskMiddle('1234567'), '123…567');
+});
+
+test('maskMiddle: head/tail lengths are configurable', () => {
+	assert.equal(maskMiddle('abcdefgh', { head: 2, tail: 2 }), 'ab…gh');
+});
+
+test('maskMiddle: trims surrounding whitespace first', () => {
+	assert.equal(maskMiddle('  +39 340 118 4417  '), '+39…417');
+});
+
+test('maskMiddle: empty input stays empty', () => {
+	assert.equal(maskMiddle(''), '');
+	assert.equal(maskMiddle(undefined), '');
 });
