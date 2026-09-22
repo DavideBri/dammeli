@@ -193,28 +193,19 @@ function buildIbanCard(method, lang) {
 	return card;
 }
 
-function contactActionButton(iconName, label, onClick) {
-	const btn = document.createElement('button');
-	btn.type = 'button';
-	btn.className = 'ds-icon-btn ds-icon-btn--outline';
-	btn.setAttribute('aria-label', label);
-	btn.title = label;
-	btn.appendChild(ui.icon(iconName, { size: 18, strokeWidth: 2 }));
-	btn.addEventListener('click', onClick);
-	return btn;
-}
-
 /**
  * A contact-based method (src/lib/contact-methods.mjs — Satispay today):
  * no direct pay-link exists, the app only sends to someone already in the
  * payer's contacts, so there's no one button that "pays" like every other
  * method's row has. Same row chrome as those (`.ds-pay-btn`, just not
  * itself a click target — `--static`) so it doesn't stand out as its own
- * bigger card, with two small icon actions where the single "open"/"copy"
- * indicator normally sits: a vCard download (gets the creator into the
- * payer's contacts, name and number both right, in one tap) and, where a
- * scheme is known, opening the app itself for whoever already has the
- * contact.
+ * bigger card. A note under the label explains what the row is for, then
+ * two separate actions stand in for the usual single "open"/"copy"
+ * indicator: "Salva contatto" (a vCard, gets the creator into the payer's
+ * contacts, name and number both right, in one tap) and, where a scheme
+ * is known, "Apri" — styled and colored exactly like every other row's
+ * action, for the same reason "open the app" is a real action here and
+ * not a lesser one.
  */
 function buildContactRow(method, lang) {
 	const label = t(lang, `methods.${method.type}.label`);
@@ -233,18 +224,39 @@ function buildContactRow(method, lang) {
 	labelRow.appendChild(labelSpan);
 	if (method.preferred) labelRow.appendChild(preferredBadge(lang));
 	info.appendChild(labelRow);
+	const note = document.createElement('span');
+	note.className = 'ds-pay-btn__note';
+	note.textContent = t(lang, 'contact.rowNote');
+	info.appendChild(note);
 	row.appendChild(info);
 
 	const actions = document.createElement('span');
 	actions.className = 'ds-pay-btn__contact-actions';
-	actions.appendChild(contactActionButton('download', t(lang, 'contact.saveButton'), () => downloadVCard(method)));
+	actions.appendChild(
+		ui.button({
+			variant: 'secondary',
+			size: 'sm',
+			iconName: 'phone',
+			text: t(lang, 'contact.saveButton'),
+			onClick: () => downloadVCard(method),
+		}),
+	);
 	const scheme = APP_SCHEMES[method.type];
 	if (scheme) {
-		actions.appendChild(
-			contactActionButton('arrow-up-right', t(lang, 'contact.openAppLabel', { app: label }), () => {
-				window.location.href = scheme;
-			}),
-		);
+		const openBtn = document.createElement('button');
+		openBtn.type = 'button';
+		openBtn.className = 'ds-pay-btn__action';
+		const openLabel = t(lang, 'contact.openAppLabel', { app: label });
+		openBtn.setAttribute('aria-label', openLabel);
+		openBtn.title = openLabel;
+		const openText = document.createElement('span');
+		openText.textContent = t(lang, 'common.open');
+		openBtn.appendChild(openText);
+		openBtn.appendChild(ui.icon('arrow-up-right', { size: 15, strokeWidth: 2.5 }));
+		openBtn.addEventListener('click', () => {
+			window.location.href = scheme;
+		});
+		actions.appendChild(openBtn);
 	}
 	row.appendChild(actions);
 

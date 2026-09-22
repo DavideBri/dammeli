@@ -293,21 +293,29 @@ never shows either back as text (`buildContactRow()` in `viewer.mjs`,
 rendered at the same row height and chrome as every other method's —
 `.ds-pay-btn--static` — rather than IBAN's bigger dedicated card, since
 there's no single click action here to fill that row's usual spot):
-unlike IBAN, there's nothing here worth reading or copying by hand, only
-two small icon actions where the "open"/"copy" indicator normally sits:
+unlike IBAN, there's nothing here worth reading or copying by hand. A
+short note under the label explains the row (`contact.rowNote`, e.g.
+"Works through your phone contacts"), and two real actions stand in for
+the usual single "open"/"copy" indicator:
 
-- **A one-tap "save contact"** (`src/lib/vcard.mjs`'s `buildVCard()`,
-  downloaded as a `.vcf` via a `Blob` + `<a download>` — no server round
-  trip, consistent with the rest of the privacy model): gets the creator
-  into the payer's contacts, name and number both right, before the payer
-  even opens the app.
-- **An "open the app" button**, where a scheme is known
-  (`APP_SCHEMES` in `contact-methods.mjs`) — `satispay://` for Satispay,
-  confirmed on iOS Safari only; no documented Android intent-link exists,
-  so the button is iOS-only rather than a silent no-op on Android (same
-  honesty bar as `buildDirectLink()`'s comment on why Satispay never got
-  a direct pay-link). There's no way to encode a recipient or amount into
-  it, only "open the app" — the payer still finds the creator by the name
+- **"Salva contatto"/"Save contact"**, a labeled button with a phone-
+  handset icon, not just an icon — first-round feedback was that a bare
+  download icon didn't read as "save a contact" at all. Downloads a
+  `.vcf` (`src/lib/vcard.mjs`'s `buildVCard()`, via a `Blob` + `<a
+  download>` — no server round trip, consistent with the rest of the
+  privacy model): gets the creator into the payer's contacts, name and
+  number both right, before the payer even opens the app.
+- **"Apri"/"Open"**, where a scheme is known (`APP_SCHEMES` in
+  `contact-methods.mjs`) — styled and colored exactly like every other
+  row's action indicator (`.ds-pay-btn__action`, same red/accent
+  uppercase text + arrow), just as a real standalone button here instead
+  of decoration inside the row's own click handler, since the row itself
+  isn't one click target. `satispay://` for Satispay, confirmed on iOS
+  Safari only; no documented Android intent-link exists, so the button
+  is iOS-only rather than a silent no-op on Android (same honesty bar as
+  `buildDirectLink()`'s comment on why Satispay never got a direct
+  pay-link). There's no way to encode a recipient or amount into it,
+  only "open the app" — the payer still finds the creator by the name
   they just saved.
 
 Adding a future method here only ever means adding it to

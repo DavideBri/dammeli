@@ -379,15 +379,19 @@ undocked domain (0.1).
       IBAN's bigger dedicated card: with no single click action to fill
       the row every other method has, it looked out of place next to
       them at first — now it's the same row height and chrome as
-      PayPal/Revolut (`.ds-pay-btn--static`), just with two small icon
-      buttons where the "open"/"copy" indicator normally sits: a one-tap
-      "save contact" (a vCard, `src/lib/vcard.mjs`, downloaded
-      client-side via a `Blob` — no server round trip) so the creator
+      PayPal/Revolut (`.ds-pay-btn--static`), with a short note under the
+      label ("Works through your phone contacts") explaining the row,
+      and two real actions instead of the usual single "open"/"copy"
+      indicator: a labeled "Salva contatto"/"Save contact" button with a
+      phone-handset icon (plain icon-only buttons didn't read as
+      "save a contact" at all) — a vCard, `src/lib/vcard.mjs`, downloaded
+      client-side via a `Blob`, no server round trip — so the creator
       lands in the payer's contacts, name and number both right, before
-      the payer even opens the app; and "open the app" on iOS via
-      `satispay://` (no documented Android link, so the button is
-      iOS-only rather than a silent no-op there). If a page has more
-      than one contact-based
+      the payer even opens the app; and "Apri"/"Open" on iOS via
+      `satispay://`, styled exactly like every other row's action
+      indicator for consistency (no documented Android link, so the
+      button is iOS-only rather than a silent no-op there). If a page
+      has more than one contact-based
       method, opening a second one's empty popover offers a "Usa
       +39…417" chip (`ui.suggestionChip()`) that fills both fields from
       whichever sibling method already has both set — one tap instead of

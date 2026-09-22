@@ -709,6 +709,15 @@
 	text-transform: uppercase;
 	font-weight: var(--w-bold);
 	color: var(--text-accent);
+	/* Harmless on the plain <span> every other row uses (decorative, inside
+	 * that row's own single <button>) — needed when a contact-based row
+	 * uses this same look on a real, separately-clickable <button> of its
+	 * own, since the row itself isn't one click target (.ds-pay-btn--static). */
+	border: none;
+	background: none;
+	padding: 0;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
 }
 /* A "row" with the same chrome as .ds-pay-btn but not itself a single
  * click target — for a contact-based method (viewer.mjs's
@@ -727,7 +736,9 @@
 .ds-pay-btn__contact-actions {
 	flex: none;
 	display: flex;
-	gap: var(--s-2);
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 6px;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -93,6 +93,7 @@ const dict = {
 		'contact.useSuggestion': 'Usa {{value}}',
 		'contact.saveButton': 'Salva contatto',
 		'contact.openAppLabel': 'Apri {{app}}',
+		'contact.rowNote': 'Funziona tramite i contatti del telefono.',
 
 		'created.badge': 'pronta',
 		'created.fallbackTitle': 'La tua pagina è pronta',
@@ -234,6 +235,7 @@ const dict = {
 		'contact.useSuggestion': 'Use {{value}}',
 		'contact.saveButton': 'Save contact',
 		'contact.openAppLabel': 'Open {{app}}',
+		'contact.rowNote': 'Works through your phone contacts.',
 
 		'created.badge': 'ready',
 		'created.fallbackTitle': 'Your page is ready',
@@ -378,6 +380,7 @@ const dict = {
 		'contact.useSuggestion': 'Usar {{value}}',
 		'contact.saveButton': 'Guardar contacto',
 		'contact.openAppLabel': 'Abrir {{app}}',
+		'contact.rowNote': 'Funciona a través de tus contactos.',
 
 		'created.badge': 'lista',
 		'created.fallbackTitle': 'Tu página está lista',
