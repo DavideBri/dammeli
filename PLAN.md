@@ -133,7 +133,8 @@ user.**
   "v": 1,
   "title": "Bruno's payments",
   "methods": [
-    { "type": "satispay", "value": "brunoxyz", "preferred": true },
+    { "type": "satispay", "value": "+39 340 118 4417", "name": "Bruno Rossi",
+                          "preferred": true },
     { "type": "revolut",  "value": "brunoxyz" },
     { "type": "paypal",   "value": "brunoxyz" },
     { "type": "iban",     "value": "IT60X0542811101000000123456",
@@ -183,9 +184,19 @@ user.**
 - **`value` holds only the handle, never the full URL.** If Revolut
   changes its URL format, a handle only needs a deploy; a saved URL would
   leave thousands of broken, unreadable blobs.
-- **`holder` only on `iban`**, never at the page level. It's the only real
-  identifier in the payload and must not end up in the blob of someone
-  using only Satispay.
+- **`holder` only on `iban`**, never at the page level. It's a real
+  identifier tied to VoP (see below) and must not end up in the blob of
+  someone using only Satispay.
+- **`name` only on a contact-based method** (0.9, see section 7's
+  "Contact-based methods" — Satispay today). This reverses the original,
+  stricter reading of the bullet above ("no identifier beyond `holder` on
+  `iban`, ever"): a contact-based method's whole point is that the payer
+  finds the creator by name in their own phone contacts, so the creator
+  is already disclosing that name to be found by it — the field just
+  saves them from typing it out for the payer separately. Never added to
+  a method that doesn't need it: `assemblePayload()` checks
+  `isContactBased(card.method)` itself rather than trusting its caller,
+  same defensive posture as the `preferred` bullet above.
 - **`title` is optional and page-level**: shown as the heading on the
   read-only page and as the browser tab title. Added after v1 shipped
   without a version bump — exactly the case the next bullet describes.
@@ -268,6 +279,59 @@ Every card must have:
    PayPal card is a dead end for half the users.
 4. **Visual confirmation** after entry: icon plus last few characters. A
    wrong IBAN is the worst possible failure.
+
+### Contact-based methods (0.9)
+
+Some methods (Satispay today, `src/lib/contact-methods.mjs`'s
+`CONTACT_BASED_METHODS`) have no direct pay-link at all: the app only
+lets you send money to someone already in your own phone contacts, found
+by name. A plain handle field is a dead end for these — the payer still
+has to go add that person as a contact by hand before the app can find
+them. So a contact-based method's card asks for **name + phone**
+(`buildContactNameField()` in `editor.mjs`) — but the read-only page
+never shows either back as text (`buildContactRow()` in `viewer.mjs`,
+rendered at the same row height and chrome as every other method's —
+`.ds-pay-btn--static` — rather than IBAN's bigger dedicated card, since
+there's no single click action here to fill that row's usual spot):
+unlike IBAN, there's nothing here worth reading or copying by hand. A
+short note under the label explains the row (`contact.rowNote`, e.g.
+"Works through your phone contacts"), and two real actions stand in for
+the usual single "open"/"copy" indicator:
+
+- **"Salva contatto"/"Save contact"**, a labeled button with a phone-
+  handset icon, not just an icon — first-round feedback was that a bare
+  download icon didn't read as "save a contact" at all. Downloads a
+  `.vcf` (`src/lib/vcard.mjs`'s `buildVCard()`, via a `Blob` + `<a
+  download>` — no server round trip, consistent with the rest of the
+  privacy model): gets the creator into the payer's contacts, name and
+  number both right, before the payer even opens the app.
+- **"Apri"/"Open"**, where a scheme is known (`APP_SCHEMES` in
+  `contact-methods.mjs`) — styled and colored exactly like every other
+  row's action indicator (`.ds-pay-btn__action`, same red/accent
+  uppercase text + arrow), just as a real standalone button here instead
+  of decoration inside the row's own click handler, since the row itself
+  isn't one click target. `satispay://` for Satispay, confirmed on iOS
+  Safari only; no documented Android intent-link exists, so the button
+  is iOS-only rather than a silent no-op on Android (same honesty bar as
+  `buildDirectLink()`'s comment on why Satispay never got a direct
+  pay-link). There's no way to encode a recipient or amount into it,
+  only "open the app" — the payer still finds the creator by the name
+  they just saved.
+
+Adding a future method here only ever means adding it to
+`CONTACT_BASED_METHODS` (and `APP_SCHEMES`, if a scheme is confirmed) —
+the name field, the vCard button, and the cross-fill suggestion below all
+follow automatically, nothing else to wire up per method.
+
+**Cross-fill between contact-based methods**: since a page can have more
+than one such method, and they'd usually share the same phone contact,
+opening a second one's popover with an empty value offers a "Usa
++39…417"-style chip (`ui.suggestionChip()`, the number masked via
+`maskMiddle()` in `normalize.mjs`) that fills both its phone and name
+fields from whichever sibling contact-based method already has both set
+(`contactSuggestionSource()` in `editor.mjs`) — one tap instead of typing
+the same contact twice. Live, not just on blur: it disappears the moment
+the user starts typing their own value instead.
 
 ---
 

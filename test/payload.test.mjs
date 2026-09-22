@@ -48,6 +48,26 @@ test('assemblePayload: iban without a holder omits the field entirely', () => {
 	assert.ok(!('holder' in result.methods[0]));
 });
 
+test('assemblePayload: a contact-based method\'s name is carried onto the entry', () => {
+	const result = assemblePayload([{ method: 'satispay', value: '+39 340 118 4417', name: 'Bruno Rossi' }]);
+	assert.deepEqual(result.methods, [{ type: 'satispay', value: '+39 340 118 4417', name: 'Bruno Rossi' }]);
+});
+
+test('assemblePayload: an empty name is omitted entirely, not shipped as ""', () => {
+	const result = assemblePayload([{ method: 'satispay', value: '+39 340 118 4417', name: '   ' }]);
+	assert.ok(!('name' in result.methods[0]));
+});
+
+test('assemblePayload: name is trimmed', () => {
+	const result = assemblePayload([{ method: 'satispay', value: '+39', name: '  Bruno Rossi  ' }]);
+	assert.equal(result.methods[0].name, 'Bruno Rossi');
+});
+
+test('assemblePayload: name is dropped on a non-contact-based method, even if a caller sets it', () => {
+	const result = assemblePayload([{ method: 'paypal', value: 'brunoxyz', name: 'Bruno Rossi' }]);
+	assert.ok(!('name' in result.methods[0]));
+});
+
 test('assemblePayload: crypto card uses the selected type, not the literal "crypto"', () => {
 	const result = assemblePayload([
 		{ method: 'crypto', value: 'bc1qxyz', cryptoType: 'bitcoin' },

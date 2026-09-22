@@ -87,6 +87,14 @@ const dict = {
 		'methods.crypto.valueFieldLabel': 'Valore',
 		'methods.crypto.valuePlaceholder': 'Indirizzo, link o altro',
 
+		'contact.nameFieldLabel': 'Nome',
+		'contact.nameFieldHint': "Il nome con cui ti troveranno in rubrica, per pagarti dall'app.",
+		'contact.nameFieldPlaceholder': 'Mario Rossi',
+		'contact.useSuggestion': 'Usa {{value}}',
+		'contact.saveButton': 'Salva contatto',
+		'contact.openAppLabel': 'Apri {{app}}',
+		'contact.rowNote': 'Funziona tramite i contatti del telefono.',
+
 		'created.badge': 'pronta',
 		'created.fallbackTitle': 'La tua pagina è pronta',
 		'created.copyLink': 'Copia link',
@@ -220,6 +228,14 @@ const dict = {
 		'methods.crypto.labelFieldPlaceholder': 'E.g. Bitcoin, Wise, Klarna…',
 		'methods.crypto.valueFieldLabel': 'Value',
 		'methods.crypto.valuePlaceholder': 'Address, link, or anything else',
+
+		'contact.nameFieldLabel': 'Name',
+		'contact.nameFieldHint': "The name they'll find you under in their contacts, to pay you from the app.",
+		'contact.nameFieldPlaceholder': 'Mario Rossi',
+		'contact.useSuggestion': 'Use {{value}}',
+		'contact.saveButton': 'Save contact',
+		'contact.openAppLabel': 'Open {{app}}',
+		'contact.rowNote': 'Works through your phone contacts.',
 
 		'created.badge': 'ready',
 		'created.fallbackTitle': 'Your page is ready',
@@ -357,6 +373,14 @@ const dict = {
 		'methods.crypto.labelFieldPlaceholder': 'Ej. Bitcoin, Wise, Klarna…',
 		'methods.crypto.valueFieldLabel': 'Valor',
 		'methods.crypto.valuePlaceholder': 'Dirección, enlace u otro',
+
+		'contact.nameFieldLabel': 'Nombre',
+		'contact.nameFieldHint': 'El nombre con el que te encontrarán en su agenda, para pagarte desde la app.',
+		'contact.nameFieldPlaceholder': 'Mario Rossi',
+		'contact.useSuggestion': 'Usar {{value}}',
+		'contact.saveButton': 'Guardar contacto',
+		'contact.openAppLabel': 'Abrir {{app}}',
+		'contact.rowNote': 'Funciona a través de tus contactos.',
 
 		'created.badge': 'lista',
 		'created.fallbackTitle': 'Tu página está lista',

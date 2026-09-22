@@ -709,6 +709,36 @@
 	text-transform: uppercase;
 	font-weight: var(--w-bold);
 	color: var(--text-accent);
+	/* Harmless on the plain <span> every other row uses (decorative, inside
+	 * that row's own single <button>) — needed when a contact-based row
+	 * uses this same look on a real, separately-clickable <button> of its
+	 * own, since the row itself isn't one click target (.ds-pay-btn--static). */
+	border: none;
+	background: none;
+	padding: 0;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+}
+/* A "row" with the same chrome as .ds-pay-btn but not itself a single
+ * click target — for a contact-based method (viewer.mjs's
+ * buildContactRow()), which needs two separate actions (save contact,
+ * open the app) instead of the one every other method's row has. */
+.ds-pay-btn--static {
+	cursor: default;
+}
+.ds-pay-btn--static:hover {
+	background: var(--surface-card);
+}
+.ds-pay-btn--static:active {
+	box-shadow: var(--shadow-hard);
+	transform: none;
+}
+.ds-pay-btn__contact-actions {
+	flex: none;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 6px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1204,40 +1234,63 @@
 	line-height: 1.5;
 }
 
-/* Public viewer's IBAN card (src/scripts/viewer.mjs's renderIbanCard). */
-.iban-card {
+/* Public viewer's IBAN card (buildIbanCard in src/scripts/viewer.mjs) —
+   the one method with more than one copyable field. Contact-based
+   methods (buildContactRow) render at the same row height as every
+   other method instead, see .ds-pay-btn--static below. */
+.ds-detail-card {
 	display: flex;
 	flex-direction: column;
 	gap: var(--s-4);
 }
-.iban-card__header {
+.ds-detail-card__header {
 	display: flex;
 	align-items: center;
 	gap: var(--s-3);
 }
-.iban-card__row {
+.ds-detail-card__row {
 	display: flex;
 	align-items: center;
 	gap: var(--s-3);
 }
-.iban-card__field {
+.ds-detail-card__field {
 	flex: 1;
 	min-width: 0;
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
 }
-.iban-card__value {
+.ds-detail-card__value {
 	font-size: var(--size-body);
 	font-weight: var(--w-semibold);
 	color: var(--text-strong);
 	overflow-wrap: break-word;
 }
-.iban-card__value--mono {
+.ds-detail-card__value--mono {
 	font-family: var(--font-mono);
 	font-size: var(--size-small);
 	word-break: break-all;
 }
-.iban-card__divider {
+.ds-detail-card__divider {
 	border-top: 1px dashed var(--border-hairline);
+}
+
+/* Editor's "reuse this contact" suggestion chip (ui.suggestionChip). */
+.ds-suggestion-chip {
+	align-self: flex-start;
+	display: inline-flex;
+	align-items: center;
+	gap: var(--s-2);
+	padding: 3px 10px;
+	border-radius: var(--r-xs);
+	border: var(--bw) dashed var(--border-hairline);
+	background: var(--surface-sunken);
+	font-family: var(--font-mono);
+	font-size: var(--size-micro);
+	color: var(--text-accent);
+	cursor: pointer;
+}
+.ds-suggestion-chip:hover {
+	border-color: var(--accent);
+	border-style: solid;
 }

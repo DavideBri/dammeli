@@ -218,6 +218,19 @@ export function pasteConfirm(prefix, tail) {
 	return span;
 }
 
+/** A small clickable pill suggesting a value already typed elsewhere —
+ * click to accept it instead of retyping (e.g. the editor's "reuse this
+ * contact" chip, filling a sibling contact-based method's phone number
+ * and name from one already entered). */
+export function suggestionChip(text, onClick) {
+	const btn = document.createElement('button');
+	btn.type = 'button';
+	btn.className = 'ds-suggestion-chip';
+	btn.textContent = text;
+	btn.addEventListener('click', onClick);
+	return btn;
+}
+
 export function notice({ tone = 'neutral', iconName = 'info', title, body }) {
 	const div = document.createElement('div');
 	div.className = `ds-notice ds-notice--${tone}`;
