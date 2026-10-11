@@ -26,7 +26,6 @@ const dict = {
 		'nav.themeLight': 'Tema chiaro',
 		'nav.themeDark': 'Tema scuro',
 		'nav.edit': 'Modifica',
-		'nav.done': 'Fatto.',
 
 		'editor.h1Prefix': 'I tuoi metodi di pagamento, sempre ',
 		'editor.h1LinkWord': 'al sicuro',
@@ -96,14 +95,13 @@ const dict = {
 		'contact.rowNote': 'Funziona tramite i contatti del telefono.',
 
 		'created.badge': 'pronta',
-		'created.fallbackTitle': 'La tua pagina è pronta',
+		'created.fallbackTitle': 'La tua pagina',
 		'created.copyLink': 'Copia link',
 		'created.linkCopied': 'Link copiato',
 		'created.whatsapp': 'Invia su WhatsApp',
 		'created.whatsappText': 'Ecco la mia pagina dammeli per pagarmi: {{link}}',
 		'created.qrHint': 'oppure fallo inquadrare',
-		'created.viewPublic': 'Come la vedono',
-		'created.copyEditLink': 'Copia link di modifica',
+		'created.viewPublic': 'Vedi la pagina pubblica',
 
 		'myPages.title': 'Le tue pagine',
 		'myPages.emptyText': 'Qui finiscono le pagine che crei da questo telefono.',
@@ -171,7 +169,6 @@ const dict = {
 		'nav.themeLight': 'Light theme',
 		'nav.themeDark': 'Dark theme',
 		'nav.edit': 'Edit',
-		'nav.done': 'Done.',
 
 		'editor.h1Prefix': 'Share your payment methods, ',
 		'editor.h1LinkWord': 'securely',
@@ -238,14 +235,13 @@ const dict = {
 		'contact.rowNote': 'Works through your phone contacts.',
 
 		'created.badge': 'ready',
-		'created.fallbackTitle': 'Your page is ready',
+		'created.fallbackTitle': 'Your page',
 		'created.copyLink': 'Copy link',
 		'created.linkCopied': 'Link copied',
 		'created.whatsapp': 'Send on WhatsApp',
 		'created.whatsappText': "Here's my dammeli page to pay me: {{link}}",
 		'created.qrHint': 'or have them scan it',
-		'created.viewPublic': 'How they see it',
-		'created.copyEditLink': 'Copy edit link',
+		'created.viewPublic': 'View the public page',
 
 		'myPages.title': 'Your pages',
 		'myPages.emptyText': 'Pages you create from this phone end up here.',
@@ -313,7 +309,6 @@ const dict = {
 		'nav.themeLight': 'Tema claro',
 		'nav.themeDark': 'Tema oscuro',
 		'nav.edit': 'Editar',
-		'nav.done': 'Hecho.',
 
 		'editor.h1Prefix': 'Tus métodos de pago, siempre ',
 		'editor.h1LinkWord': 'seguros',
@@ -383,14 +378,13 @@ const dict = {
 		'contact.rowNote': 'Funciona a través de tus contactos.',
 
 		'created.badge': 'lista',
-		'created.fallbackTitle': 'Tu página está lista',
+		'created.fallbackTitle': 'Tu página',
 		'created.copyLink': 'Copiar enlace',
 		'created.linkCopied': 'Enlace copiado',
 		'created.whatsapp': 'Enviar por WhatsApp',
 		'created.whatsappText': 'Aquí tienes mi página de dammeli para pagarme: {{link}}',
 		'created.qrHint': 'o haz que lo escaneen',
-		'created.viewPublic': 'Cómo la ven',
-		'created.copyEditLink': 'Copiar enlace de edición',
+		'created.viewPublic': 'Ver la página pública',
 
 		'myPages.title': 'Tus páginas',
 		'myPages.emptyText': 'Aquí aparecen las páginas que crees desde este teléfono.',

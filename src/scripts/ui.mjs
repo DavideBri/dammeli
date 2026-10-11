@@ -13,18 +13,36 @@ export function icon(name, opts) {
 	return span;
 }
 
-/** A spinning ring, for a loading state that isn't just sad static text.
- * `label` is exposed to assistive tech (role="status") — nothing is drawn
- * on screen for it, the animation speaks for itself visually. */
-export function spinner(label) {
+/**
+ * A padlock breathing open and shut on a loop, a "secured" ring pulsing
+ * out from it each time it closes, and a few ciphertext-looking dashes
+ * flickering underneath — the same hand-drawn visual language as
+ * how-it-works' own encryption scene, because a fetch/decrypt moment
+ * *is* that scene, literally. Replaces the old plain spinning ring.
+ * `label` is exposed to assistive tech (role="status") — nothing drawn
+ * here is literal text, the animation speaks for itself visually.
+ */
+export function loader(label) {
 	const wrap = document.createElement('div');
-	wrap.className = 'ds-spinner-wrap';
+	wrap.className = 'ds-loader';
 	wrap.setAttribute('role', 'status');
 	wrap.setAttribute('aria-label', label ?? '');
-	const ring = document.createElement('span');
-	ring.className = 'ds-spinner';
-	ring.setAttribute('aria-hidden', 'true');
-	wrap.appendChild(ring);
+	wrap.innerHTML = `
+		<svg class="ds-loader__art" viewBox="0 0 160 150" aria-hidden="true" focusable="false">
+			<circle class="ds-loader__ring" cx="80" cy="90" r="44" fill="none" stroke="currentColor" stroke-width="3"></circle>
+			<g class="ds-loader__dashes">
+				<rect x="34" y="128" width="20" height="7" rx="3.5"></rect>
+				<rect x="62" y="128" width="12" height="7" rx="3.5"></rect>
+				<rect x="82" y="128" width="26" height="7" rx="3.5"></rect>
+				<rect x="116" y="128" width="12" height="7" rx="3.5"></rect>
+			</g>
+			<g class="ds-loader__shackle">
+				<path d="M58 62V46a22 22 0 0 1 44 0v16" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"></path>
+			</g>
+			<rect class="ds-loader__body" x="42" y="62" width="76" height="56" rx="12" stroke="currentColor" stroke-width="5"></rect>
+			<circle cx="80" cy="84" r="6" fill="currentColor"></circle>
+			<line x1="80" y1="90" x2="80" y2="100" stroke="currentColor" stroke-width="6" stroke-linecap="round"></line>
+		</svg>`;
 	return wrap;
 }
 

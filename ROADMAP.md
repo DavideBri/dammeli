@@ -400,6 +400,36 @@ undocked domain (0.1).
       Reverses PLAN.md section 5's original "holder only on iban" line:
       `name` is now allowed on any contact-based method, checked by type
       in `assemblePayload()` itself rather than trusted from the caller
+- [x] Both loading states (opening a read link, opening an edit link)
+      replaced the plain spinning ring with `ui.loader()`: a padlock
+      breathing open and shut on a loop, a "secured" ring pulsing out
+      each time it closes, and a few ciphertext-looking dashes
+      flickering underneath — same hand-drawn stroke language and
+      `currentColor`/CSS-class-driven palette as how-it-works' own
+      encryption scene, since a fetch/decrypt moment is quite literally
+      that scene. Bigger and now actually centered on the remaining
+      screen space below the topbar (`flex: 1` on `.editor-loading`/
+      `.viewer-loading`, not just horizontally as before), with a
+      `prefers-reduced-motion` fallback to a static closed-lock state.
+      Found and fixed a real bug along the way: `applyTheme()` was only
+      ever called from `buildEditorTopBar()`, so a saved dark-mode
+      override was silently ignored on the read-only viewer — moved to
+      run once at the top of `boot()` instead, before any screen branch
+- [x] "Created" screen decluttered again: the topbar's own "Fatto."/
+      "Done." text is gone (just the wordmark now, like every screen
+      with nothing of its own to say there) and no longer duplicated by
+      a second "Edit" button below — one pencil icon in the topbar does
+      it, now next to a bookmark icon for "Your pages" (both were
+      separate ghost-row buttons before). The fallback title no longer
+      repeats "pronta"/"ready" right under the badge that already says
+      it ("La tua pagina è pronta" → "La tua pagina"/"Your page is
+      ready" → "Your page"). The "copy edit link" button is gone
+      entirely — PLAN.md section 8 revised to match: losing it now
+      just means making a new page, an accepted cost for a calmer final
+      screen, not something demanding a dedicated safety-net action
+      right when the creator's about to go share the read link with
+      someone else. In its place, centered on its own: an eye-icon
+      "Vedi la pagina pubblica"/"View the public page" button
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert

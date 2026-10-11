@@ -344,14 +344,22 @@ Goal: under 20 seconds, from a phone.
 2. Method cards, the user fills in the ones they need.
 3. A "Create" button.
 4. **Final screen**, in this order: big "Copy link" button, "Send on
-   WhatsApp" button, QR code. Below, a calm, non-alarming line: this link
-   is the only way back in, save it.
+   WhatsApp" button, QR code, a button to view the page as the payer
+   will. No separate "save this link" warning or action (removed in
+   0.9) — the edit link is already saved for this device the moment the
+   page exists (see Return visits), reachable later from "Your pages",
+   and a lost one just means making a new page. Treating that as an
+   acceptable cost bought a calmer final screen instead of one more
+   thing demanding the creator's attention right when they're about to
+   go share the link with someone else.
 
 **Return visits**: the full edit link, fragment included, lives in
 `localStorage`. The fragment never went to the server, so saving it
 locally doesn't betray the model. The user reopens `damme.li` from the
 same phone and finds their pages again without ever logging in. Device
-change or data wipe: the saved edit link is required.
+change or data wipe: that page is gone for good, no recovery — the
+price of not having an account (see also the Privacy page's own "what
+stays on your phone" section, which states this plainly to visitors).
 
 **Two distinct links**: one read-only to share, one to edit and keep.
 With a single link, whoever receives it could change the IBAN.

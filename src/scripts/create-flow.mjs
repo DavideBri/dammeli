@@ -31,10 +31,13 @@ function showError(root, lang, message) {
  * @param {{title: string, readUrl: string, editUrl: string}} page
  */
 function renderCreatedScreen(createdRoot, lang, { title, readUrl, editUrl }, { onPages }) {
-	const { header } = ui.topBar({
-		title: t(lang, 'nav.done'),
-		right: [ui.iconButton({ iconName: 'pencil', label: t(lang, 'nav.edit'), onClick: () => showScreen('editor') })],
-	});
+	// No title text — just the wordmark, like every other screen with
+	// nothing of its own to say there (it only ever repeated "pronta"/
+	// "ready" right above the badge that already says it). Two icons on
+	// the right: back to "Your pages", or straight into editing this one.
+	const pagesBtn = ui.iconButton({ iconName: 'bookmark', label: t(lang, 'nav.yourPages'), onClick: onPages });
+	const editBtn = ui.iconButton({ iconName: 'pencil', label: t(lang, 'nav.edit'), onClick: () => showScreen('editor') });
+	const { header } = ui.topBar({ right: [pagesBtn, editBtn] });
 	createdRoot.querySelector('[data-topbar-created]').replaceChildren(header);
 
 	createdRoot.querySelector('[data-created-badge]').replaceChildren(ui.badge(t(lang, 'created.badge'), { tone: 'accent', tilt: true }));
@@ -67,14 +70,11 @@ function renderCreatedScreen(createdRoot, lang, { title, readUrl, editUrl }, { o
 	createdRoot.querySelector('[data-qr]').replaceChildren(renderQrCode(readUrl));
 	createdRoot.querySelector('[data-qr-hint]').replaceChildren(ui.microLabel(t(lang, 'created.qrHint')));
 
-	const editPageBtn = ui.button({
-		variant: 'ghost',
-		size: 'sm',
-		iconName: 'pencil',
-		text: t(lang, 'nav.edit'),
-		onClick: () => showScreen('editor'),
-	});
-	createdRoot.querySelector('[data-edit-page-btn]').replaceChildren(editPageBtn);
+	// Same as data-read-link above: stays hidden, just readable by
+	// scripts/tests — no button reads from the DOM here either, "Your
+	// pages" (topbar bookmark) already keeps every edit link saved per
+	// device, so there's nothing on this screen left to copy it for.
+	createdRoot.querySelector('[data-edit-link]').textContent = editUrl;
 
 	const viewPublicBtn = ui.button({
 		variant: 'ghost',
@@ -90,28 +90,6 @@ function renderCreatedScreen(createdRoot, lang, { title, readUrl, editUrl }, { o
 		onClick: () => navigateHard(readUrl),
 	});
 	createdRoot.querySelector('[data-view-public-btn]').replaceChildren(viewPublicBtn);
-
-	const yourPagesBtn = ui.button({
-		variant: 'ghost',
-		size: 'sm',
-		iconName: 'bookmark',
-		text: t(lang, 'nav.yourPages'),
-		onClick: onPages,
-	});
-	createdRoot.querySelector('[data-created-your-pages-btn]').replaceChildren(yourPagesBtn);
-
-	// Same as data-read-link above: stays hidden, just readable by scripts/tests.
-	createdRoot.querySelector('[data-edit-link]').textContent = editUrl;
-
-	const copyEditBtn = ui.copyFeedbackButton({
-		variant: 'ghost',
-		size: 'sm',
-		iconName: 'copy',
-		text: t(lang, 'created.copyEditLink'),
-		copiedText: t(lang, 'common.copied'),
-		getValue: () => editUrl,
-	});
-	createdRoot.querySelector('[data-copy-edit-link-btn]').replaceChildren(copyEditBtn);
 }
 
 /**
