@@ -898,10 +898,9 @@
 	border: var(--bw-strong) solid var(--ink-line);
 	box-shadow: var(--shadow-hard);
 }
-.created-ghost-row {
+.created-view-public {
 	display: flex;
-	gap: var(--s-3);
-	flex-wrap: wrap;
+	justify-content: center;
 }
 
 /* "Your pages" screen. */

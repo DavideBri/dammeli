@@ -71,17 +71,11 @@ import SocialMeta from '../components/SocialMeta.astro';
 						<div data-qr-hint></div>
 					</div>
 
-					<div class="created-ghost-row">
-						<div data-edit-page-btn></div>
-						<div data-view-public-btn></div>
-						<div data-created-your-pages-btn></div>
-					</div>
-
 					<!-- Same as data-read-link above: holds the edit URL for
-					     scripts/tests, never shown — the copy button next to it
-					     is the only way a visitor gets at it. -->
+					     scripts/tests, never shown on this screen — "Your pages"
+					     (topbar bookmark) is where a saved edit link is reachable. -->
 					<p data-edit-link hidden></p>
-					<div data-copy-edit-link-btn></div>
+					<div class="created-view-public" data-view-public-btn></div>
 				</div>
 			</section>
 
