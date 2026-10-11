@@ -838,9 +838,10 @@
 
 /* Editor screen (src/pages/index.astro + src/scripts/editor.mjs). */
 .editor-loading {
+	flex: 1;
 	display: flex;
+	align-items: center;
 	justify-content: center;
-	padding: var(--s-8) 0;
 }
 /* Wraps .ds-body + .ds-sticky so the loading spinner above it can stand in
    for both at once — needs the same flex-column/flex:1 as .ds-page's other
@@ -940,24 +941,123 @@
 
 /* Public viewer screen. */
 .viewer-loading {
+	flex: 1;
 	display: flex;
+	align-items: center;
 	justify-content: center;
-	padding: var(--s-8) 0;
 }
-.ds-spinner-wrap {
-	display: inline-flex;
+
+/* ui.loader(): a padlock breathing open/closed on a loop, a "secured"
+   ring pulsing out each time it closes, and a few ciphertext-looking
+   dashes flickering underneath — same hand-drawn language as
+   how-it-works' own encryption scene (.how-lock-*), bigger and centered
+   since this one has to carry the whole screen on its own. */
+.ds-loader {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
-.ds-spinner {
-	width: 32px;
-	height: 32px;
-	border-radius: 50%;
-	border: var(--bw-strong) solid var(--border-hairline);
-	border-top-color: var(--accent);
-	animation: ds-spin 700ms linear infinite;
+.ds-loader__art {
+	width: 128px;
+	height: 120px;
+	color: var(--text-strong);
 }
-@keyframes ds-spin {
-	to {
-		transform: rotate(360deg);
+.ds-loader__ring {
+	color: var(--accent);
+	transform-origin: 80px 90px;
+	animation: ds-loader-ring 2400ms cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+@keyframes ds-loader-ring {
+	0%,
+	38% {
+		transform: scale(0.6);
+		opacity: 0;
+	}
+	46% {
+		transform: scale(1);
+		opacity: 0.55;
+	}
+	64%,
+	100% {
+		transform: scale(1.5);
+		opacity: 0;
+	}
+}
+.ds-loader__dashes rect {
+	fill: var(--border-hairline);
+	animation: ds-loader-dash 1800ms ease-in-out infinite;
+}
+.ds-loader__dashes rect:nth-child(1) {
+	animation-delay: 0ms;
+}
+.ds-loader__dashes rect:nth-child(2) {
+	animation-delay: 180ms;
+}
+.ds-loader__dashes rect:nth-child(3) {
+	animation-delay: 360ms;
+}
+.ds-loader__dashes rect:nth-child(4) {
+	animation-delay: 540ms;
+}
+@keyframes ds-loader-dash {
+	0%,
+	100% {
+		opacity: 0.3;
+	}
+	50% {
+		opacity: 0.9;
+	}
+}
+.ds-loader__shackle {
+	transform-origin: 80px 62px;
+	animation: ds-loader-shackle 2400ms cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes ds-loader-shackle {
+	0%,
+	10% {
+		transform: rotate(-24deg) translate(-6px, -4px);
+	}
+	40%,
+	75% {
+		transform: rotate(0deg) translate(0, 0);
+	}
+	100% {
+		transform: rotate(-24deg) translate(-6px, -4px);
+	}
+}
+.ds-loader__body {
+	fill: var(--accent);
+	transform-origin: 80px 90px;
+	animation: ds-loader-body 2400ms cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes ds-loader-body {
+	0%,
+	36% {
+		transform: scale(1);
+	}
+	42% {
+		transform: scale(1.06);
+	}
+	48%,
+	100% {
+		transform: scale(1);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.ds-loader__ring,
+	.ds-loader__dashes rect,
+	.ds-loader__shackle,
+	.ds-loader__body {
+		animation: none;
+	}
+	.ds-loader__ring {
+		opacity: 0;
+	}
+	.ds-loader__dashes rect {
+		opacity: 0.9;
+	}
+	.ds-loader__shackle {
+		transform: rotate(0deg) translate(0, 0);
 	}
 }
 .viewer-loaded {

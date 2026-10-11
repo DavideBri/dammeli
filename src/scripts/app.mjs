@@ -35,7 +35,6 @@ async function fetchPayload(dammeli, loaded) {
 }
 
 function buildEditorTopBar(editorRoot, lang, { onPages }) {
-	applyTheme(getSavedTheme());
 	const themeIcon = () => (effectiveTheme() === 'dark' ? 'sun' : 'moon');
 	const themeLabel = () => (effectiveTheme() === 'dark' ? t(lang, 'nav.themeLight') : t(lang, 'nav.themeDark'));
 
@@ -83,6 +82,11 @@ function buildViewerTopBar(viewerRoot, lang) {
 export async function boot() {
 	const lang = detectLang();
 	document.documentElement.lang = lang;
+	// Once, here, regardless of which screen boot() ends up showing — not
+	// just inside buildEditorTopBar(), which left the read-only viewer
+	// never applying a saved dark-mode override and silently falling back
+	// to the OS preference instead.
+	applyTheme(getSavedTheme());
 
 	const editorRoot = document.querySelector('[data-screen="editor"]');
 	const yourPagesRoot = document.querySelector('[data-screen="your-pages"]');
@@ -125,14 +129,14 @@ export async function boot() {
 		buildEditorTopBar(editorRoot, lang, { onPages: goToYourPages });
 
 		// The form itself (initEditor()'s DOM) doesn't exist yet — only the
-		// fetch/decrypt below builds it — so a spinner stands in instead of
+		// fetch/decrypt below builds it — so a loader stands in instead of
 		// a blank screen for that moment, same as the read-only viewer's own
 		// loading state.
 		const formEl = editorRoot.querySelector('[data-editor-form]');
 		const loadingEl = editorRoot.querySelector('[data-editor-loading]');
 		formEl.hidden = true;
 		loadingEl.hidden = false;
-		loadingEl.replaceChildren(ui.spinner(t(lang, 'viewer.loading')));
+		loadingEl.replaceChildren(ui.loader(t(lang, 'viewer.loading')));
 
 		let payload;
 		try {
@@ -160,7 +164,7 @@ export async function boot() {
 	buildViewerTopBar(viewerRoot, lang);
 	showScreen('viewer');
 	showViewerState(viewerRoot, 'loading');
-	viewerRoot.querySelector('[data-viewer-state="loading"]').replaceChildren(ui.spinner(t(lang, 'viewer.loading')));
+	viewerRoot.querySelector('[data-viewer-state="loading"]').replaceChildren(ui.loader(t(lang, 'viewer.loading')));
 	try {
 		const payload = await fetchPayload(dammeli, loaded);
 

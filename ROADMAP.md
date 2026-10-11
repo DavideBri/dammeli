@@ -400,6 +400,21 @@ undocked domain (0.1).
       Reverses PLAN.md section 5's original "holder only on iban" line:
       `name` is now allowed on any contact-based method, checked by type
       in `assemblePayload()` itself rather than trusted from the caller
+- [x] Both loading states (opening a read link, opening an edit link)
+      replaced the plain spinning ring with `ui.loader()`: a padlock
+      breathing open and shut on a loop, a "secured" ring pulsing out
+      each time it closes, and a few ciphertext-looking dashes
+      flickering underneath — same hand-drawn stroke language and
+      `currentColor`/CSS-class-driven palette as how-it-works' own
+      encryption scene, since a fetch/decrypt moment is quite literally
+      that scene. Bigger and now actually centered on the remaining
+      screen space below the topbar (`flex: 1` on `.editor-loading`/
+      `.viewer-loading`, not just horizontally as before), with a
+      `prefers-reduced-motion` fallback to a static closed-lock state.
+      Found and fixed a real bug along the way: `applyTheme()` was only
+      ever called from `buildEditorTopBar()`, so a saved dark-mode
+      override was silently ignored on the read-only viewer — moved to
+      run once at the top of `boot()` instead, before any screen branch
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert
