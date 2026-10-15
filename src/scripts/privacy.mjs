@@ -72,6 +72,14 @@ export function initPrivacy() {
 		...['see', 'dont', 'providers', 'device'].map((key) => buildSection(key, lang)),
 	);
 
+	const sourceLink = document.createElement('a');
+	sourceLink.href = 'https://github.com/DavideBri/dammeli';
+	sourceLink.target = '_blank';
+	sourceLink.rel = 'noopener noreferrer';
+	sourceLink.className = 'ds-text-accent';
+	sourceLink.textContent = t(lang, 'privacy.sourceLink');
+	document.querySelector('[data-source-line]').replaceChildren(t(lang, 'privacy.sourceLine'), sourceLink);
+
 	document.querySelector('[data-beta-notice]').replaceChildren(
 		ui.notice({
 			tone: 'keep',

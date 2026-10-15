@@ -1332,6 +1332,10 @@
 	color: var(--text-muted);
 	line-height: 1.5;
 }
+.privacy-source {
+	font-size: var(--size-small);
+	color: var(--text-muted);
+}
 
 /* Public viewer's IBAN card (buildIbanCard in src/scripts/viewer.mjs) —
    the one method with more than one copyable field. Contact-based
