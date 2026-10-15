@@ -5,6 +5,7 @@
 <p align="center">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue" alt="License: AGPL-3.0"></a>
   <img src="https://img.shields.io/badge/status-private%20beta-orange" alt="Status: private beta">
+  <a href="./CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="PRs welcome"></a>
 </p>
 
 <p align="center"><b><a href="https://damme.li">damme.li</a></b> — send one link, get paid any way you like.</p>
@@ -124,6 +125,11 @@ Netlify and Supabase are US providers: they receive HTTP requests and see
 only unreadable encrypted blobs, never keys or plaintext data. The full
 list of providers and what each one sees is on the app's own
 [`/privacy`](https://damme.li/privacy) page.
+
+## Contributing
+
+Ideas, bug reports, and PRs are welcome — this is still a small beta with
+plenty open. See [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening one.
 
 ## AI-assisted development
 
