@@ -1,14 +1,43 @@
-# dammeli (damme.li)
+<p align="center">
+  <img src="https://damme.li/og-image.png" alt="dammeli" width="480">
+</p>
 
-End-to-end encrypted payment page. Collect your payment methods on a page
-and share its link. The server can't read anything: it only ever receives
-encrypted blobs.
+<p align="center">
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue" alt="License: AGPL-3.0"></a>
+  <img src="https://img.shields.io/badge/status-private%20beta-orange" alt="Status: private beta">
+</p>
 
-The encryption key lives exclusively in the URL fragment (`#...`) and never
-leaves the browser: it's never sent to the server, never logged. The full
-security model, including the cryptography used and its limits, is
-described in [`PLAN.md`](./PLAN.md) (will move to a public docs page before
-launch, see roadmap 1.5).
+<p align="center"><b><a href="https://damme.li">damme.li</a></b> — send one link, get paid any way you like.</p>
+
+---
+
+## What is this
+
+Getting paid back by a friend usually means a screenshot of your IBAN, a
+"which app do you even have?" back-and-forth, or digging up some old
+payment link from months ago. **dammeli** is one link that holds every
+way you accept money — Satispay, Revolut, PayPal, bank transfer,
+whatever else you use — so you only have to send it once, and whoever's
+paying you just picks what works for them.
+
+The part that makes it worth building: your page is encrypted **in your
+own browser** before anything leaves it. The server only ever stores an
+unreadable blob — no account, no email, nothing tracked. We can't read
+what's on your page, and neither can anyone else without the link.
+
+**[Try it →](https://damme.li)** · [How it works](https://damme.li/how-it-works) · [Privacy](https://damme.li/privacy)
+
+## How it works, briefly
+
+1. Add the payment methods you already use.
+2. They're encrypted on your device before anything is sent to us — the
+   key that unlocks the page never leaves your browser.
+3. Share the link (the key travels inside it). Whoever opens it sees
+   your methods and picks one. No key, no page — not even for us.
+
+The illustrated version is on the [How it works](https://damme.li/how-it-works)
+page. The actual cryptography — algorithms, key derivation, the padded
+payload format — is specified in [`PLAN.md`](./PLAN.md).
 
 ## Project status
 
@@ -16,9 +45,10 @@ In development (`0.9`, private beta). The core loop works — create a
 page, share it, a recipient can pay — and the site is live at
 [damme.li](https://damme.li). Database backups exist but restore hasn't
 been tested yet, and it hasn't had real users beyond the team. See
-[`ROADMAP.md`](./ROADMAP.md).
+[`ROADMAP.md`](./ROADMAP.md) for what's shipped and what's still open
+before a public launch.
 
-`0.x.y` until public launch. MAJOR only bumps when a link created with a
+`0.x.y` until then. MAJOR only bumps when a link created with a
 previous version would stop working, never for any other reason (see
 [`PLAN.md`](./PLAN.md), section 11).
 
@@ -93,7 +123,7 @@ still runs fine: it uses an in-memory store instead of Supabase.
 Netlify and Supabase are US providers: they receive HTTP requests and see
 only unreadable encrypted blobs, never keys or plaintext data. The full
 list of providers and what each one sees is on the app's own
-[`/privacy`](./src/pages/privacy.astro) page.
+[`/privacy`](https://damme.li/privacy) page.
 
 ## AI-assisted development
 
