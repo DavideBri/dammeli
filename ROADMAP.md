@@ -430,6 +430,19 @@ undocked domain (0.1).
       right when the creator's about to go share the read link with
       someone else. In its place, centered on its own: an eye-icon
       "Vedi la pagina pubblica"/"View the public page" button
+- [x] Open Graph copy reworked again: "dammeli — pagamenti sempre al
+      sicuro" still read as a brand slogan, not as "here's what you're
+      about to open" — the one thing that actually matters on a share
+      preview. Replaced with "Ecco come pagarmi" / "Scegli il metodo che
+      preferisci, tra quelli che uso :)", written as the creator
+      talking directly to whoever they sent the link to, workshopped
+      together over several rounds (clinical → punchy/Gen-Z → warm).
+      The ":)" is the one deliberate exception to the rest of the app's
+      otherwise emoji/emoticon-free copy — earned here because this is
+      the one spot a person is speaking, not the product. `og:image:alt`
+      updated to just "dammeli" (describes the actual image — logo +
+      wordmark, no tagline drawn into it) now that it no longer doubles
+      as a copy of the old title
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert
