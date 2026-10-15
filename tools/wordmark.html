@@ -1,0 +1,40 @@
+<!--
+	Source for public/wordmark.png — the wordmark alone (no logo mark),
+	for contexts like the README header where just the name reads better
+	than the full lockup. Same rendering method as og-image.html: open in
+	a browser and screenshot the `.card` element (sized to its content via
+	padding, not a fixed canvas) — kept as a raster PNG rather than SVG
+	text so it renders identically everywhere, not dependent on whatever
+	font a viewer (GitHub included) falls back to.
+-->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<style>
+	* { margin: 0; padding: 0; box-sizing: border-box; }
+	html, body { width: fit-content; height: fit-content; }
+	body {
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+	}
+	.card {
+		display: inline-flex;
+		background: #F7F2E9;
+		padding: 48px 64px;
+	}
+	.wordmark {
+		font-size: 110px;
+		font-weight: 800;
+		letter-spacing: -0.03em;
+		color: #1A1714;
+		line-height: 1;
+	}
+	.wordmark .dot { color: #D14A2B; }
+</style>
+</head>
+<body>
+	<div class="card">
+		<div class="wordmark">dammeli<span class="dot">.</span></div>
+	</div>
+</body>
+</html>

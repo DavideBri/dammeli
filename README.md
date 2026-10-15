@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://damme.li/og-image.png" alt="dammeli" width="480">
+  <img src="https://damme.li/wordmark.png" alt="dammeli" width="360">
 </p>
 
 <p align="center">

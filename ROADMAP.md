@@ -443,6 +443,17 @@ undocked domain (0.1).
       updated to just "dammeli" (describes the actual image — logo +
       wordmark, no tagline drawn into it) now that it no longer doubles
       as a copy of the old title
+- [x] README rewritten for a now-public repo: used to open straight into
+      architecture (CSP, Astro config, stack bullets), which assumed a
+      reader already sold on the project. Now leads with what the
+      product actually does and why, in plain language, before any of
+      that — the technical sections (stack, `crypto.js` hash, local dev,
+      API, privacy, the AI-assisted development note, license) are all
+      still there, just below the fold instead of first. Added
+      `public/wordmark.png` (source: `tools/wordmark.html`, same
+      screenshot-a-mockup method as `og-image.png`) — the wordmark on
+      its own, for the README header, since the full logo+wordmark
+      lockup read as too much there
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert
