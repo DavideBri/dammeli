@@ -1,0 +1,29 @@
+name: Keep database awake
+
+# Supabase's free tier pauses a project after 7 days with no real database
+# activity. A plain HTTP ping doesn't count — it has to be a request that
+# actually queries the database. GET /p/:id does exactly that (store.get()),
+# even for an id that doesn't exist: it's a real SELECT, answered with the
+# same uniform 404 every unknown id gets (PLAN.md section 6), so this has
+# no side effects and exposes nothing.
+#
+# Only runs from the default branch — GitHub only schedules workflows off
+# of it, this file being on a feature branch does nothing.
+
+on:
+  schedule:
+    - cron: '13 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: GET /p/:id with a dummy id
+        run: |
+          status=$(curl -s -o /dev/null -w '%{http_code}' https://damme.li/p/0000000000000000)
+          echo "Response status: $status"
+          if [ "$status" != "404" ]; then
+            echo "Expected 404 (dummy id, uniform not-found response) — got $status instead."
+            exit 1
+          fi

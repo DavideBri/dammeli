@@ -470,6 +470,12 @@ undocked domain (0.1).
       shut, backwards for a state that's meant to feel like
       unlocking/revealing content. Swapped which keyframe stop holds
       open vs. closed so opening is now the dominant, held pose
+- [x] Stopgap for Supabase's free-tier pause-after-7-days-idle: a daily
+      GitHub Actions cron (`.github/workflows/keep-db-awake.yml`) calls
+      `GET /p/:id` with a dummy id that will never exist — a real
+      `store.get()` query, not a bare ping (confirmed `/healthz` alone
+      doesn't touch the database and so wouldn't have prevented the
+      pause). Buys time for the real fix below; doesn't replace it
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert
