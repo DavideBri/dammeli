@@ -454,6 +454,22 @@ undocked domain (0.1).
       screenshot-a-mockup method as `og-image.png`) — the wordmark on
       its own, for the README header, since the full logo+wordmark
       lockup read as too much there
+- [x] `CONTRIBUTING.md` added (what to read first, the pre-PR checklist,
+      what needs extra care — `crypto.js` and its published hash, the
+      CSP, keeping all three `i18n.mjs` languages in sync — and what's
+      especially welcome), linked from a new "Contributing" section in
+      the README. A green "PRs welcome" badge joins the license/status
+      badges at the top
+- [x] Privacy page links out to the repo itself ("Don't take our word
+      for it: the code is public on GitHub") right after the detail
+      sections — a claim about client-side encryption is worth more
+      when it's independently checkable, not just stated
+- [x] Loading-padlock animation direction fixed: the shackle's "open"
+      pose was only the brief transition either side of the loop, with
+      the long hold (840 of 2400ms) on closed — so it read as locking
+      shut, backwards for a state that's meant to feel like
+      unlocking/revealing content. Swapped which keyframe stop holds
+      open vs. closed so opening is now the dominant, held pose
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert
