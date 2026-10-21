@@ -154,6 +154,7 @@ const dict = {
 			'Il progetto è giovane: facciamo backup del database ma non abbiamo ancora testato un ripristino completo. Trattala come una beta — non usarla per l\'unica copia di qualcosa che non puoi permetterti di perdere.',
 		'privacy.sourceLine': 'Non devi crederci sulla parola: ',
 		'privacy.sourceLink': 'il codice è pubblico su GitHub',
+		'privacy.statsLine': 'Pagine create finora: {{count}}, e non possiamo leggerne nessuna.',
 		'privacy.back': 'Torna alla home',
 	},
 	en: {
@@ -296,6 +297,7 @@ const dict = {
 			"The project is young: we back up the database but haven't yet tested a full restore. Treat it as a beta — don't rely on it as the only copy of something you can't afford to lose.",
 		'privacy.sourceLine': "Don't take our word for it: ",
 		'privacy.sourceLink': 'the code is public on GitHub',
+		'privacy.statsLine': "Pages created so far: {{count}}, and we can't read a single one.",
 		'privacy.back': 'Back to home',
 	},
 	es: {
@@ -442,6 +444,7 @@ const dict = {
 			'El proyecto es joven: hacemos copias de seguridad de la base de datos, pero todavía no hemos probado una restauración completa. Trátala como una beta — no la uses para la única copia de algo que no puedas permitirte perder.',
 		'privacy.sourceLine': 'No tienes que creer en nuestra palabra: ',
 		'privacy.sourceLink': 'el código es público en GitHub',
+		'privacy.statsLine': 'Páginas creadas hasta ahora: {{count}}, y no podemos leer ninguna.',
 		'privacy.back': 'Volver al inicio',
 	},
 };

@@ -8,6 +8,7 @@ import {
 	getPage,
 	updatePage,
 	deletePage,
+	getStats,
 	ID_BYTES,
 	NONCE_BYTES,
 	CIPHERTEXT_BYTES,
@@ -76,6 +77,20 @@ test('exit criterion: create, read, update, delete', async () => {
 
 	const read3 = await getPage(store, p.idHex);
 	assert.equal(read3.status, 404);
+});
+
+test('getStats: counts pages, not their contents', async () => {
+	const store = createMemoryStore();
+	assert.deepEqual(await getStats(store), { status: 200, body: { count: 0 } });
+
+	const a = freshPage();
+	await createPage(store, { id: a.idHex, nonce: a.nonceHex, ct: a.ctHex, wth: a.wthHex });
+	const b = freshPage();
+	await createPage(store, { id: b.idHex, nonce: b.nonceHex, ct: b.ctHex, wth: b.wthHex });
+	assert.deepEqual(await getStats(store), { status: 200, body: { count: 2 } });
+
+	await deletePage(store, a.idHex, { wt: a.wtHex });
+	assert.deepEqual(await getStats(store), { status: 200, body: { count: 1 } });
 });
 
 test('POST on an existing id: 409, never overwrites', async () => {

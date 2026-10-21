@@ -58,6 +58,15 @@ export function createSupabaseStore({ url, serviceRoleKey, table = 'pages' }) {
 			const { error } = await client.from(table).delete().eq('id', idToPgBigint(id));
 			if (error) throw error;
 		},
+
+		// `head: true` returns only the count, not the matching rows — a
+		// real `COUNT(*)`, not a `select *` that would also pull every
+		// row's ciphertext over the wire just to throw it away.
+		async count() {
+			const { count, error } = await client.from(table).select('*', { count: 'exact', head: true });
+			if (error) throw error;
+			return count;
+		},
 	};
 }
 

@@ -49,3 +49,8 @@ export function updatePage(id, fields) {
 export function deletePage(id, fields) {
 	return request('DELETE', `/p/${id}`, fields);
 }
+
+/** @returns {Promise<{count: number}>} */
+export function getStats() {
+	return request('GET', '/stats');
+}

@@ -10,6 +10,7 @@
 
 import { detectLang, t } from '../lib/i18n.mjs';
 import { getSavedTheme, applyTheme } from '../lib/theme.mjs';
+import { getStats } from '../lib/api.mjs';
 import * as ui from './ui.mjs';
 
 const SECTION_ICONS = { see: 'eye-off', dont: 'x', providers: 'server', device: 'smartphone' };
@@ -79,6 +80,16 @@ export function initPrivacy() {
 	sourceLink.className = 'ds-text-accent';
 	sourceLink.textContent = t(lang, 'privacy.sourceLink');
 	document.querySelector('[data-source-line]').replaceChildren(t(lang, 'privacy.sourceLine'), sourceLink);
+
+	// Best-effort: a failed/slow stats fetch just leaves the line hidden,
+	// never a loading flicker or an error in its place.
+	getStats()
+		.then(({ count }) => {
+			const statsLine = document.querySelector('[data-stats-line]');
+			statsLine.textContent = t(lang, 'privacy.statsLine', { count });
+			statsLine.hidden = false;
+		})
+		.catch(() => {});
 
 	document.querySelector('[data-beta-notice]').replaceChildren(
 		ui.notice({

@@ -476,6 +476,13 @@ undocked domain (0.1).
       `store.get()` query, not a bare ping (confirmed `/healthz` alone
       doesn't touch the database and so wouldn't have prevented the
       pause). Buys time for the real fix below; doesn't replace it
+- [x] `GET /stats`: a live page count, for a quiet trust signal rather
+      than hidden analytics — a real `COUNT(*)` (`head: true` on
+      Supabase, so only the number crosses the wire, never the rows),
+      exposed on the privacy page as plain muted text right under the
+      GitHub link ("Pages created so far: N, and we can't read a single
+      one"). No auth needed: the count alone says nothing about any
+      individual page
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert

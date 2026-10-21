@@ -71,6 +71,14 @@ export async function createPage(store, body) {
 	return { status: 201, body: null };
 }
 
+/** GET /stats — how many pages exist. Just a count, never the rows
+ * themselves: the methods, titles, and everything else inside stay
+ * exactly as unreadable to this endpoint as to anyone else. */
+export async function getStats(store) {
+	const count = await store.count();
+	return { status: 200, body: { count } };
+}
+
 /** GET /p/:id — reads a page. No authentication: it's the public link. */
 export async function getPage(store, idHex) {
 	const id = parseIdParam(idHex);

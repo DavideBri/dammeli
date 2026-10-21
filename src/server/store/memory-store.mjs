@@ -26,5 +26,8 @@ export function createMemoryStore() {
 		async delete(id) {
 			rows.delete(bytesToHex(id));
 		},
+		async count() {
+			return rows.size;
+		},
 	};
 }

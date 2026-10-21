@@ -231,7 +231,12 @@ GET    /p/:id    read                                      -> 200 {nonce, ct}
 PUT    /p/:id    update      body {nonce, ct, wt}          -> 204
 DELETE /p/:id    delete      body {wt}                     -> 204
 GET    /healthz                                            -> 200
+GET    /stats                                              -> 200 {count}
 ```
+
+`/stats` returns only a row count (0.9) — a live "how many pages exist" number
+for a quiet trust signal on the privacy page, never the rows themselves. No
+auth: the number alone reveals nothing about any individual page.
 
 `wth` and `wt` are not the same thing: `wth` (write_token**_hash**,
 SHA-256 of `write_token`) is what the server knows and persists from
