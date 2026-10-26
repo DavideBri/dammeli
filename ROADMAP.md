@@ -483,6 +483,20 @@ undocked domain (0.1).
       GitHub link ("Pages created so far: N, and we can't read a single
       one"). No auth needed: the count alone says nothing about any
       individual page
+- [x] "How it works" scene 1 reordered to match the editor's own default
+      tile order (IBAN, Revolut, PayPal, Satispay), with a trailing
+      "add another" tile — previously Satispay-first, which didn't match
+      anything else in the app. The three scenes' animations used to run
+      independently (scenes 1 and 2 played their entrance once and froze,
+      scene 3 alone looped forever) so the "story" only read correctly on
+      first paint and drifted out of sync afterwards; all three now share
+      one 4800ms loop with each scene's action in its own slice — methods
+      get checked off one by one, then the cipher scrambles and the
+      padlock snaps shut, then (while it stays shut) a key travels
+      between the phones and everything resets together. Scene 3's
+      traveling icon was a generic "+"; replaced with a small hand-drawn
+      key glyph — it's literally what travels in the link (the read key),
+      not an addition
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert

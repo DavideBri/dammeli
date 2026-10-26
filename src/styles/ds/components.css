@@ -1123,7 +1123,17 @@
 	color: var(--text-accent);
 }
 
-/* Scene 1: the real method tiles landing in, one after another. */
+/* The three scenes used to animate independently: scenes 1 and 2 played
+   their entrance once and froze, while scene 3 alone looped forever — so
+   the "story" only ever read correctly on first paint, and scene 3 kept
+   moving on its own afterwards with nothing left to follow. All three now
+   share one 4800ms cycle, looping together, each scene's action placed in
+   its own slice of it: methods get checked off (0-1.6s) ->the page gets
+   encrypted, cipher dashes then the lock (1.6-2.7s) -> the key travels
+   between the phones while the lock stays shut (2.7-4.8s) -> reset, repeat.
+   Percentages below are that shared 4800ms expressed as keyframe stops. */
+
+/* Scene 1: the real method tiles, checked off one after another. */
 .how-scene1-row {
 	display: flex;
 	gap: var(--s-3);
@@ -1146,6 +1156,9 @@
 .how-scene1-row .ds-method-tile:nth-child(4) {
 	animation-delay: 500ms;
 }
+.how-scene1-row .ds-method-tile:nth-child(5) {
+	animation-delay: 640ms;
+}
 @keyframes how-pop-in {
 	from {
 		opacity: 0;
@@ -1156,8 +1169,48 @@
 		transform: scale(1) translateY(0);
 	}
 }
+.how-scene1-row .ds-method-tile__check {
+	opacity: 0;
+	animation: how-check-cycle 4800ms ease-in-out infinite;
+}
+.how-scene1-row .ds-method-tile:nth-child(1) .ds-method-tile__check {
+	animation-delay: 560ms;
+}
+.how-scene1-row .ds-method-tile:nth-child(2) .ds-method-tile__check {
+	animation-delay: 760ms;
+}
+.how-scene1-row .ds-method-tile:nth-child(3) .ds-method-tile__check {
+	animation-delay: 960ms;
+}
+.how-scene1-row .ds-method-tile:nth-child(4) .ds-method-tile__check {
+	animation-delay: 1160ms;
+}
+@keyframes how-check-cycle {
+	0%,
+	100% {
+		opacity: 0;
+		transform: scale(0.5);
+	}
+	6% {
+		opacity: 1;
+		transform: scale(1.15);
+	}
+	9% {
+		transform: scale(1);
+	}
+	88% {
+		opacity: 1;
+		transform: scale(1);
+	}
+	93% {
+		opacity: 0;
+		transform: scale(0.5);
+	}
+}
 
-/* Scene 2: a padlock snapping shut over a few "unreadable" dashes. */
+/* Scene 2: cipher dashes appear once the methods are checked, then the
+   padlock snaps shut over them — staying shut while scene 3 plays out,
+   reopening right at the loop point. */
 .how-scene2-art {
 	width: 160px;
 	height: 112px;
@@ -1166,64 +1219,81 @@
 .how-cipher rect {
 	fill: var(--border-hairline);
 	opacity: 0;
-	animation: how-fade-in 300ms ease-out forwards;
+	animation: how-cipher-cycle 4800ms ease-out infinite;
 }
 .how-cipher rect:nth-child(1) {
-	animation-delay: 700ms;
+	animation-delay: 1650ms;
 }
 .how-cipher rect:nth-child(2) {
-	animation-delay: 780ms;
+	animation-delay: 1740ms;
 }
 .how-cipher rect:nth-child(3) {
-	animation-delay: 860ms;
+	animation-delay: 1830ms;
 }
 .how-cipher rect:nth-child(4) {
-	animation-delay: 940ms;
+	animation-delay: 1920ms;
 }
 .how-cipher rect:nth-child(5) {
-	animation-delay: 1020ms;
+	animation-delay: 2010ms;
 }
 .how-cipher rect:nth-child(6) {
-	animation-delay: 1100ms;
+	animation-delay: 2100ms;
 }
-@keyframes how-fade-in {
-	from {
+@keyframes how-cipher-cycle {
+	0%,
+	100% {
 		opacity: 0;
 	}
-	to {
+	7% {
 		opacity: 1;
+	}
+	90% {
+		opacity: 1;
+	}
+	96% {
+		opacity: 0;
 	}
 }
 .how-lock-shackle {
 	transform-origin: 100px 62px;
-	animation: how-lock-close 550ms cubic-bezier(0.34, 1.56, 0.64, 1) 300ms both;
+	animation: how-lock-cycle 4800ms cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
-@keyframes how-lock-close {
-	from {
+@keyframes how-lock-cycle {
+	0%,
+	44% {
 		transform: rotate(-22deg) translate(-6px, -4px);
 	}
-	to {
+	56% {
 		transform: rotate(0deg) translate(0, 0);
+	}
+	90% {
+		transform: rotate(0deg) translate(0, 0);
+	}
+	100% {
+		transform: rotate(-22deg) translate(-6px, -4px);
 	}
 }
 .how-lock-body {
 	fill: var(--accent);
 	transform-origin: 100px 90px;
-	animation: how-lock-bounce 260ms ease-out 820ms both;
+	animation: how-lock-body-cycle 4800ms infinite;
 }
-@keyframes how-lock-bounce {
-	0% {
+@keyframes how-lock-body-cycle {
+	0%,
+	53% {
 		transform: scale(1);
 	}
-	40% {
+	56% {
 		transform: scale(1.06);
 	}
+	61%,
 	100% {
 		transform: scale(1);
 	}
 }
 
-/* Scene 3: a link travelling from one phone to the other, on a loop. */
+/* Scene 3: a key — the read key inside the link, not a generic "+" —
+   travelling from one phone to the other once the page is locked. */
 .how-scene3-art {
 	width: 100%;
 	max-width: 280px;
@@ -1237,27 +1307,33 @@
 	stroke: var(--border-hairline);
 }
 .how-link-travel {
-	animation: how-link-travel 2600ms cubic-bezier(0.45, 0, 0.55, 1) infinite;
+	animation: how-link-travel-cycle 4800ms cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
-.how-link-travel circle {
+.how-link-travel__bubble {
 	fill: var(--accent);
+	stroke: currentColor;
 }
-.how-link-travel path {
+.how-link-travel__key circle {
+	fill: var(--on-accent);
+}
+.how-link-travel__key path {
 	stroke: var(--on-accent);
 }
-@keyframes how-link-travel {
-	0% {
+@keyframes how-link-travel-cycle {
+	0%,
+	62% {
 		transform: translate(74px, 62px);
 		opacity: 0;
 	}
-	12% {
+	67% {
 		opacity: 1;
 	}
-	50% {
+	80% {
 		transform: translate(140px, 62px);
 		opacity: 1;
 	}
-	88% {
+	96% {
+		transform: translate(206px, 62px);
 		opacity: 1;
 	}
 	100% {
@@ -1274,6 +1350,7 @@
 
 @media (prefers-reduced-motion: reduce) {
 	.how-scene1-row .ds-method-tile,
+	.how-scene1-row .ds-method-tile__check,
 	.how-cipher rect,
 	.how-lock-shackle,
 	.how-lock-body {

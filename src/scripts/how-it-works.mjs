@@ -6,16 +6,20 @@ import { detectLang, t } from '../lib/i18n.mjs';
 import { getSavedTheme, applyTheme } from '../lib/theme.mjs';
 import * as ui from './ui.mjs';
 
-const SCENE1_METHODS = ['satispay', 'paypal', 'revolut', 'iban'];
+const SCENE1_METHODS = ['iban', 'revolut', 'paypal', 'satispay'];
 
 /** Scene 1: the real method tiles from the editor itself — nothing drawn
- * just for this page, so it's instantly recognizable, not an abstraction. */
+ * just for this page, so it's instantly recognizable, not an abstraction.
+ * Each one gets checked off in turn (the same corner badge the editor uses
+ * for a filled-in method), and a trailing "add another" tile closes the
+ * row — these are the ones you already use, and there's room for more. */
 function buildScene1() {
 	const row = document.createElement('div');
 	row.className = 'how-scene1-row';
 	for (const type of SCENE1_METHODS) {
-		row.appendChild(ui.methodTile({ type, size: 56 }));
+		row.appendChild(ui.methodTile({ type, size: 56, checked: true }));
 	}
+	row.appendChild(ui.addTile(56));
 	return row;
 }
 
@@ -43,8 +47,9 @@ function buildScene2() {
 	return wrap.firstElementChild;
 }
 
-/** Scene 3: a link travelling from one phone to another — sharing, not
- * uploading anywhere in between. */
+/** Scene 3: a key travelling from one phone to another — sharing, not
+ * uploading anywhere in between. A key (not a generic "+") because that's
+ * literally what's in the link: the read key that unlocks the page. */
 function buildScene3() {
 	const wrap = document.createElement('div');
 	wrap.innerHTML = `
@@ -55,8 +60,11 @@ function buildScene3() {
 			<line x1="226" y1="102" x2="246" y2="102" stroke="currentColor" stroke-width="5" stroke-linecap="round"></line>
 			<line class="how-dash-path" x1="74" y1="62" x2="206" y2="62" stroke-width="3" stroke-dasharray="7 9"></line>
 			<g class="how-link-travel">
-				<circle r="13" stroke="currentColor" stroke-width="4"></circle>
-				<path d="M-5 0h10M0 -5v10" stroke-width="2.6" stroke-linecap="round"></path>
+				<circle class="how-link-travel__bubble" r="13" stroke-width="4"></circle>
+				<g class="how-link-travel__key">
+					<circle cx="-4" cy="0" r="2.6"></circle>
+					<path d="M-1.4 0H5M2.6 0v2.2M4.6 0v2.2" stroke-width="2" stroke-linecap="round" fill="none"></path>
+				</g>
 			</g>
 		</svg>`;
 	return wrap.firstElementChild;
