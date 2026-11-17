@@ -507,6 +507,11 @@ undocked domain (0.1).
       can make their own. A `::after` pseudo-element and a transform-only
       `@keyframes`, no new DOM node and CSP-safe (PLAN.md section 9); off
       entirely under `prefers-reduced-motion: reduce`
+- [x] Privacy page footer gets a second, primary "Create your page" CTA
+      next to the existing "Back to home" one — same destination (home
+      doubles as the create flow with no fragment) but an explicit
+      invitation instead of only an exit, for whoever reads this far down
+      the privacy page and might be convinced enough to make their own
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert

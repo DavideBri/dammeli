@@ -108,5 +108,17 @@ export function initPrivacy() {
 			location.href = '/';
 		},
 	});
-	document.querySelector('[data-back]').replaceChildren(backBtn);
+	// Same destination as "back" (home doubles as the create flow with no
+	// fragment, app.mjs's boot()) but framed as its own call to action —
+	// someone reading the privacy page this closely is worth a direct
+	// invitation, not just a way out. Same copy as how-it-works' own CTA.
+	const createBtn = ui.button({
+		variant: 'primary',
+		size: 'md',
+		text: t(lang, 'howItWorks.cta'),
+		onClick: () => {
+			location.href = '/';
+		},
+	});
+	document.querySelector('[data-back]').replaceChildren(backBtn, createBtn);
 }
