@@ -1086,11 +1086,11 @@
 	0% {
 		transform: translateX(-180%) skewX(-20deg);
 	}
-	14% {
-		transform: translateX(260%) skewX(-20deg);
+	20% {
+		transform: translateX(450%) skewX(-20deg);
 	}
 	100% {
-		transform: translateX(260%) skewX(-20deg);
+		transform: translateX(450%) skewX(-20deg);
 	}
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1457,7 +1457,21 @@
 .privacy-footer-actions {
 	display: flex;
 	gap: var(--s-3);
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
+}
+.privacy-footer-actions .ds-btn {
+	flex: 1 1 0;
+	min-width: 0;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+@media (max-width: 380px) {
+	.privacy-footer-actions .ds-btn {
+		padding-left: var(--s-2);
+		padding-right: var(--s-2);
+		font-size: 13px;
+	}
 }
 
 /* Public viewer's IBAN card (buildIbanCard in src/scripts/viewer.mjs) —

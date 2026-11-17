@@ -506,12 +506,19 @@ undocked domain (0.1).
       just looking at someone else's payment page and hasn't noticed they
       can make their own. A `::after` pseudo-element and a transform-only
       `@keyframes`, no new DOM node and CSP-safe (PLAN.md section 9); off
-      entirely under `prefers-reduced-motion: reduce`
+      entirely under `prefers-reduced-motion: reduce`. Fixed a day later:
+      the sweep used to stop at a fixed off-button position that still
+      clipped visible on some renders instead of reading as "gone" — it
+      now keeps travelling further right (and lands well past full
+      clearance) instead of parking just off the edge
 - [x] Privacy page footer gets a second, primary "Create your page" CTA
       next to the existing "Back to home" one — same destination (home
       doubles as the create flow with no fragment) but an explicit
       invitation instead of only an exit, for whoever reads this far down
-      the privacy page and might be convinced enough to make their own
+      the privacy page and might be convinced enough to make their own.
+      Both buttons forced onto one row (`flex-wrap: nowrap`, `flex: 1 1
+      0`) instead of wrapping to two on a narrow phone, shrinking their
+      own padding/font below 380px rather than breaking the layout
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert

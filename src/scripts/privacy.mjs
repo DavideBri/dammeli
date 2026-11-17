@@ -100,9 +100,12 @@ export function initPrivacy() {
 		}),
 	);
 
+	// 'sm' + .privacy-footer-actions' own CSS (flex:1, shrinking font/
+	// padding below a narrow breakpoint) keeps both buttons on one row
+	// instead of wrapping to two, even on a small phone.
 	const backBtn = ui.button({
 		variant: 'secondary',
-		size: 'md',
+		size: 'sm',
 		text: t(lang, 'privacy.back'),
 		onClick: () => {
 			location.href = '/';
@@ -114,7 +117,7 @@ export function initPrivacy() {
 	// invitation, not just a way out. Same copy as how-it-works' own CTA.
 	const createBtn = ui.button({
 		variant: 'primary',
-		size: 'md',
+		size: 'sm',
 		text: t(lang, 'howItWorks.cta'),
 		onClick: () => {
 			location.href = '/';
