@@ -497,6 +497,16 @@ undocked domain (0.1).
       traveling icon was a generic "+"; replaced with a small hand-drawn
       key glyph — it's literally what travels in the link (the read key),
       not an addition
+- [x] A quiet attention-grabbing shine on the public viewer's "Fanne una
+      tua"/"Make your own" CTA (`.viewer-create-cta` in
+      `src/styles/ds/components.css`, class added in `buildViewerTopBar`,
+      `src/scripts/app.mjs`): a light diagonal sweep across the button,
+      first after a few seconds on the page (not immediately) and then
+      recurring slowly for as long as the visitor stays — for whoever's
+      just looking at someone else's payment page and hasn't noticed they
+      can make their own. A `::after` pseudo-element and a transform-only
+      `@keyframes`, no new DOM node and CSP-safe (PLAN.md section 9); off
+      entirely under `prefers-reduced-motion: reduce`
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert

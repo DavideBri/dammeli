@@ -1059,6 +1059,47 @@
 		transform: rotate(0deg) translate(0, 0);
 	}
 }
+/* The "Make your own" CTA in the viewer topbar (buildViewerTopBar,
+   src/scripts/app.mjs): a light sweep across it, like a reflection,
+   to catch the eye of whoever's just looking at someone else's page and
+   hasn't noticed they can make their own. A pseudo-element, not a second
+   real element, and transform-only — CSP forbids inline style/
+   element.style.* (PLAN.md section 9), and a class is all this needs. */
+.viewer-create-cta {
+	position: relative;
+	overflow: hidden;
+}
+.viewer-create-cta::after {
+	content: '';
+	position: absolute;
+	top: -20%;
+	left: 0;
+	width: 35%;
+	height: 140%;
+	background: linear-gradient(115deg, transparent, var(--on-accent) 50%, transparent);
+	opacity: 0.45;
+	transform: translateX(-180%) skewX(-20deg);
+	animation: viewer-cta-shine 5200ms ease-in-out 2400ms infinite;
+	pointer-events: none;
+}
+@keyframes viewer-cta-shine {
+	0% {
+		transform: translateX(-180%) skewX(-20deg);
+	}
+	14% {
+		transform: translateX(260%) skewX(-20deg);
+	}
+	100% {
+		transform: translateX(260%) skewX(-20deg);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.viewer-create-cta::after {
+		animation: none;
+		opacity: 0;
+	}
+}
+
 .viewer-loaded {
 	display: flex;
 	flex-direction: column;

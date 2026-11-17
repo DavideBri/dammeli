@@ -66,6 +66,11 @@ function buildViewerTopBar(viewerRoot, lang) {
 		text: t(lang, 'viewer.footerCta'),
 		onClick: () => navigateHard('/'),
 	});
+	// A quiet shine sweep, not a shout: it waits a few seconds (so it
+	// doesn't fire before anyone's even looked at the page) and keeps
+	// recurring, slowly, for as long as a visitor lingers on someone
+	// else's payment page without noticing this button exists.
+	createCta.classList.add('viewer-create-cta');
 	const { header, titleWrap } = ui.topBar({ right: [createCta] });
 	titleWrap.querySelector('.ds-wordmark-link')?.addEventListener('click', (event) => {
 		// Same reasoning as the "how it works"/"privacy" footer links: this
