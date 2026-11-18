@@ -35,7 +35,7 @@ function renderCreatedScreen(createdRoot, lang, { title, readUrl, editUrl }, { o
 	// nothing of its own to say there (it only ever repeated "pronta"/
 	// "ready" right above the badge that already says it). Two icons on
 	// the right: back to "Your pages", or straight into editing this one.
-	const pagesBtn = ui.iconButton({ iconName: 'bookmark', label: t(lang, 'nav.yourPages'), onClick: onPages });
+	const pagesBtn = ui.iconButton({ iconName: 'layers', label: t(lang, 'nav.yourPages'), onClick: onPages });
 	const editBtn = ui.iconButton({ iconName: 'pencil', label: t(lang, 'nav.edit'), onClick: () => showScreen('editor') });
 	const { header } = ui.topBar({ right: [pagesBtn, editBtn] });
 	createdRoot.querySelector('[data-topbar-created]').replaceChildren(header);

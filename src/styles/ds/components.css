@@ -903,7 +903,60 @@
 	justify-content: center;
 }
 
-/* "Your pages" screen. */
+/* "Your pages" bottom sheet (src/scripts/your-pages.mjs) — an overlay over
+   whichever screen is already showing, not a [data-screen] of its own, so
+   dismissing it never loses what was underneath. */
+.ds-sheet-backdrop {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.4);
+	opacity: 0;
+	transition: opacity 280ms ease;
+	z-index: 40;
+}
+.ds-sheet-backdrop--open {
+	opacity: 1;
+}
+.ds-sheet {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	max-height: 85vh;
+	display: flex;
+	flex-direction: column;
+	background: var(--surface-page);
+	border-top: var(--bw-strong) solid var(--ink-line);
+	border-radius: var(--r-card) var(--r-card) 0 0;
+	box-shadow: var(--shadow-hard);
+	transform: translateY(100%);
+	transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
+	z-index: 41;
+}
+.ds-sheet--open {
+	transform: translateY(0);
+}
+.ds-sheet__handle {
+	flex-shrink: 0;
+	width: 40px;
+	height: 5px;
+	border-radius: 999px;
+	background: var(--border-hairline);
+	margin: var(--s-3) auto var(--s-1);
+}
+.ds-sheet__body {
+	overflow-y: auto;
+}
+.ds-body-locked {
+	overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+	.ds-sheet-backdrop,
+	.ds-sheet {
+		transition: none;
+	}
+}
+
 .ds-body--flush {
 	padding: 0;
 	gap: 0;

@@ -79,9 +79,16 @@ import SocialMeta from '../components/SocialMeta.astro';
 				</div>
 			</section>
 
-			<section class="ds-page" data-screen="your-pages" hidden>
+			<!-- "Your pages" is a bottom sheet, not a screen (your-pages.mjs):
+			     opened over whichever screen is already showing (editor or
+			     "created"), dismissed by tapping the backdrop, the handle-row's
+			     back arrow, or picking a page/starting a new one — never a
+			     `[data-screen]`, so screens.mjs's showScreen() never touches it. -->
+			<div class="ds-sheet-backdrop" data-your-pages-backdrop hidden></div>
+			<section class="ds-sheet" data-your-pages-sheet hidden>
+				<div class="ds-sheet__handle" aria-hidden="true"></div>
 				<div data-topbar-your-pages></div>
-				<div class="ds-body ds-body--flush">
+				<div class="ds-body ds-body--flush ds-sheet__body">
 					<ul data-your-pages-list class="your-pages-list"></ul>
 					<div class="your-pages-notice-wrap" data-your-pages-notice></div>
 				</div>

@@ -1,7 +1,9 @@
-// Switches between the app's four full-screen states (editor, created,
-// your-pages, viewer). Plain visibility toggling on in-memory DOM, never
-// a `location.hash` change — the fragment stays reserved for the read/
-// write link the app was opened with (constraint C2, PLAN.md section 2).
+// Switches between the app's three full-screen states (editor, created,
+// viewer). Plain visibility toggling on in-memory DOM, never a
+// `location.hash` change — the fragment stays reserved for the read/write
+// link the app was opened with (constraint C2, PLAN.md section 2).
+// "Your pages" (your-pages.mjs) isn't one of these — it's a bottom sheet
+// over whichever of these is already showing, not a `[data-screen]`.
 
 export function showScreen(name) {
 	for (const el of document.querySelectorAll('[data-screen]')) {

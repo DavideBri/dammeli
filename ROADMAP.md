@@ -519,6 +519,18 @@ undocked domain (0.1).
       Both buttons forced onto one row (`flex-wrap: nowrap`, `flex: 1 1
       0`) instead of wrapping to two on a narrow phone, shrinking their
       own padding/font below 380px rather than breaking the layout
+- [x] "Your pages" turned from its own full screen into a bottom sheet
+      (`src/scripts/your-pages.mjs`) over whichever screen is already
+      showing — editor or "Created" — instead of navigating away from
+      it; dismissed by the backdrop, Escape, the handle row's back arrow,
+      or picking/starting a page, never a `[data-screen]` so
+      `screens.mjs`'s router doesn't need to know about it. Its trigger
+      icon changed from a bookmark to a `layers` glyph (vendored from
+      Lucide, `src/vendor/icons.mjs`) — feedback was that a bookmark
+      icon didn't read as "your saved pages" at all. The per-device dark/
+      light override button stays: checked the code, it's a real
+      persisted override, not dead weight that just mirrors the system
+      setting
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert

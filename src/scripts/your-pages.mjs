@@ -1,12 +1,14 @@
-// "Your pages" screen: the list of pages this device has created (PLAN.md
-// section 8). Reachable from the editor's bookmark icon and from the
-// "Created" screen's ghost button — never the immediately usable default,
-// which stays the editor ("the home page is already the editor").
+// "Your pages": the list of pages this device has created (PLAN.md
+// section 8), as a bottom sheet over whichever screen is already showing
+// (editor or "created") rather than a screen of its own — reachable from
+// the editor's topbar and from the "Created" screen's topbar, dismissed
+// without losing whatever was underneath. Never the immediately usable
+// default, which stays the editor ("the home page is already the editor").
 
 import { createLocalPagesStore } from '../lib/local-pages.mjs';
 import * as api from '../lib/api.mjs';
 import { t } from '../lib/i18n.mjs';
-import { showScreen, navigateHard } from './screens.mjs';
+import { navigateHard } from './screens.mjs';
 import * as ui from './ui.mjs';
 
 /**
@@ -107,17 +109,57 @@ function renderRow(page, lang, fallbackName, onDeleted) {
 	return row;
 }
 
-export function initYourPages(root, lang, { store = createLocalPagesStore(), onBack, onNew } = {}) {
-	const list = root.querySelector('[data-your-pages-list]');
+/**
+ * @param {HTMLElement} sheet the `.ds-sheet` element itself
+ * @param {HTMLElement} backdrop its `.ds-sheet-backdrop` sibling
+ */
+export function initYourPages(sheet, backdrop, lang, { store = createLocalPagesStore(), onNew } = {}) {
+	const list = sheet.querySelector('[data-your-pages-list]');
+
+	function close() {
+		sheet.classList.remove('ds-sheet--open');
+		backdrop.classList.remove('ds-sheet-backdrop--open');
+		document.body.classList.remove('ds-body-locked');
+		sheet.addEventListener(
+			'transitionend',
+			() => {
+				sheet.hidden = true;
+				backdrop.hidden = true;
+			},
+			{ once: true },
+		);
+	}
+
+	function open() {
+		sheet.hidden = false;
+		backdrop.hidden = false;
+		// Forces the browser to register the pre-transition (slid-down) state
+		// before the next line flips the class, otherwise both changes land
+		// in the same frame and the slide-up never plays.
+		void sheet.offsetHeight;
+		sheet.classList.add('ds-sheet--open');
+		backdrop.classList.add('ds-sheet-backdrop--open');
+		document.body.classList.add('ds-body-locked');
+	}
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape' && !sheet.hidden) close();
+	});
+	backdrop.addEventListener('click', close);
+
+	const handleNew = () => {
+		close();
+		onNew();
+	};
 
 	const { header } = ui.topBar({
 		title: t(lang, 'myPages.title'),
-		onBack,
+		onBack: close,
 		backLabel: t(lang, 'nav.back'),
-		right: [ui.iconButton({ iconName: 'plus', label: t(lang, 'nav.newPage'), onClick: onNew })],
+		right: [ui.iconButton({ iconName: 'plus', label: t(lang, 'nav.newPage'), onClick: handleNew })],
 	});
-	root.querySelector('[data-topbar-your-pages]').replaceChildren(header);
-	root.querySelector('[data-your-pages-notice]').replaceChildren(
+	sheet.querySelector('[data-topbar-your-pages]').replaceChildren(header);
+	sheet.querySelector('[data-your-pages-notice]').replaceChildren(
 		ui.notice({ iconName: 'info', body: t(lang, 'myPages.notice') }),
 	);
 
@@ -128,13 +170,13 @@ export function initYourPages(root, lang, { store = createLocalPagesStore(), onB
 			empty.className = 'ds-page-row-empty';
 			const iconWrap = document.createElement('span');
 			iconWrap.className = 'ds-page-row-empty__icon';
-			iconWrap.appendChild(ui.icon('bookmark', { size: 28 }));
+			iconWrap.appendChild(ui.icon('layers', { size: 28 }));
 			empty.appendChild(iconWrap);
 			const text = document.createElement('p');
 			text.className = 'ds-page-row-empty__text';
 			text.textContent = t(lang, 'myPages.emptyText');
 			empty.appendChild(text);
-			empty.appendChild(ui.button({ variant: 'secondary', text: t(lang, 'myPages.emptyCta'), onClick: onNew }));
+			empty.appendChild(ui.button({ variant: 'secondary', text: t(lang, 'myPages.emptyCta'), onClick: handleNew }));
 			list.replaceChildren();
 			list.appendChild(empty);
 			return;
@@ -160,5 +202,5 @@ export function initYourPages(root, lang, { store = createLocalPagesStore(), onB
 	}
 
 	render();
-	return { showAndRefresh: () => { render(); showScreen('your-pages'); } };
+	return { showAndRefresh: () => { render(); open(); } };
 }

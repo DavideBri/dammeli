@@ -48,7 +48,7 @@ function buildEditorTopBar(editorRoot, lang, { onPages }) {
 				render();
 			},
 		});
-		const pagesBtn = ui.iconButton({ iconName: 'bookmark', label: t(lang, 'nav.yourPages'), onClick: onPages });
+		const pagesBtn = ui.iconButton({ iconName: 'layers', label: t(lang, 'nav.yourPages'), onClick: onPages });
 		const { header } = ui.topBar({ right: [pagesBtn, themeBtn] });
 		editorRoot.querySelector('[data-topbar-editor]').replaceChildren(header);
 	}
@@ -94,11 +94,11 @@ export async function boot() {
 	applyTheme(getSavedTheme());
 
 	const editorRoot = document.querySelector('[data-screen="editor"]');
-	const yourPagesRoot = document.querySelector('[data-screen="your-pages"]');
 	const viewerRoot = document.querySelector('[data-screen="viewer"]');
+	const yourPagesSheet = document.querySelector('[data-your-pages-sheet]');
+	const yourPagesBackdrop = document.querySelector('[data-your-pages-backdrop]');
 
-	const yourPages = initYourPages(yourPagesRoot, lang, {
-		onBack: () => showScreen('editor'),
+	const yourPages = initYourPages(yourPagesSheet, yourPagesBackdrop, lang, {
 		onNew: () => showScreen('editor'),
 	});
 	const goToYourPages = () => yourPages.showAndRefresh();
