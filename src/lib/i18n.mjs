@@ -66,7 +66,7 @@ const dict = {
 		'methods.paypal.fieldLabel': 'Il tuo link PayPal.Me',
 		'methods.paypal.placeholder': 'paypal.me/mariorossi',
 		'methods.paypal.hint':
-			'PayPal.Me: dal menu, "Chiedi denaro" → il tuo link finisce con /nome.',
+			'PayPal.Me: apri il profilo → Impostazioni → Dati personali → PayPal.Me, il tuo link finisce con /nome.',
 
 		'methods.iban.label': 'IBAN',
 		'methods.iban.fieldLabel': 'IBAN',
@@ -210,7 +210,8 @@ const dict = {
 		'methods.paypal.label': 'PayPal',
 		'methods.paypal.fieldLabel': 'Your PayPal.Me link',
 		'methods.paypal.placeholder': 'paypal.me/mariorossi',
-		'methods.paypal.hint': 'PayPal.Me: from the menu, "Request money" → your link ends with /name.',
+		'methods.paypal.hint':
+			'PayPal.Me: open your profile → Settings → Personal details → PayPal.Me — your link ends with /name.',
 
 		'methods.iban.label': 'IBAN',
 		'methods.iban.fieldLabel': 'IBAN',
@@ -355,7 +356,7 @@ const dict = {
 		'methods.paypal.fieldLabel': 'Tu enlace de PayPal.Me',
 		'methods.paypal.placeholder': 'paypal.me/mariorossi',
 		'methods.paypal.hint':
-			'PayPal.Me: en el menú, "Solicitar dinero" → tu enlace termina en /nombre.',
+			'PayPal.Me: abre tu perfil → Configuración → Datos personales → PayPal.Me, tu enlace termina en /nombre.',
 
 		'methods.iban.label': 'IBAN',
 		'methods.iban.fieldLabel': 'IBAN',
