@@ -519,6 +519,13 @@ undocked domain (0.1).
       Both buttons forced onto one row (`flex-wrap: nowrap`, `flex: 1 1
       0`) instead of wrapping to two on a narrow phone, shrinking their
       own padding/font below 380px rather than breaking the layout
+- [x] PayPal's operational instructions (`methods.paypal.hint`) fixed —
+      PayPal's app changed, and the old path ("from the menu, 'Request
+      money'") no longer leads to PayPal.Me: that menu entry now points
+      to PayPal's newer "PayPal Links" feature instead, one-time and
+      expiring, not the permanent reusable link dammeli actually needs.
+      Confirmed firsthand (screenshot) and replaced with the real current
+      path: profile → Settings → Personal details → PayPal.Me
 - [ ] Encrypted database backup, on a different provider
 - [ ] **Restore tested at least once**
 - [ ] Disk space alert
