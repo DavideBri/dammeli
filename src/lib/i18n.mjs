@@ -66,7 +66,7 @@ const dict = {
 		'methods.paypal.fieldLabel': 'Il tuo link PayPal.Me',
 		'methods.paypal.placeholder': 'paypal.me/mariorossi',
 		'methods.paypal.hint':
-			'PayPal.Me: apri il profilo → Impostazioni → Dati personali → PayPal.Me, il tuo link finisce con /nome.',
+			"PayPal.Me: apri il profilo → Impostazioni → Dati personali → PayPal.Me. Basta il nome utente, non serve incollare l'intero link.",
 
 		'methods.iban.label': 'IBAN',
 		'methods.iban.fieldLabel': 'IBAN',
@@ -211,7 +211,7 @@ const dict = {
 		'methods.paypal.fieldLabel': 'Your PayPal.Me link',
 		'methods.paypal.placeholder': 'paypal.me/mariorossi',
 		'methods.paypal.hint':
-			'PayPal.Me: open your profile → Settings → Personal details → PayPal.Me — your link ends with /name.',
+			'PayPal.Me: open your profile → Settings → Personal details → PayPal.Me. Just the username is enough, no need to paste the whole link.',
 
 		'methods.iban.label': 'IBAN',
 		'methods.iban.fieldLabel': 'IBAN',
@@ -356,7 +356,7 @@ const dict = {
 		'methods.paypal.fieldLabel': 'Tu enlace de PayPal.Me',
 		'methods.paypal.placeholder': 'paypal.me/mariorossi',
 		'methods.paypal.hint':
-			'PayPal.Me: abre tu perfil → Configuración → Datos personales → PayPal.Me, tu enlace termina en /nombre.',
+			'PayPal.Me: abre tu perfil → Configuración → Datos personales → PayPal.Me. Basta con el nombre de usuario, no hace falta pegar el enlace completo.',
 
 		'methods.iban.label': 'IBAN',
 		'methods.iban.fieldLabel': 'IBAN',
